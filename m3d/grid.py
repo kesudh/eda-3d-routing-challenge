@@ -50,5 +50,19 @@ class Grid:
             yield vid - self.wh, self.via_delay
 
 
+def edge_delay(grid: Grid, u: Vid, v: Vid) -> int:
+    """Delay of the 3D edge between adjacent vertices u and v (packed vids)."""
+    w, h = grid.w, grid.h
+    du, ru = divmod(u, w * h)
+    dv, rv = divmod(v, w * h)
+    if du != dv:
+        return grid.via_delay
+    y1, x1 = divmod(ru, w)
+    y2, x2 = divmod(rv, w)
+    if abs(x1 - x2) + abs(y1 - y2) != 1:
+        raise ValueError(f"{grid.coord(u)} and {grid.coord(v)} are not adjacent")
+    return grid.layer_delay[du]
+
+
 def edge_key(a: int, b: int) -> Tuple[int, int]:
     return (a, b) if a < b else (b, a)

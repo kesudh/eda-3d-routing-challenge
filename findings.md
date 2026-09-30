@@ -108,6 +108,35 @@ nets, paying for it by re-routing the nets that boxed them in.
 - `lagrangian-primal`: the only way to know if 4072 of detour on case_09 is
   forced or recoverable.
 
+## Correction: the "walled-in sinks" story is weaker than it looked
+
+I followed up on the walled-in-sink claim above with `walled_in.py`, which
+measures each sink's distance under two relaxations: (a) only other nets'
+*pins* blocked (the pins-only floor), and (b) all other nets' *current routes*
+blocked as well. If a sink is genuinely walled in, removing the rest of the
+routing should not help it, and (b) should equal the current cost.
+
+On hard case_09, for **every one of the 12 worst sinks, (b) == current cost
+exactly**. Example: net 28 sink 61, current 174, pins-floor 78, but with all
+other routes removed it is *still* 174. Same for nets 14, 95, 80, 7, 33, 6, 83,
+12, 64, 84, 87.
+
+So those sinks are not boxed in by a bad arrangement of routes that a cleverer
+router could have avoided — they are boxed in by the *pins themselves* and the
+sheer density of the instance. The 96 delay is not recoverable by re-routing;
+it is what the pins-only floor fails to capture because the floor lets paths
+share vertices that capacity-1 forbids.
+
+That kills the most actionable claim in this document. The "enumerate walled-in
+sinks and repair them" attack has no headroom, and any agent pursuing it will
+burn hours to learn that. The 4072 total detour on case_09 is therefore mostly
+FORCED by capacity, not lost by the router — which is consistent with PR#3's
+1-opt optimality and with the weak Lagrangian bound (7573 vs 8674, ~12.7%).
+
+The surviving useful facts are the two correlations (fanout pays off inversely;
+depth is not misallocated) and the layer occupancy table. The rest of this
+document should be read with the walled-in section retracted.
+
 ## Caveats
 
 - Measured on 3 of 9 hard cases. The fanout↔detour correlation replicates on

@@ -1,0 +1,8 @@
+case_03: floor=8744 bound=8855.0 upper=11086 gap= 20.12%  [2705s]
+{
+ "case_03": {
+  "floor_excl": 8744.0,
+  "bound": 8855.010964677651,
+  "upper": 11086
+ }
+}

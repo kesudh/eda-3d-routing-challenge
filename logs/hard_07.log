@@ -1,0 +1,33 @@
+    it    0 D=   16461.0 best=   16461.0 support=7732 t=14s
+    it   20 D=   16519.7 best=   16519.7 support=69626 t=154s
+    it   40 D=   16559.4 best=   16559.4 support=74623 t=293s
+    it   60 D=   16582.7 best=   16582.7 support=75171 t=412s
+    it   80 D=   16592.9 best=   16594.4 support=75268 t=535s
+    it  100 D=   16600.8 best=   16600.8 support=75297 t=641s
+    it  120 D=   16604.9 best=   16606.9 support=75302 t=749s
+    it  140 D=   16606.5 best=   16606.9 support=75304 t=853s
+    it  160 D=   16606.6 best=   16607.0 support=75305 t=962s
+    it  180 D=   16607.3 best=   16607.7 support=75307 t=1069s
+    it  200 D=   16604.0 best=   16608.3 support=75308 t=1179s
+    it  220 D=   16607.8 best=   16608.9 support=75308 t=1285s
+    it  240 D=   16607.6 best=   16608.9 support=75308 t=1391s
+    it  260 D=   16605.2 best=   16608.9 support=75308 t=1495s
+    it  280 D=   16603.1 best=   16608.9 support=75309 t=1598s
+    it  300 D=   16603.4 best=   16608.9 support=75310 t=1704s
+    it  320 D=   16603.4 best=   16608.9 support=75311 t=1806s
+    it  340 D=   16602.7 best=   16608.9 support=75312 t=1908s
+    it  360 D=   16603.2 best=   16608.9 support=75312 t=2010s
+    it  380 D=   16601.7 best=   16608.9 support=75312 t=2111s
+    it  400 D=   16603.6 best=   16608.9 support=75312 t=2214s
+    it  420 D=   16604.4 best=   16608.9 support=75312 t=2326s
+    it  440 D=   16604.3 best=   16608.9 support=75312 t=2443s
+    it  460 D=   16602.9 best=   16608.9 support=75312 t=2549s
+    it  480 D=   16605.2 best=   16608.9 support=75312 t=2655s
+case_07: floor=16461 bound=16608.9 upper=21433 gap= 22.51%  [2783s]
+{
+ "case_07": {
+  "floor_excl": 16461.0,
+  "bound": 16608.917595797728,
+  "upper": 21433
+ }
+}

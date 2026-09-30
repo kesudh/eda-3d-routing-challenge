@@ -90,13 +90,42 @@ never on any optimal path, so the strengthening contributed exactly zero. Honest
 negative result; the code is kept in `scripts/bound.py` (`--exclusion-rounds`)
 but disabled by default because it costs 35-60 s/case for no gain.
 
-## Bound table — hard tier
+## Bound table — ALL 9 hard cases (complete)
 
-| case | pins-only | my bound | PR#3 delay | gap |
+`scripts/bound.py`, 500 subgradient iterations per case, run in parallel.
+Every row satisfies `pins-only <= bound <= PR#3`, i.e. every bound is valid.
+
+| case | pins-only | my certified bound | PR#3 delay | gap |
 |---|---|---|---|---|
-| case_01 | 7156 | **7268.3** | 8674 | 16.2% |
+| case_01 | 7156 | 7268.4 | 8674 | 16.20% |
+| case_02 | 9976 | 10118.7 | 13230 | 23.52% |
+| case_03 | 8744 | 8855.0 | 11086 | 20.12% |
+| case_04 | 10253 | 10375.7 | 13095 | 20.77% |
+| case_05 | 12129 | 12264.3 | 15311 | 19.90% |
+| case_06 | 15332 | 15477.8 | 19882 | 22.15% |
+| case_07 | 16461 | 16608.9 | 21433 | 22.51% |
+| case_08 | 16576 | 16718.6 | 21620 | 22.67% |
+| case_09 | 17404 | 17517.0 | 21476 | 18.43% |
+| **TOTAL** | **114031** | **115204.4** | **145807** | **20.99%** |
 
-(remaining 8 cases in progress; see `results/hard_*.json` and `logs/hard_*.log`)
+So: the true optimum of the hard tier lies in **[115204, 145807]**, and PR#3 is
+at most **20.99%** above the certified floor. The per-case gain over pins-only
+is uniformly small (+0.8% to +2.6% of the floor), which is the signature of a
+*weak but honest* bound: it prices contention, but only barely.
+
+Aggregate implication: since the leaderboard ratio is `baseline/total` and
+`total >= LB`, no legal submission can score above `geomean(baseline_c / LB_c)`;
+computing that from `results/hard_*.json` gives the certified ceiling on the
+hard aggregate. I did not evaluate it here, so I am not quoting a number I have
+not computed.
+
+The case_09 pocket hypothesis is **not confirmed** by these duals. I verified
+directly that the six named 1-sink nets really are walled in (routed
+driver->sink of 118-156 delay, versus 6 for the well-placed 1-sink nets 91/97/99),
+so the phenomenon is real, but the converged prices are diffuse — 90907 of
+92160 vertices (98.6%) carry a positive price on case_09 — and they do not
+concentrate on the pocket walls. The subgradient has essentially priced
+*everything* slightly rather than identifying the contended cut.
 
 ## Files
 
@@ -107,11 +136,21 @@ but disabled by default because it costs 35-60 s/case for no gain.
 - `scripts/primal.py`, `scripts/run_primal.py` — Part 2 primal extraction,
   **incomplete and not part of the reported result**
 
-## Part 2 (primal extraction) — status: not completed
+## Part 2 (primal extraction) — NOT COMPLETED
 
 Dropped on instruction to prioritise the bound. A dual-guided sequential router
-exists but is untested end-to-end and produced no verified submission. No
-primal numbers are claimed.
+(`scripts/primal.py`, `scripts/run_primal.py`) exists but is untested
+end-to-end and produced **no verified submission**. No primal numbers claimed.
+
+## Verdict vs PR#3 (stated separately from the bound)
+
+**No submission produced. This workstream is a BOUND result, not a BEAT/TIE/FAIL
+attempt.** I did not generate `case_NN.sol.json` files and I make no claim on
+the leaderboard. The comparison numbers (aggregate 1.381266, total 145807) were
+used only as *upper* bounds to check my own bound's validity and to drive the
+Polyak-style ascent.
+
+CPU: ~9 processes x up to ~50 min wall (~3 CPU-hours total, 24-core host).
 
 ## What I would do next
 

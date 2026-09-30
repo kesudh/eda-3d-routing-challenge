@@ -1,0 +1,8 @@
+case_01: floor=7156 bound=7268.4 upper=8674 gap= 16.20%  [1791s]
+{
+ "case_01": {
+  "floor_excl": 7156.0,
+  "bound": 7268.414980575022,
+  "upper": 8674
+ }
+}

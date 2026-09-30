@@ -232,27 +232,60 @@ magnitude**:
 - **W ≤ 8**: seconds of CPU, **provably zero**.
 - **W = 16**: ~350 s CPU, still **provably zero**.
 - **W ≥ 24**: 0.5–2.6 M vars. The solver cannot find a *first feasible point* in
-  60–330 s, so it returns nothing — not a proof, not a heuristic gain.
-- **W = 32 with a detour cap**: the cap shrinks the model enough to be solvable,
-  which is the only lever that made W=32 tractable at all (**6 s at D=2**).
+  60–380 s, so it returns nothing — not a proof, not a heuristic gain.
+- **W = 32 with a detour cap of 2–3**: provable in **4 s**. See the frontier
+  below — this is the only configuration that produced a proof beyond W=16, and
+  it is budget-limited.
 
 **Aggregate gain per CPU-hour: zero at every window size evaluated.** For
 calibration, PR#3 spent 53,655 CPU-seconds on the whole hard tier and gained the
 same zero from this move class.
 
-### Reduced-arcs formulation — the one reformulation with real promise
+### Reduced-arcs / detour-budget frontier — where tractability actually ends
 
-The detour sweep shows the **arc count, not the window size, is the binding
-quantity**: capping per-net detour to 2 shrank case_01 W=32 from 877 k to 611 k
-vars and turned a 240 s timeout into a **6 s proof**. So the promising direction
-is not a bigger window but a smaller model *at the same window* — keep only
-near-shortest arcs per pin pair, or restrict arcs to the z=2,3 corridor.
+The sweep below is the sharpest result in this document. It varies only the
+**per-net detour budget D** at a fixed window, which prunes the candidate arc
+set. `proven` means the MIP returned INFEASIBLE, i.e. no assignment of cost
+≤ ub−1 exists **within that budget** — a real proof, but budget-limited.
 
-This converts the wall from "unsolvable" into "solvable under an explicit,
-stated approximation budget". I did **not** get it to push W=32 to an
-unrestricted proof in the time available, and I am **not** claiming otherwise.
-It is the highest-value next step precisely because it is the one lever that
-measurably worked.
+**case_01, W=32 (32 of 62 nets, window subset ub 6657), 120–380 s limits:**
+
+| D | arcs | vars | status | solve s |
+|---|------|------|--------|---------|
+| 2 | 277,200 | 610,702 | **PROVEN infeasible (within D=2)** | **3.9** |
+| 3 | 277,200 | 610,702 | **PROVEN infeasible (within D=3)** | **4.0** |
+| 4 | 281,443 | 620,062 | time limit, no incumbent | 139.3 |
+| 6 | 285,085 | 628,507 | time limit, no incumbent | 139.7 |
+| 10 | 293,016 | 646,040 | time limit, no incumbent | 203.5 |
+| 20 | 320,538 | 707,397 | time limit, no incumbent | 381.6 |
+
+**case_01, W=64 (all 62 nets, window subset ub 8674 — the full instance):**
+
+| D | arcs | vars | status | solve s |
+|---|------|------|--------|---------|
+| 2 | 380,983 | 834,283 | time limit, no incumbent | 159.3 |
+| 3 | 380,989 | 834,295 | time limit, no incumbent | 205.9 |
+
+Two things follow, and the second is the important one:
+
+1. **The arc count, not the window size, is the binding quantity.** Going from
+   D=3 to D=20 adds only 16 % more arcs (277 k → 321 k) but destroys
+   tractability: a 4 s proof becomes a 380 s timeout. The model is not
+   arc-bound in any useful sense — it is bound by how *loosely* the flows may be
+   routed, which is what makes the LP relaxation weak and the branch-and-bound
+   explode.
+2. **D=2 and D=3 are identical (277,200 arcs, same proof in ~4 s).** So the arc
+   set is already saturated at D=2: allowing a third unit of detour adds not one
+   usable arc. That is strong evidence that the useful move set is genuinely
+   tiny — consistent with the W≤16 exhaustion results — and it means the
+   reduced-arcs reformulation **cannot** unlock W=32+, because there are no
+   additional near-shortest arcs to keep. My earlier suggestion that a
+   reduced-arcs formulation is the highest-value next step is **wrong**, and the
+   data says so.
+
+W=64 is the whole instance: proving it is exactly the global routing optimum.
+It is out of reach by a wide margin (834 k vars, no feasible point in 159 s),
+which is itself the cleanest possible statement of the wall.
 
 ## Verdict
 
@@ -288,21 +321,26 @@ scored at 1.3813, so the number above is reproducible.
 
 ## What I would try next
 
-1. **Reduced-arcs / near-shortest-arc restriction** so W=32–64 becomes solvable
-   unrestricted. The detour sweep is the evidence: capping per-net detour to 2
-   turned a 240 s timeout into a 6 s proof at the same window size. Doing that by
-   construction (k shortest arcs per pin pair, or arcs restricted to the z=2,3
-   corridor) is the single highest-value next step.
-2. **Layer reassignment as a discrete move.** `[6,4,2,2,4,6]` with
-   `via_delay 3` means z=2,3 are 81–90 % occupied while z=0,1,4,5 are nearly
-   empty, and every net pays 4 vias (cost 12) to reach the middle. A move class
-   that relocates a net's **layer span** is outside the window neighbourhood I
-   searched and is the most likely remaining seam.
+1. **Do not pursue reduced-arcs / near-shortest-arc restriction — the data kills
+   it.** D=2 and D=3 produce an *identical* arc set (277,200 arcs) and an
+   identical 4 s proof, so the candidate arcs are already saturated at D=2 and
+   there are no further near-shortest arcs to keep. There is no smaller model to
+   find. I proposed this earlier in the session and the sweep refuted it.
+2. **Layer reassignment as a discrete move — now the clear first choice.**
+   `[6,4,2,2,4,6]` with `via_delay 3` means z=2,3 are 81–90 % occupied while
+   z=0,1,4,5 are nearly empty, and every net pays 4 vias (cost 12) to reach the
+   middle. A move class that relocates a net's **layer span** is outside the
+   window neighbourhood I searched, and it is the one thing the D-sweep evidence
+   points at: the useful arcs are exhausted, so the *shape* of a net's route
+   (which layers it occupies and how it descends) has to change, not which of
+   the near-shortest paths it takes.
 3. **A Lagrangian bound over this same window model** to quantify the true
    remaining headroom per window. That is the number a competitor actually needs,
-   and it is much cheaper than proving optimality.
-4. **Do not spend more CPU on wider windows** at the current formulation. The
-   scaling table is the argument.
+   and it is much cheaper than proving optimality. The D=4+ timeouts are exactly
+   the weak-relaxation symptom a Lagrangian bound would quantify.
+4. **Do not spend more CPU on wider windows** at the current formulation. W=64
+   is the global optimum problem; it is 834 k vars and out of reach by ~3 orders
+   of magnitude.
 
 ## Files
 

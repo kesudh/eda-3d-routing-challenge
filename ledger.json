@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": 1,
+      "url": "https://people.ece.umn.edu/~sachin/jnl/integration01.pdf",
+      "title": "Hu & Sapatnekar, A Survey on Multi-net Global Routing for Integrated Circuits, Integration 2001",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 2,
+      "url": "https://cecs.uci.edu/~papers/compendium94-03/papers/1995/fpga95/pdffiles/6a.pdf",
+      "title": "McMurchie & Ebeling, PathFinder, FPGA'95",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 3,
+      "url": "https://cecs.uci.edu/~papers/aspdac08/pdf/p226_3A-1.pdf",
+      "title": "Moffitt, MAIZEROUTER, ASP-DAC 2008",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 4,
+      "url": "https://leeds-faculty.colorado.edu/glover/fred%20pubs/266%20-%20TSP%20-%20Ejection%20Chains%20DAM%201996.pdf",
+      "title": "Glover, Ejection chains, reference structures and alternating path methods for TSP, DAM 65 (1996)",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 5,
+      "url": "http://leeds-faculty.colorado.edu/glover/fred%20pubs/401%20-%20Ejection%20Chain%20for%20QAP%20-%20w%20Cesar%20%26%20Tabitha%20-%20Networks.pdf",
+      "title": "Rego, James & Glover, An Ejection Chain Algorithm for the QAP, Networks 2010",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 6,
+      "url": "https://backend.orbit.dtu.dk/ws/files/5293785/Pisinger.pdf",
+      "title": "Pisinger & Ropke, Large Neighborhood Search, Handbook of Metaheuristics 2010",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 7,
+      "url": "https://arxiv.org/pdf/1207.4626",
+      "title": "Marmion et al., The Road to VEGAS, arXiv:1207.4626",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 8,
+      "url": "https://arxiv.org/pdf/1207.4450",
+      "title": "Marmion et al., NILS, arXiv:1207.4450",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 9,
+      "url": "https://arxiv.org/pdf/0809.2554.pdf",
+      "title": "Chakrabarty, Jourdan, Vondrak, Simpler Analyses of Local Search for Facility Location, arXiv:0809.2554",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 10,
+      "url": "https://web.stanford.edu/~yyye/CFLP-MOR2.pdf",
+      "title": "Zhang, Chen & Ye, A Multi-Exchange Local Search Algorithm for CFLP, MOR 2004",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 11,
+      "url": "https://leeds-faculty.colorado.edu/glover/fred%20pubs/297%20-%20TS%20-%20chapter%20in%20Handbook%20of%20Combinatorial%20Optimization%20V3.pdf",
+      "title": "Glover & Laguna, Tabu Search, Handbook of Combinatorial Optimization",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 12,
+      "url": "https://www.cs.virginia.edu/~robins/papers/Provably_Good_Performance-Driven_Global_Routing.pdf",
+      "title": "Cong, Kahng, Robins, Sarrafzadeh & Wong, Provably Good Performance-Driven Global Routing, TCAD 1992",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 13,
+      "url": "https://www2.seas.gwu.edu/~simhaweb/champalg/tsp/papers/Helsgaun2.pdf",
+      "title": "Helsgaun, General k-opt submoves for the Lin-Kernighan TSP heuristic, MPC 2009",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 14,
+      "url": "https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.APPROX-RANDOM.2016.22",
+      "title": "Bapst & Coja-Oghlan, The Condensation Phase Transition in the Regular k-SAT Model, APPROX/RANDOM 2016",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 15,
+      "url": "https://www.cs.ubc.ca/~hutter/earg/papers07/00585893.pdf",
+      "title": "Wolpert & Macready, No Free Lunch Theorems for Optimization, IEEE TEC 1997",
+      "accessed": "2026-09-30"
+    },
+    {
+      "id": 16,
+      "url": "https://cecs.uci.edu/~papers/iccad08/PDFs/Papers/05A.1.pdf",
+      "title": "Lin, Chu, Wang, Lee, NTHU-Route 2.0, ICCAD 2008",
+      "accessed": "2026-09-30"
+    }
+  ]
+}

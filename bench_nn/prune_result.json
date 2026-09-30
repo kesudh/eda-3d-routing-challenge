@@ -1,0 +1,142 @@
+{
+  "steps": 20,
+  "cand": 14,
+  "restarts": 6,
+  "cases": {
+    "case_01": {
+      "pr3": 8674,
+      "start": 12120,
+      "res": {
+        "evaluate_all": {
+          "mean_final": 10189.666666666666,
+          "best_final": 9248.0,
+          "mean_evals": 58.333333333333336
+        },
+        "policy_prune_keep1": {
+          "mean_final": 11449.666666666666,
+          "best_final": 10306.0,
+          "mean_evals": 2.1666666666666665,
+          "wall_s": 0.20855159999337047
+        },
+        "policy_prune_keep2": {
+          "mean_final": 10859.333333333334,
+          "best_final": 9364.0,
+          "mean_evals": 7.0,
+          "wall_s": 0.6912461000028998
+        },
+        "policy_prune_keep4": {
+          "mean_final": 10439.666666666666,
+          "best_final": 9248.0,
+          "mean_evals": 16.666666666666668,
+          "wall_s": 1.9673381999600679
+        },
+        "policy_prune_keep7": {
+          "mean_final": 10392.333333333334,
+          "best_final": 9248.0,
+          "mean_evals": 29.166666666666668,
+          "wall_s": 4.085830700001679
+        },
+        "random_prune_keep2": {
+          "mean_final": 12018.333333333334,
+          "best_final": 11510.0,
+          "mean_evals": 2.3333333333333335
+        },
+        "random_prune_keep4": {
+          "mean_final": 11846.333333333334,
+          "best_final": 11088.0,
+          "mean_evals": 6.0
+        }
+      }
+    },
+    "case_05": {
+      "pr3": 15311,
+      "start": 20661,
+      "res": {
+        "evaluate_all": {
+          "mean_final": 18134.0,
+          "best_final": 16627.0,
+          "mean_evals": 90.83333333333333
+        },
+        "policy_prune_keep1": {
+          "mean_final": 20204.333333333332,
+          "best_final": 19593.0,
+          "mean_evals": 1.8333333333333333,
+          "wall_s": 0.41418660001363605
+        },
+        "policy_prune_keep2": {
+          "mean_final": 19365.666666666668,
+          "best_final": 18251.0,
+          "mean_evals": 6.666666666666667,
+          "wall_s": 1.3127676000003703
+        },
+        "policy_prune_keep4": {
+          "mean_final": 18967.333333333332,
+          "best_final": 17215.0,
+          "mean_evals": 20.0,
+          "wall_s": 4.824864600028377
+        },
+        "policy_prune_keep7": {
+          "mean_final": 19209.333333333332,
+          "best_final": 18215.0,
+          "mean_evals": 28.0,
+          "wall_s": 7.232168700022157
+        },
+        "random_prune_keep2": {
+          "mean_final": 20183.666666666668,
+          "best_final": 18599.0,
+          "mean_evals": 4.0
+        },
+        "random_prune_keep4": {
+          "mean_final": 20207.0,
+          "best_final": 19317.0,
+          "mean_evals": 7.333333333333333
+        }
+      }
+    },
+    "case_09": {
+      "pr3": 21476,
+      "start": 27040,
+      "res": {
+        "evaluate_all": {
+          "mean_final": 24098.0,
+          "best_final": 22124.0,
+          "mean_evals": 83.5
+        },
+        "policy_prune_keep1": {
+          "mean_final": 26855.333333333332,
+          "best_final": 26608.0,
+          "mean_evals": 1.8333333333333333,
+          "wall_s": 1.5362940999912098
+        },
+        "policy_prune_keep2": {
+          "mean_final": 25706.333333333332,
+          "best_final": 24124.0,
+          "mean_evals": 8.333333333333334,
+          "wall_s": 5.76250989997061
+        },
+        "policy_prune_keep4": {
+          "mean_final": 24630.0,
+          "best_final": 22468.0,
+          "mean_evals": 25.333333333333332,
+          "wall_s": 16.87063419999322
+        },
+        "policy_prune_keep7": {
+          "mean_final": 24329.333333333332,
+          "best_final": 22468.0,
+          "mean_evals": 51.333333333333336,
+          "wall_s": 44.67856640001992
+        },
+        "random_prune_keep2": {
+          "mean_final": 26814.0,
+          "best_final": 26028.0,
+          "mean_evals": 3.6666666666666665
+        },
+        "random_prune_keep4": {
+          "mean_final": 25938.333333333332,
+          "best_final": 24906.0,
+          "mean_evals": 15.333333333333334
+        }
+      }
+    }
+  }
+}

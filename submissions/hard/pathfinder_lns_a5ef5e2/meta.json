@@ -1,0 +1,5 @@
+{
+ "author": "Tazeem Mahashin",
+ "method": "C++ PathFinder negotiation (fanout-weighted congestion) + exact per-net reroute + region/warm-repair LNS",
+ "date": "2026-09-30"
+}

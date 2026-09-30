@@ -1,0 +1,11 @@
+case_01: pr5=8668 -> 8668  (1opt_moved=0)  {'iters': 1, 'evals': 9925, 'committed': 0, 'histogram': {'inapplicable': 9096, 'worse': 352, 'equal': 77, 'plateau_noop': 248, 'plateau_flat': 152}, 'secs': 18.5}
+case_02: pr5=13158 -> 13158  (1opt_moved=0)  {'iters': 1, 'evals': 15312, 'committed': 0, 'histogram': {'inapplicable': 14598, 'worse': 258, 'equal': 56, 'plateau_flat': 159, 'plateau_noop': 241}, 'secs': 28.9}
+case_03: pr5=11072 -> 11072  (1opt_moved=0)  {'iters': 1, 'evals': 15657, 'committed': 0, 'histogram': {'inapplicable': 14826, 'worse': 368, 'equal': 63, 'plateau_noop': 228, 'plateau_flat': 172}, 'secs': 47.4}
+case_04: pr5=13075 -> 13075  (1opt_moved=0)  {'iters': 1, 'evals': 17566, 'committed': 0, 'histogram': {'inapplicable': 16644, 'worse': 423, 'equal': 99, 'plateau_noop': 208, 'plateau_flat': 192}, 'secs': 54.7}
+case_05: pr5=15211 -> 15211  (1opt_moved=0)  {'iters': 1, 'evals': 18024, 'committed': 0, 'histogram': {'inapplicable': 17022, 'equal': 103, 'worse': 499, 'plateau_noop': 188, 'plateau_flat': 212}, 'secs': 71.3}
+case_06: pr5=19810 -> 19810  (1opt_moved=0)  {'iters': 1, 'evals': 24918, 'committed': 0, 'histogram': {'inapplicable': 23940, 'equal': 105, 'worse': 473, 'plateau_flat': 201, 'plateau_noop': 199}, 'secs': 92.5}
+case_07: pr5=21361 -> 21361  (1opt_moved=0)  {'iters': 1, 'evals': 26262, 'committed': 0, 'histogram': {'inapplicable': 24948, 'worse': 760, 'equal': 154, 'plateau_flat': 201, 'plateau_noop': 199}, 'secs': 143.2}
+case_08: pr5=21508 -> 21508  (1opt_moved=0)  {'iters': 1, 'evals': 29052, 'committed': 0, 'histogram': {'inapplicable': 27684, 'worse': 756, 'equal': 212, 'plateau_flat': 210, 'plateau_noop': 190}, 'secs': 200.0}
+case_09: pr5=21442 -> 21442  (1opt_moved=0)  {'iters': 1, 'evals': 26654, 'committed': 0, 'histogram': {'inapplicable': 25068, 'equal': 281, 'worse': 905, 'plateau_flat': 233, 'plateau_noop': 167}, 'secs': 317.8}
+
+TOTAL 145305   (target to beat 145305)

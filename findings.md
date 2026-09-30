@@ -19,10 +19,9 @@ is asserted without one of those three.
    structural, not a tuning failure.** The move set is closed; that is now
    proven, not conjectured.
 2. **My own decisive measurement kills one of the two headline leads and
-   resurrects the other.** Layer-span (z) restructuring is *provably* dead
-   (§3.1). Corridor transactions are *not* dead and are the only live lead
-   (§3.2) — but they must be run as **exact 2-net MIP transactions**, not as
-   heuristic pair swaps, and I explain why.
+   keeps the other alive.** Layer-span (z) restructuring is *provably* dead
+   (§2.3). Corridor transactions are the only live lead (§3.1) — and they must
+   be run as **exact 2-net MIP transactions**, not as heuristic pair swaps.
 3. **I found and corrected a methodological error that had already been
    written into the swarm's shared facts**: the "walled-in sinks are forced, so
    the headroom is unreachable" retraction is **invalid** (§2.4). The headroom
@@ -33,7 +32,7 @@ is asserted without one of those three.
    slack, not reachable delay (§4). Kill criterion in §5.
 5. **The single most valuable thing the swarm can do next is cheap and
    specific**: run exact 2-net corridor transactions on all contending pairs.
-   I have already built and validated the harness (§3.3). I ran the 24 heaviest
+   I have already built and validated the harness (§3.4). I ran the 24 heaviest
    myself: 21 proven dead, 0 improved, 3 unresolved (§3.1). The ~7,800-pair tail
    is untouched and costs ~15 s a pop.
 6. **One piece of shared context is wrong and must be corrected**: the

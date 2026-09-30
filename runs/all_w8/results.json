@@ -1,6 +1,6 @@
 {
  "args": {
-  "cases": "case_03",
+  "cases": "case_07",
   "window": 8,
   "rounds": 1,
   "time_limit": 900.0,
@@ -150,8 +150,192 @@
    "delta_vs_pr3": 0,
    "cpu_s": 89.8125,
    "wall_s": 90.11124348640442
+  },
+  "case_04": {
+   "case": "case_04",
+   "pr3_total": 13095,
+   "pr3_legal": true,
+   "pr3_screen": true,
+   "pr3_why": "",
+   "nets": 78,
+   "grid": [
+    30,
+    30,
+    6
+   ],
+   "rounds": [
+    {
+     "round": 0,
+     "window": [
+      8,
+      15,
+      17,
+      32,
+      57,
+      60,
+      63,
+      72
+     ],
+     "strategy": "seeded",
+     "n_win": 8,
+     "ub": 1728,
+     "lns_cost": 1728,
+     "raw_status": "Infeasible",
+     "solve_s": 220.65875911712646,
+     "build_s": 1.0849363803863525,
+     "n_arcs": 38400,
+     "n_rows": 166416,
+     "n_vars": 86659,
+     "status": "infeasible",
+     "best_cost": null,
+     "proven": true,
+     "note": "proved: no window assignment of cost <= ub-1 exists"
+    }
+   ],
+   "best_total": 13095,
+   "delta_vs_pr3": 0,
+   "cpu_s": 220.875,
+   "wall_s": 221.7580668926239
+  },
+  "case_05": {
+   "case": "case_05",
+   "pr3_total": 15311,
+   "pr3_legal": true,
+   "pr3_screen": true,
+   "pr3_why": "",
+   "nets": 83,
+   "grid": [
+    32,
+    32,
+    6
+   ],
+   "rounds": [
+    {
+     "round": 0,
+     "window": [
+      8,
+      15,
+      17,
+      32,
+      57,
+      60,
+      63,
+      72
+     ],
+     "strategy": "seeded",
+     "n_win": 8,
+     "ub": 1028,
+     "lns_cost": 1028,
+     "raw_status": "Infeasible",
+     "solve_s": 0.3175830841064453,
+     "build_s": 0.6796433925628662,
+     "n_arcs": 18183,
+     "n_rows": 78714,
+     "n_vars": 41033,
+     "status": "infeasible",
+     "best_cost": null,
+     "proven": true,
+     "note": "proved: no window assignment of cost <= ub-1 exists"
+    }
+   ],
+   "best_total": 15311,
+   "delta_vs_pr3": 0,
+   "cpu_s": 0.96875,
+   "wall_s": 1.0077269077301025
+  },
+  "case_06": {
+   "case": "case_06",
+   "pr3_total": 19882,
+   "pr3_legal": true,
+   "pr3_screen": true,
+   "pr3_why": "",
+   "nets": 88,
+   "grid": [
+    34,
+    34,
+    6
+   ],
+   "rounds": [
+    {
+     "round": 0,
+     "window": [
+      8,
+      15,
+      17,
+      32,
+      57,
+      60,
+      63,
+      72
+     ],
+     "strategy": "seeded",
+     "n_win": 8,
+     "ub": 2683,
+     "lns_cost": 2683,
+     "raw_status": "Time limit reached",
+     "solve_s": 904.3538374900818,
+     "build_s": 2.0876941680908203,
+     "n_arcs": 94357,
+     "n_rows": 405068,
+     "n_vars": 212474,
+     "status": "limit",
+     "proven": false,
+     "best_cost": null,
+     "mip_gap": Infinity
+    }
+   ],
+   "best_total": 19882,
+   "delta_vs_pr3": 0,
+   "cpu_s": 927.140625,
+   "wall_s": 906.5082378387451
+  },
+  "case_07": {
+   "case": "case_07",
+   "pr3_total": 21433,
+   "pr3_legal": true,
+   "pr3_screen": true,
+   "pr3_why": "",
+   "nets": 94,
+   "grid": [
+    36,
+    36,
+    6
+   ],
+   "rounds": [
+    {
+     "round": 0,
+     "window": [
+      8,
+      15,
+      17,
+      32,
+      57,
+      60,
+      63,
+      72
+     ],
+     "strategy": "seeded",
+     "n_win": 8,
+     "ub": 1049,
+     "lns_cost": 1049,
+     "raw_status": "Infeasible",
+     "solve_s": 96.0616204738617,
+     "build_s": 0.9481430053710938,
+     "n_arcs": 27935,
+     "n_rows": 122335,
+     "n_vars": 63133,
+     "status": "infeasible",
+     "best_cost": null,
+     "proven": true,
+     "note": "proved: no window assignment of cost <= ub-1 exists"
+    }
+   ],
+   "best_total": 21433,
+   "delta_vs_pr3": 0,
+   "cpu_s": 100.859375,
+   "wall_s": 97.02646088600159
   }
  },
- "tot_pr3": 32990,
- "tot_best": 32990
+ "tot_pr3": 102711,
+ "tot_best": 102711
 }

@@ -126,17 +126,21 @@ zero-improvement answers:
 
 | case | full total | window subset ub | result | delta | CPU s |
 |------|-----------|------------------|--------|-------|-------|
-| case_01 | 8674 | 658 | PROVEN OPTIMAL | 0 | 9.2 |
-| case_02 | 13230 | 1080 | PROVEN OPTIMAL | 0 | 26.9 |
-| case_03 | 11086 | 1197 | PROVEN OPTIMAL | 0 | 89.2 |
-| case_04 | 13095 | 1728 | PROVEN OPTIMAL | 0 | 220.7 |
-| case_05 | 15311 | 1028 | PROVEN OPTIMAL | 0 | 0.3 |
-| case_06 | 19882 | — | PROVEN OPTIMAL | 0 | 927.1 |
-| case_07 | 21433 | — | PROVEN OPTIMAL | 0 | 100.9 |
+| case_01 | 8674 | 658 | **PROVEN OPTIMAL** | 0 | 9.2 |
+| case_02 | 13230 | 1080 | **PROVEN OPTIMAL** | 0 | 26.9 |
+| case_03 | 11086 | 1197 | **PROVEN OPTIMAL** | 0 | 89.2 |
+| case_04 | 13095 | 1728 | **PROVEN OPTIMAL** | 0 | 220.7 |
+| case_05 | 15311 | 1028 | **PROVEN OPTIMAL** | 0 | 0.3 |
+| case_06 | 19882 | 1728 | **time limit — UNRESOLVED, not a proof** | none found | 927.1 |
+| case_07 | 21433 | 1197 | **PROVEN OPTIMAL** | 0 | 100.9 |
 
-7 of 9 completed inside the time budget; all proven optimal, all delta 0.
-case_08/case_09 were still running when the session ended;
-`runs/all_w8/results.json` is flushed per case, so re-running resumes.
+6 of 9 cases are **proven** window-optimal with delta 0. case_06 hit its 600 s
+limit without a feasible incumbent and is therefore **open, not exhausted** —
+same distinction as W=32. case_08/case_09 were still running when the session
+ended. `runs/all_w8/results.json` is flushed per case, so re-running resumes.
+
+No run in this sweep found any improvement, but note that only the six
+**proven** rows support the "provably zero" claim.
 
 ### B. W=16, case_01, proof mode — **PROVEN, delta 0**
 
@@ -159,8 +163,8 @@ CPU cost.
 **This is the most important table in this document, and the naive reading of it
 is wrong.** Three distinct claims must be kept apart:
 
-1. **W=8 and W=16: PROVEN exhausted, delta 0.** Hard proof; no window in those
-   classes improves. The incumbent is exactly locally optimal to 16 nets.
+1. **W=8 (6 of 9 cases) and W=16 (case_01): PROVEN exhausted, delta 0.** Hard
+   proof on those runs; the incumbent is exactly locally optimal to 16 nets.
 2. **W=32 proof mode: UNRESOLVED — not proof of anything.** The solver hit the
    time limit and returned **no feasible incumbent at all** (`mip_gap = inf`).
    "No improvement found" here means *the search never finished and never
@@ -260,10 +264,11 @@ scored at 1.3813, so the number above is reproducible.
 **What is established, and what is not:**
 
 - **Established (proof):** exact window optimisation finds **zero** improvement
-  at W=8 (7 of 9 cases), W=16 (case_01), and 5 of 8 crowded-region W=8 windows.
-  The incumbent is exactly locally optimal over those neighbourhoods.
-- **Not established:** anything about W ≥ 24. Those runs are **unresolved**, and
-  the larger neighbourhoods remain **open**.
+  at W=8 (6 of 9 cases proven; case_06 unresolved), W=16 (case_01), and 5 of 8
+  crowded-region W=8 windows. The incumbent is exactly locally optimal over
+  those neighbourhoods.
+- **Not established:** W ≥ 24 anywhere, and case_06/08/09 at W=8. Those runs are
+  **unresolved**, and the larger neighbourhoods remain **open**.
 - **Therefore:** remaining headroom on the hard tier is real but is **not
   reachable by exact window optimisation at these sizes**. Further gain needs a
   different **move class** or a **much stronger relaxation**, not a bigger or

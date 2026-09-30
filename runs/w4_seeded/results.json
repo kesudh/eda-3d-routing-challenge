@@ -1,0 +1,61 @@
+{
+ "args": {
+  "cases": "case_01",
+  "window": 4,
+  "rounds": 1,
+  "time_limit": 60.0,
+  "strategy": "seeded",
+  "strategy2": "contended",
+  "seed": 1,
+  "threads": 8,
+  "out": "",
+  "detour": 0,
+  "verbose": false
+ },
+ "results": {
+  "case_01": {
+   "case": "case_01",
+   "pr3_total": 8674,
+   "pr3_legal": true,
+   "pr3_screen": true,
+   "pr3_why": "",
+   "nets": 62,
+   "grid": [
+    24,
+    24,
+    6
+   ],
+   "rounds": [
+    {
+     "round": 0,
+     "window": [
+      8,
+      36,
+      51,
+      54
+     ],
+     "strategy": "seeded",
+     "n_win": 4,
+     "ub": 436,
+     "lns_cost": 436,
+     "raw_status": "Infeasible",
+     "solve_s": 0.002238035202026367,
+     "build_s": 0.1263742446899414,
+     "n_arcs": 6707,
+     "n_rows": 28846,
+     "n_vars": 15275,
+     "status": "infeasible",
+     "best_cost": null,
+     "proven": true,
+     "note": "proved: no window assignment of cost <= ub-1 exists"
+    }
+   ],
+   "best_total": 8674,
+   "delta_vs_pr3": 0,
+   "cpu_s": 0.140625,
+   "wall_s": 0.13126564025878906
+  }
+ },
+ "tot_pr3": 8674,
+ "tot_best": 8674
+}

@@ -1,0 +1,73 @@
+{
+ "args": {
+  "cases": "case_01",
+  "window": 16,
+  "rounds": 1,
+  "time_limit": 300.0,
+  "strategy": "seeded",
+  "strategy2": "contended",
+  "seed": 1,
+  "threads": 20,
+  "out": "runs/w16",
+  "detour": 0,
+  "verbose": false
+ },
+ "results": {
+  "case_01": {
+   "case": "case_01",
+   "pr3_total": 8674,
+   "pr3_legal": true,
+   "pr3_screen": true,
+   "pr3_why": "",
+   "nets": 62,
+   "grid": [
+    24,
+    24,
+    6
+   ],
+   "rounds": [
+    {
+     "round": 0,
+     "window": [
+      4,
+      6,
+      7,
+      8,
+      13,
+      16,
+      24,
+      28,
+      30,
+      31,
+      36,
+      41,
+      48,
+      51,
+      54,
+      57
+     ],
+     "strategy": "seeded",
+     "n_win": 16,
+     "ub": 2196,
+     "lns_cost": 2196,
+     "raw_status": "Time limit reached",
+     "solve_s": 300.39512729644775,
+     "build_s": 1.1513383388519287,
+     "n_arcs": 117150,
+     "n_rows": 501450,
+     "n_vars": 264397,
+     "status": "limit",
+     "proven": false,
+     "best_cost": null,
+     "mip_gap": Infinity
+    }
+   ],
+   "best_total": 8674,
+   "delta_vs_pr3": 0,
+   "cpu_s": 351.9375,
+   "wall_s": 301.5834012031555
+  }
+ },
+ "tot_pr3": 8674,
+ "tot_best": 8674
+}

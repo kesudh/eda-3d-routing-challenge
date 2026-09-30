@@ -1,0 +1,282 @@
+{
+ "args": {
+  "cases": "case_01",
+  "time_limit": 60.0,
+  "n_windows": 8,
+  "min_nets": 4,
+  "max_nets": 8,
+  "detour": 0,
+  "threads": 6,
+  "out": "runs/region8"
+ },
+ "summary": {
+  "case_01": {
+   "case": "case_01",
+   "pr3_total": 8674,
+   "outside_window_obstacles": true,
+   "n_hot_verts": 972,
+   "windows": [
+    {
+     "window": 0,
+     "n_nets": 8,
+     "build": {
+      "status": "built",
+      "n_arcs": 21507,
+      "n_vars": 48710,
+      "n_rows": 92606,
+      "build_s": 0.3820309638977051,
+      "arcs_per_net": [
+       6767,
+       2222,
+       1939,
+       2050,
+       2127,
+       1808,
+       2243,
+       2351
+      ]
+     },
+     "lns_cost": 702,
+     "raw_status": "Time limit reached",
+     "solve_s": 60.21346068382263,
+     "build_s": 0.3820309638977051,
+     "n_arcs": 21507,
+     "n_rows": 92606,
+     "n_vars": 48710,
+     "status": "limit",
+     "proven": false,
+     "best_cost": null,
+     "mip_gap": Infinity
+    },
+    {
+     "window": 1,
+     "n_nets": 8,
+     "build": {
+      "status": "built",
+      "n_arcs": 20241,
+      "n_vars": 46099,
+      "n_rows": 88443,
+      "build_s": 0.34234070777893066,
+      "arcs_per_net": [
+       764,
+       947,
+       993,
+       1549,
+       946,
+       6918,
+       6718,
+       1406
+      ]
+     },
+     "lns_cost": 883,
+     "raw_status": "Infeasible",
+     "solve_s": 11.604258298873901,
+     "build_s": 0.34234070777893066,
+     "n_arcs": 20241,
+     "n_rows": 88443,
+     "n_vars": 46099,
+     "status": "infeasible",
+     "best_cost": null,
+     "proven": true,
+     "note": "proved: no window assignment of cost <= ub-1 exists"
+    },
+    {
+     "window": 2,
+     "n_nets": 8,
+     "build": {
+      "status": "built",
+      "n_arcs": 13118,
+      "n_vars": 30025,
+      "n_rows": 56983,
+      "build_s": 0.22413396835327148,
+      "arcs_per_net": [
+       6632,
+       1158,
+       904,
+       1177,
+       904,
+       368,
+       1113,
+       862
+      ]
+     },
+     "lns_cost": 648,
+     "raw_status": "Infeasible",
+     "solve_s": 8.026981115341187,
+     "build_s": 0.22413396835327148,
+     "n_arcs": 13118,
+     "n_rows": 56983,
+     "n_vars": 30025,
+     "status": "infeasible",
+     "best_cost": null,
+     "proven": true,
+     "note": "proved: no window assignment of cost <= ub-1 exists"
+    },
+    {
+     "window": 3,
+     "n_nets": 8,
+     "build": {
+      "status": "built",
+      "n_arcs": 17876,
+      "n_vars": 40742,
+      "n_rows": 78371,
+      "build_s": 0.30695652961730957,
+      "arcs_per_net": [
+       694,
+       513,
+       743,
+       491,
+       1027,
+       6878,
+       652,
+       6878
+      ]
+     },
+     "lns_cost": 978,
+     "raw_status": "Infeasible",
+     "solve_s": 10.467106103897095,
+     "build_s": 0.30695652961730957,
+     "n_arcs": 17876,
+     "n_rows": 78371,
+     "n_vars": 40742,
+     "status": "infeasible",
+     "best_cost": null,
+     "proven": true,
+     "note": "proved: no window assignment of cost <= ub-1 exists"
+    },
+    {
+     "window": 4,
+     "n_nets": 8,
+     "build": {
+      "status": "built",
+      "n_arcs": 36506,
+      "n_vars": 83025,
+      "n_rows": 157976,
+      "build_s": 0.48560237884521484,
+      "arcs_per_net": [
+       6930,
+       6891,
+       4077,
+       4311,
+       4323,
+       2774,
+       5132,
+       2068
+      ]
+     },
+     "lns_cost": 955,
+     "raw_status": "Time limit reached",
+     "solve_s": 61.262853384017944,
+     "build_s": 0.48560237884521484,
+     "n_arcs": 36506,
+     "n_rows": 157976,
+     "n_vars": 83025,
+     "status": "limit",
+     "proven": false,
+     "best_cost": null,
+     "mip_gap": Infinity
+    },
+    {
+     "window": 5,
+     "n_nets": 8,
+     "build": {
+      "status": "built",
+      "n_arcs": 45278,
+      "n_vars": 102726,
+      "n_rows": 195352,
+      "build_s": 0.6733920574188232,
+      "arcs_per_net": [
+       7240,
+       3938,
+       4837,
+       3556,
+       7240,
+       7240,
+       3987,
+       7240
+      ]
+     },
+     "lns_cost": 1389,
+     "raw_status": "Infeasible",
+     "solve_s": 51.435627937316895,
+     "build_s": 0.6733920574188232,
+     "n_arcs": 45278,
+     "n_rows": 195352,
+     "n_vars": 102726,
+     "status": "infeasible",
+     "best_cost": null,
+     "proven": true,
+     "note": "proved: no window assignment of cost <= ub-1 exists"
+    },
+    {
+     "window": 6,
+     "n_nets": 8,
+     "build": {
+      "status": "built",
+      "n_arcs": 55565,
+      "n_vars": 125356,
+      "n_rows": 238526,
+      "build_s": 0.6809725761413574,
+      "arcs_per_net": [
+       6919,
+       6764,
+       6926,
+       6418,
+       6895,
+       7322,
+       6999,
+       7322
+      ]
+     },
+     "lns_cost": 1316,
+     "raw_status": "Infeasible",
+     "solve_s": 34.67149496078491,
+     "build_s": 0.6809725761413574,
+     "n_arcs": 55565,
+     "n_rows": 238526,
+     "n_vars": 125356,
+     "status": "infeasible",
+     "best_cost": null,
+     "proven": true,
+     "note": "proved: no window assignment of cost <= ub-1 exists"
+    },
+    {
+     "window": 7,
+     "n_nets": 8,
+     "build": {
+      "status": "built",
+      "n_arcs": 48767,
+      "n_vars": 110361,
+      "n_rows": 209922,
+      "build_s": 0.4579589366912842,
+      "arcs_per_net": [
+       6120,
+       5868,
+       4455,
+       6255,
+       5984,
+       7282,
+       7282,
+       5521
+      ]
+     },
+     "lns_cost": 1137,
+     "raw_status": "Time limit reached",
+     "solve_s": 79.55765080451965,
+     "build_s": 0.4579589366912842,
+     "n_arcs": 48767,
+     "n_rows": 209922,
+     "n_vars": 110361,
+     "status": "limit",
+     "proven": false,
+     "best_cost": null,
+     "mip_gap": Infinity
+    }
+   ],
+   "best_total": 8674,
+   "legal": true,
+   "delta": 0,
+   "cpu_s": 426.25
+  }
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "args": {
+  "cases": "case_01",
+  "time_limit": 90.0,
+  "n_windows": 6,
+  "min_nets": 4,
+  "max_nets": 8,
+  "detour": 0,
+  "threads": 6,
+  "out": "runs/region_small"
+ },
+ "summary": {
+  "case_01": {
+   "case": "case_01",
+   "pr3_total": 8674,
+   "outside_window_obstacles": true,
+   "n_hot_verts": 0,
+   "windows": [],
+   "best_total": 8674,
+   "legal": true,
+   "delta": 0,
+   "cpu_s": 0.0
+  }
+ }
+}

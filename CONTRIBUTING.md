@@ -82,3 +82,7 @@ you can only rank higher by submitting better legal routes.
   `"derived_from": {"submission": "<their entry>", "author": "<their name>"}`.
   The leaderboard marks such entries with `†` and names the upstream entry.
   Undeclared reuse of another entry's routes may be removed.
+* **Verified column.** The maintainers mark an entry `reproduced` (in
+  `verification.json`, which submission PRs cannot change) once they have re-run
+  its router and reproduced its routes. Linking your router's code in `meta.json`
+  (`url`) makes that possible.

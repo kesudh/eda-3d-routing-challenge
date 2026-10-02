@@ -10,6 +10,7 @@ BASE=Path(__file__).resolve().parent
 parser=argparse.ArgumentParser()
 parser.add_argument('--repo',type=Path,required=True,help='Challenge main182434d checkout')
 parser.add_argument('--pr24',type=Path,help='PR24 58585d7 submissions directory')
+parser.add_argument('--pr26',type=Path,help='PR26 89ca440 submissions directory')
 parser.add_argument('--out',type=Path)
 parser.add_argument('--tier');parser.add_argument('--case')
 parser.add_argument('--check-only',action='store_true')
@@ -38,7 +39,9 @@ def replay(row,depth=0):
         previous=replay(row['parent_measurement'],depth+1);src=Path(previous['output']);dependencies.update(previous['stage_keys'])
     else:
         entry=Path(row['command'][2]).parent.name
-        src=(args.pr24 if entry=='coordinated_refinement' else args.repo/'submissions')/tier/entry/(name+'.sol.json')
+        root=args.pr24 if entry=='coordinated_refinement' else args.pr26 if entry=='drama3d-portfolio' else args.repo/'submissions'
+        assert root is not None,('missing public input directory for',entry)
+        src=root/tier/entry/(name+'.sol.json')
         if sha(src)!=row['source_sha256']:
             # Git for Windows may have converted a public text blob to CRLF.
             # Accept only normalization that recovers the exact recorded hash.

@@ -366,6 +366,30 @@ def _derived_from(meta: dict):
     return str(src)
 
 
+VERIFICATION_FILE = "verification.json"
+
+
+def _load_verification(root: str) -> Dict[str, str]:
+    """Maintainer-set reproduction status per entry, keyed "<tier>/<name>".
+
+    Lives next to the submissions root (repo-root `verification.json`), outside
+    `submissions/`, so the CI guard keeps submission PRs from editing it. Each
+    value is a status string or an object with a `status` field."""
+    path = os.path.join(os.path.dirname(os.path.normpath(root)), VERIFICATION_FILE)
+    if not os.path.exists(path):
+        return {}
+    with open(path, encoding="utf-8-sig") as fh:
+        data = json.load(fh)
+    out = {}
+    for key, v in data.items():
+        if key.startswith("_"):
+            continue
+        status = v.get("status") if isinstance(v, dict) else v
+        if status:
+            out[key] = str(status)
+    return out
+
+
 def _render_leaderboard_body(root: str, heading: str = "##") -> List[str]:
     """The per-tier tables, one `<heading> <tier>` section each."""
     from .scorer import score_submission_set, rank_submissions, pareto_frontier
@@ -388,11 +412,12 @@ def _render_leaderboard_body(root: str, heading: str = "##") -> List[str]:
         ranked = rank_submissions(subs)
         frontier = set(pareto_frontier(subs))
         metas = {name: _load_meta(d) for name, d in entries}
+        verified = _load_verification(root)
         any_tier = True
         lines.append(f"{heading} {tier}  ({man['n_cases']} cases)")
         lines.append("")
-        lines.append("| rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto |")
-        lines.append("|---:|---|---|---:|:---:|---:|---:|:---:|")
+        lines.append("| rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |")
+        lines.append("|---:|---|---|---:|:---:|---:|---:|:---:|:---:|")
         derived = []
         for i, s in enumerate(ranked, 1):
             agg = f"{s.aggregate:.4f}" if s.complete else "—"
@@ -406,7 +431,8 @@ def _render_leaderboard_body(root: str, heading: str = "##") -> List[str]:
                 derived.append(f"{_md_cell(s.name)} builds on {_md_cell(upstream)}")
             lines.append(f"| {i} | {_md_cell(s.name)}{mark} | {author} | {agg} | "
                          f"{s.n_legal}/{s.n_cases} | {td} | {rt} | "
-                         f"{'✓' if s.name in frontier else ''} |")
+                         f"{'✓' if s.name in frontier else ''} | "
+                         f"{_md_cell(verified.get(f'{tier}/{s.name}', '—'))} |")
         lines.append("")
         if derived:
             lines.append("† derivative entry (refines another entry's routes): "
@@ -421,7 +447,9 @@ def _render_leaderboard_body(root: str, heading: str = "##") -> List[str]:
 _LEGEND = ["Ranked per tier (each tier is normalized to its own baseline, so a",
            "**higher aggregate is better** and the baseline itself scores 1.0000).",
            "`✓` marks submissions on the runtime-vs-total-delay Pareto frontier;",
-           "`†` marks derivative entries that start from another entry's routes."]
+           "`†` marks derivative entries that start from another entry's routes.",
+           "`verified` is set by the maintainers once they have re-run an entry's",
+           "router and reproduced its routes (`verification.json`); `—` means not yet."]
 
 
 def _render_leaderboard_md(root: str) -> str:

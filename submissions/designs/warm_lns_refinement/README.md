@@ -5,7 +5,9 @@ routes, with complete upstream credits and source hashes in `meta.json`.
 
 This revision has 3/3 legal cases, total delay
 208,977, and aggregate 1.436637457450. It improves
-PR24 at `58585d7b496d505dfa35f2426df4269974e583fa` by 88 total-delay units.
+PR26 at `89ca44091e30d9e8f2e7e56e5eb7e69de9b8294e` by 7610 total-delay units.
+Warm starts from PR26's drama3d-portfolio are credited to YJ Kim where selected,
+alongside the previous coordinated_refinement and pathfinder_lns sources.
 
 `runtime.json` reports 127.196052 seconds across this tier. These
 are measured **incremental refinement** times, including private ancestor
@@ -18,7 +20,8 @@ The method uses exact radix/A* shortest-path trees with feasible per-sink
 bounds, neutral and group moves, preserved-route and displacement-chain repair,
 bounded excursions, CPU search portfolios, and two-parent minimum-cut crossover
 following PR24. An opt-in circular bucket queue accelerates integer searches.
-The CUDA prototypes were benchmarked separately and did not produce these routes.
+Our CUDA prototypes were benchmarked separately and did not generate these
+refinements. PR26 credits its public warm starts to a GPU-accelerated engine.
 
 The versioned Windows replay bundle, source, commands and full provenance are
 in `submissions/intro/warm_lns_refinement/replay`. Timed parallel searches can

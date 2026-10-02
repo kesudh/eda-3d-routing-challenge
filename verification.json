@@ -1,0 +1,3 @@
+{
+  "_doc": "Maintainer-set reproduction status per leaderboard entry, keyed \"<tier>/<submission>\". Set an entry to {\"status\": \"reproduced\", \"by\": \"<maintainer>\", \"date\": \"YYYY-MM-DD\", \"note\": \"...\"} after re-running its router and reproducing its routes, then run `python -m m3d.cli leaderboard-all`. Submission PRs cannot change this file."
+}

@@ -149,9 +149,9 @@ class TestLeaderboardRendering(unittest.TestCase):
             rows = [l for l in md.splitlines() if l.startswith("| ") and "rank" not in l]
             self.assertEqual(len(rows), 3)
             for row in rows:
-                # 8 columns -> 9 unescaped pipes per row
+                # 9 columns -> 10 unescaped pipes per row
                 unescaped = row.replace("\\|", "")
-                self.assertEqual(unescaped.count("|"), 9, row)
+                self.assertEqual(unescaped.count("|"), 10, row)
             self.assertIn("Jane \\| Doe Smith", md)
 
 

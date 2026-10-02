@@ -54,6 +54,24 @@ class TestLeaderboardRender(unittest.TestCase):
             self.assertIn("refined builds on upstream", md)
             self.assertIn("aliased builds on upstream (A)", md)
 
+    def test_verified_column_comes_from_maintainer_file(self):
+        import json
+        import shutil
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            root = os.path.join(tmp, "submissions")
+            for name in ("checked", "unchecked"):
+                shutil.copytree(os.path.join(HARD_SUBS, "negotiated"),
+                                os.path.join(root, "hard", name))
+            with open(os.path.join(tmp, "verification.json"), "w", encoding="utf-8") as fh:
+                json.dump({"_doc": "ignored", "hard/checked": {"status": "reproduced"}}, fh)
+            md = _render_leaderboard_md(root)
+            self.assertIn("| verified |", md)
+            row = {l.split("|")[2].strip(): l for l in md.splitlines() if l.startswith("| ")
+                   and "rank" not in l}
+            self.assertTrue(row["checked"].endswith("| reproduced |"))
+            self.assertTrue(row["unchecked"].endswith("| — |"))
+
     def test_splice_replaces_only_the_block(self):
         text = f"top\n{README_START}\nold\n{README_END}\nbottom\n"
         out = _splice_readme(text, f"{README_START}\nnew\n{README_END}")

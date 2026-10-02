@@ -36,7 +36,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto |
 |---:|---|---|---:|:---:|---:|---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.3886 | 9/9 | 144975 | 25.35 | ✓ |
+| 1 | warm_lns_refinement † | kesudh | 1.3886 | 9/9 | 144969 | 85.52 | ✓ |
 | 2 | pathfinder_lns | Tazeem Mahashin | 1.3884 | 9/9 | 144991 | — |  |
 | 3 | coordinated_refinement † | jay-tau | 1.3858 | 9/9 | 145305 | — |  |
 | 4 | reubalink | reubalink | 1.3622 | 9/9 | 147825 | — |  |
@@ -49,7 +49,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 11 | drama3d-portfolio | YJ Kim | 1.1121 | 9/9 | 181919 | — |  |
 | 12 | shivaahir158 | Shiva Ahir (PhD Candidate, Stony Brook University) | 1.0508 | 9/9 | 192507 | 787.30 |  |
 | 13 | negotiated_x2 | Anthropic (reference) | 1.0168 | 9/9 | 198763 | 177.01 |  |
-| 14 | negotiated | Anthropic (reference) | 1.0000 | 9/9 | 201863 | 85.20 |  |
+| 14 | negotiated | Anthropic (reference) | 1.0000 | 9/9 | 201863 | 85.20 | ✓ |
 | 15 | negotiated_fast | Anthropic (reference) | — | 8/9 | — | 61.74 |  |
 
 † derivative entry (refines another entry's routes): warm_lns_refinement builds on coordinated_refinement (jay-tau); coordinated_refinement builds on pathfinder_lns (Taz33m).

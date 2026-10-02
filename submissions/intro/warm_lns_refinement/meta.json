@@ -2,7 +2,7 @@
   "author": "kesudh",
   "url": "https://github.com/kesudh",
   "date": "2026-10-02",
-  "method": "Exact shortest-path-tree warm refinement: radix A*, feasible per-sink bounds, neutral and group reroutes, preserved-route repair, multiple CPU search workers, strict final-walk polishing, and exact two-parent minimum-cut crossover following PR24. GPU kernels are audited prototypes and did not generate these routes.",
+  "method": "Exact shortest-path-tree warm refinement: radix A*, feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, optional circular integer buckets, multiple CPU search workers, strict final-walk polishing, and exact two-parent minimum-cut crossover following PR24. GPU kernels are audited prototypes and did not generate these routes.",
   "derived_from": {
     "submission": "coordinated_refinement; pathfinder_lns",
     "author": "Tazeem Mahashin; jay-tau"

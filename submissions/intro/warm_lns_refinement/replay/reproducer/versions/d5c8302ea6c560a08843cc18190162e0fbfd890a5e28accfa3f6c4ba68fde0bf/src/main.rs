@@ -43,7 +43,6 @@ struct Inst {
     early_stop: bool,
     retain_negotiated: bool,
     use_radix: bool,
-    use_dial: bool,
     use_astar: bool,
     budget_bound: bool,
     free_dist: Vec<u32>,
@@ -165,7 +164,6 @@ fn load_inst(path: &str) -> Inst {
         early_stop: true,
         retain_negotiated: false,
         use_radix: true,
-        use_dial: false,
         use_astar: true,
         budget_bound: false,
         free_dist,
@@ -471,45 +469,12 @@ impl RadixHeap {
     }
 }
 
-/// A circular Dial queue for small integer reduced costs. Both physical
-/// potentials are minima of symmetric 1-Lipschitz distances minus constants,
-/// so 0 <= w(u,v)+h(v)-h(u) <= 2*w(u,v). A power-of-two window strictly
-/// larger than 2*max_weight therefore cannot alias live priorities.
-struct DialQueue { buckets:Vec<Vec<(u32,u32)>>, cursor:u32, mask:u32, len:usize }
-impl DialQueue {
-    fn new()->Self {Self{buckets:Vec::new(),cursor:0,mask:0,len:0}}
-    fn reset(&mut self, inst:&Inst, first:u32)->bool {
-        let max_weight=inst.vd.max(*inst.ld.iter().max().unwrap());
-        if max_weight>2047 {return false;} // Keep the radix fallback for wide costs.
-        let width=(2*max_weight+1).next_power_of_two() as usize;
-        if self.buckets.len()!=width {self.buckets=(0..width).map(|_|Vec::new()).collect();}
-        else {for bucket in &mut self.buckets {bucket.clear();}}
-        self.cursor=first;self.mask=width as u32-1;self.len=0;true
-    }
-    #[inline]
-    fn push(&mut self,key:u32,v:u32) {
-        debug_assert!(key>=self.cursor && key-self.cursor<=self.mask);
-        self.buckets[(key&self.mask) as usize].push((key,v));self.len+=1;
-    }
-    #[inline]
-    fn pop(&mut self)->Option<(u32,u32)> {
-        if self.len==0 {return None;}
-        loop {
-            if let Some(pair)=self.buckets[(self.cursor&self.mask) as usize].pop() {
-                debug_assert_eq!(pair.0,self.cursor);self.len-=1;return Some(pair);
-            }
-            self.cursor+=1;
-        }
-    }
-}
-
 struct Scratch {
     dist: Vec<u32>,
     stamp: Vec<u32>,
     cur: u32,
     heap: BinaryHeap<Reverse<(u32, u32)>>,
     radix: RadixHeap,
-    dial: DialQueue,
     gstamp: Vec<u32>,
     gcur: u32,
     rng: Rng,
@@ -525,7 +490,6 @@ struct Scratch {
     phv: Vec<f64>,
     pce: std::collections::HashMap<u64, u32>,
     phe: std::collections::HashMap<u64, f64>,
-    entry_owner: Vec<i32>,
     par: Vec<u32>,
     par_stamp: Vec<u32>,
     xcur: u32,
@@ -542,7 +506,6 @@ impl Scratch {
             cur: 0,
             heap: BinaryHeap::new(),
             radix: RadixHeap::new(),
-            dial: DialQueue::new(),
             gstamp: vec![0; nn],
             gcur: 0,
             rng: Rng::new(seed),
@@ -557,7 +520,6 @@ impl Scratch {
             phv: vec![0.0; n as usize],
             pce: std::collections::HashMap::new(),
             phe: std::collections::HashMap::new(),
-            entry_owner: Vec::new(),
             par: vec![0; n as usize],
             par_stamp: vec![0; n as usize],
             xcur: 0,
@@ -588,14 +550,13 @@ impl Scratch {
         let goals:Vec<_>=if astar {inst.nets[me as usize].sinks.iter().map(|&s|inst.xyz(s)).collect()} else {Vec::new()};
         let planar=*inst.ld.iter().min().unwrap();
         let first=if astar {goal_bound(inst,&goals,src,planar)} else {0};
-        let dial=inst.use_dial && self.dial.reset(inst,first);
-        if dial {self.dial.push(first,src);} else if inst.use_radix { self.radix.push(first,src); } else { self.heap.push(Reverse((first, src))); }
+        if inst.use_radix { self.radix.push(first,src); } else { self.heap.push(Reverse((first, src))); }
         let mut remaining = inst.nets[me as usize].sinks.len();
         let mut finish_at:Option<u32>=None;
         let mut nb = [0u32; 6];
         let mut wb = [0u32; 6];
         loop {
-            let entry=if dial {self.dial.pop()} else if inst.use_radix { self.radix.pop() } else { self.heap.pop().map(|Reverse(p)|p) };
+            let entry=if inst.use_radix { self.radix.pop() } else { self.heap.pop().map(|Reverse(p)|p) };
             let Some((key,v))=entry else {break;};
             if key > cutoff || finish_at.is_some_and(|limit|key>limit) {
                 break;
@@ -640,7 +601,7 @@ impl Scratch {
                     self.stamp[ui] = st;
                     self.dist[ui] = nd;
                     let priority=nd+if astar {goal_bound(inst,&goals,u,planar)} else {0};
-                    if dial {self.dial.push(priority,u);} else if inst.use_radix { self.radix.push(priority,u); } else { self.heap.push(Reverse((priority,u))); }
+                    if inst.use_radix { self.radix.push(priority,u); } else { self.heap.push(Reverse((priority,u))); }
                 }
             }
         }
@@ -675,11 +636,10 @@ impl Scratch {
         self.cur+=1;let st=self.cur;self.heap.clear();self.radix.clear();
         self.dist[src as usize]=0;self.stamp[src as usize]=st;
         if shift<0 {for &s in &net.sinks{self.stamp[s as usize]=0;}return;}
-        let dial=inst.use_dial && self.dial.reset(inst,0);
-        if dial {self.dial.push(0,src);} else {self.radix.push(0,src);}
+        self.radix.push(0,src);
         let mut remaining=net.sinks.len();let mut finish=shift;
         let mut nb=[0;6];let mut wb=[0;6];
-        while let Some((key,v))=if dial {self.dial.pop()} else {self.radix.pop()} {
+        while let Some((key,v))=self.radix.pop() {
             if key as i64>finish {break;}
             let d=(key as i64-potential(v)-shift) as u32;
             if self.stamp[v as usize]!=st||self.dist[v as usize]!=d {continue;}
@@ -698,7 +658,7 @@ impl Scratch {
                 if f>0 {continue;}
                 if self.stamp[ui]!=st||nd<self.dist[ui] {
                     self.stamp[ui]=st;self.dist[ui]=nd;
-                    if dial {self.dial.push((f+shift) as u32,u);} else {self.radix.push((f+shift) as u32,u);}
+                    self.radix.push((f+shift) as u32,u);
                 }
             }
         }
@@ -826,13 +786,11 @@ impl Scratch {
                 if o >= 0 && o != me && !ing[o as usize] {
                     continue;
                 }
-                let mut vcost = if self.pvst[u as usize] == ng {
+                let vcost = if self.pvst[u as usize] == ng {
                     self.phv[u as usize] + pres_fac * self.pcv[u as usize] as f64
                 } else {
                     0.0
                 };
-                if !self.entry_owner.is_empty() && owner[u as usize]>=0
-                    && owner[u as usize]==owner[v as usize] {vcost=0.0;}
                 let ek = ekey(v, u);
                 let he = self.phe.get(&ek).copied().unwrap_or(0.0);
                 let pe = self.pce.get(&ek).copied().unwrap_or(0) as f64;
@@ -903,9 +861,7 @@ impl Scratch {
                         let he = self.phe.get(&ek).copied().unwrap_or(0.0);
                         let pe = self.pce.get(&ek).copied().unwrap_or(0) as f64;
                         let ec = (wb[i] as f64) * (1.0 + he + pres_fac * pe);
-                        let vc=if !self.entry_owner.is_empty() && self.entry_owner[cur as usize]>=0
-                            && self.entry_owner[cur as usize]==self.entry_owner[u as usize] {0.0}else{vcost_cur};
-                        if self.pdist[u as usize] + ec + vcong * vc == dcur {
+                        if self.pdist[u as usize] + ec + vcong * vcost_cur == dcur {
                             picks[np] = u;
                             np += 1;
                         }
@@ -1127,7 +1083,6 @@ fn neg_group_move(
     compact: bool,
     ub: u32,
 ) -> Option<(i64, bool)> {
-    ws.entry_owner.clear();
     if group.len() < 2 {
         return None;
     }
@@ -1407,7 +1362,7 @@ fn detour_move(inst:&Inst, sol:&mut Solution, owner:&mut [i32], ws:&mut Scratch,
 /// repair the actual displaced nets. Already repaired trees remain hard
 /// obstacles. All edits are transactional until the complete chain is legal.
 fn chain_move(inst:&Inst, sol:&mut Solution, owner:&mut [i32], ws:&mut Scratch,
-              seed:usize, cap:usize, threshold:i64, entry_price:bool) -> Option<i64> {
+              seed:usize, cap:usize, threshold:i64) -> Option<i64> {
     let nn=inst.nets.len();
     let mut saved=vec![Saved{nid:seed,verts:sol.verts[seed].clone(),edges:sol.edges[seed].clone(),delay:sol.delay[seed]}];
     let mut member=vec![false;nn];member[seed]=true;
@@ -1420,11 +1375,6 @@ fn chain_move(inst:&Inst, sol:&mut Solution, owner:&mut [i32], ws:&mut Scratch,
         let nid=saved[cursor].nid;
         for n in 0..nn {soft[n]=!locked[n] && (member[n] || saved.len()<cap);}
         ws.ncur+=1;let ng=ws.ncur;ws.pce.clear();ws.phe.clear();
-        // Charge each transition into an occupied net, rather than every
-        // occupied vertex, so long contiguous blockers are not over-penalized.
-        // Re-entering a net is charged again; this is not a distinct-net cost.
-        ws.entry_owner.clear();
-        if entry_price {ws.entry_owner.extend_from_slice(owner);}
         for v in 0..inst.n as usize {
             if owner[v]>=0 {
                 ws.pvst[v]=ng;ws.pcv[v]=1;ws.phv[v]=0.0;
@@ -1758,7 +1708,6 @@ fn main() {
     let mut rescue = false;
     let mut distance_audit: Option<String> = None;
     let mut budget_bound = false;
-    let mut use_dial = false;
     let mut walk_slack: Option<u64> = None;
     let mut detour_frac: f64 = 0.0;
     let mut pair_attempts: u64 = 0;
@@ -1791,7 +1740,6 @@ fn main() {
             "--rescue" => { rescue = true; i += 1; }
             "--distance-audit" => { distance_audit=Some(args[i+1].clone()); i+=2; }
             "--budget-bound" => { budget_bound=true;i+=1; }
-            "--dial" => {use_dial=true;i+=1;}
             "--walk-slack" => {walk_slack=Some(args[i+1].parse().unwrap());i+=2;}
             "--detour-frac" => {detour_frac=args[i+1].parse().unwrap();assert!((0.0..=1.0).contains(&detour_frac));i+=2;}
             "--pair-sweep" => {pair_attempts=args[i+1].parse().unwrap();i+=2;}
@@ -1897,7 +1845,6 @@ fn main() {
     inst.early_stop = !full_grid;
     inst.retain_negotiated = retain_negotiated;
     inst.use_radix = !binary_heap;
-    inst.use_dial = use_dial;
     inst.use_astar = !dijkstra_only;
     inst.budget_bound = budget_bound;
     if coarse_bound {inst.free_dist.clear();}
@@ -2146,7 +2093,7 @@ fn worker(
             }
         }
         let u: f64 = (ws.rng.next() >> 11) as f64 / ((1u64 << 53) as f64);
-        let do_mode: u8 = if mode == "chain" || mode == "chain-entry" {3} else if mode == "mixed" {
+        let do_mode: u8 = if mode == "chain" {3} else if mode == "mixed" {
             if u < 0.75 {
                 0
             } else if u < 0.90 {
@@ -2182,7 +2129,7 @@ fn worker(
             }
         }
         if do_mode == 3 {
-            match chain_move(&inst,&mut sol,&mut owner,&mut ws,seed_net,k,thr,mode=="chain-entry") {
+            match chain_move(&inst,&mut sol,&mut owner,&mut ws,seed_net,k,thr) {
                 Some(d) if d<0=>imp+=1,
                 Some(0)=>eq+=1,
                 Some(_)=>uphill+=1,
@@ -2344,7 +2291,7 @@ mod tests {
                 if rng.below(7)==0 { owner[v as usize]=1; }
                 if rng.below(19)==0 { pins[v as usize]=1; }
             }}
-            let mut inst=Inst{early_stop:false,retain_negotiated:false,use_radix:false,use_dial:false,use_astar:true,budget_bound:false,free_dist:Vec::new(),check_state:false,name:"differential".into(),w,h,l,wh:w*h,n,ld:(0..l).map(|_|1+rng.below(9) as u32).collect(),vd:1+rng.below(6) as u32,nets:vec![Net{driver:0,sinks}],pin_owner:pins};
+            let mut inst=Inst{early_stop:false,retain_negotiated:false,use_radix:false,use_astar:true,budget_bound:false,free_dist:Vec::new(),check_state:false,name:"differential".into(),w,h,l,wh:w*h,n,ld:(0..l).map(|_|1+rng.below(9) as u32).collect(),vd:1+rng.below(6) as u32,nets:vec![Net{driver:0,sinks}],pin_owner:pins};
             inst.free_dist=free_space_table(w,h,l,&inst.ld,inst.vd);
             let mut full=Scratch::new(n,1,seed); let mut fast=Scratch::new(n,1,seed);
             full.dijkstra(&inst,&owner,0,0,false,u32::MAX);
@@ -2354,25 +2301,12 @@ mod tests {
             fast.dijkstra(&inst,&owner,0,0,false,u32::MAX);
             let b=fast.extract(&inst,&inst.nets[0]);
             assert_eq!(a,b,"physical seed {}",seed);
-            inst.use_dial=true;
-            for astar in [false,true] {
-                inst.use_astar=astar;
-                let mut dial=Scratch::new(n,1,seed);
-                dial.dijkstra(&inst,&owner,0,0,false,u32::MAX);
-                assert_eq!(a,dial.extract(&inst,&inst.nets[0]),"Dial physical seed {} astar {}",seed,astar);
-            }
-            inst.use_astar=true;inst.use_dial=false;
             if a.is_some() {
                 for slack in [0,7,100] {
                     let budgets:Vec<_>=inst.nets[0].sinks.iter().map(|&s|fast.dist[s as usize]+slack).collect();
                     let mut bounded=Scratch::new(n,1,seed);
                     bounded.dijkstra_bounded(&inst,&owner,0,&budgets,false);
                     assert_eq!(a,bounded.extract(&inst,&inst.nets[0]),"per-sink budget seed {} slack {}",seed,slack);
-                    inst.use_dial=true;
-                    let mut dial=Scratch::new(n,1,seed);
-                    dial.dijkstra_bounded(&inst,&owner,0,&budgets,false);
-                    assert_eq!(a,dial.extract(&inst,&inst.nets[0]),"Dial bounded seed {} slack {}",seed,slack);
-                    inst.use_dial=false;
                 }
             }
             for ws in [&mut full,&mut fast] { ws.ncur=1; }
@@ -2396,40 +2330,12 @@ mod tests {
                 fast.dijkstra(&inst,&owner,0,0,false,cut);
                 let b=fast.extract(&inst,&inst.nets[0]);
                 assert_eq!(a,b,"bounded seed {} cutoff {}",seed,cut);
-                inst.use_dial=true;
-                let mut dial=Scratch::new(n,1,seed);
-                dial.dijkstra(&inst,&owner,0,0,false,cut);
-                assert_eq!(a,dial.extract(&inst,&inst.nets[0]),"Dial cutoff seed {} cutoff {}",seed,cut);
-                inst.use_dial=false;
             }
-        }
-    }
-    #[test]
-    fn entry_pricing_matches_independent_dense_dijkstra() {
-        for seed in 1..=40 {
-            let mut rng=Rng::new(seed);let w=5;let h=4;let l=2;let n=w*h*l;
-            let mut pins=vec![-1;n as usize];pins[0]=0;pins[(n-1) as usize]=0;
-            let inst=Inst{early_stop:false,retain_negotiated:false,use_radix:true,use_dial:false,use_astar:true,budget_bound:false,free_dist:Vec::new(),check_state:false,name:"entry-price".into(),w,h,l,wh:w*h,n,ld:vec![1,3],vd:2,nets:vec![Net{driver:0,sinks:vec![n-1]}],pin_owner:pins};
-            let mut owner=vec![-1;n as usize];
-            for v in 1..n-1 {if rng.below(3)>0 {owner[v as usize]=1+rng.below(2) as i32;}}
-            let mut ws=Scratch::new(n,1,seed);ws.entry_owner=owner.clone();ws.ncur=1;
-            for v in 0..n as usize {if owner[v]>=0 {ws.pvst[v]=1;ws.pcv[v]=1;ws.phv[v]=0.0;}}
-            ws.pdijkstra(&inst,&owner,&[true,true,true],0,0,2.0,1.0);
-            let mut reference=vec![u64::MAX;n as usize];let mut done=vec![false;n as usize];reference[0]=0;
-            let mut nb=[0;6];let mut weights=[0;6];
-            for _ in 0..n {
-                let v=(0..n as usize).filter(|&v|!done[v]).min_by_key(|&v|reference[v]).unwrap();done[v]=true;
-                let k=inst.neigh(v as u32,&mut nb,&mut weights);
-                for j in 0..k {let u=nb[j] as usize;let penalty=if owner[u]>=0 && owner[u]!=owner[v] {2}else{0};
-                    reference[u]=reference[u].min(reference[v]+weights[j] as u64+penalty);}
-            }
-            for v in 0..n as usize {assert_eq!(ws.pdist[v],reference[v] as f64,"entry-price seed {} vertex {}",seed,v);}
-            assert!(ws.extract_pen(&inst,&inst.nets[0],2.0,1.0).is_some());
         }
     }
     #[test]
     fn tree_objective_charges_shared_trunk_for_each_sink() {
-        let inst=Inst{early_stop:true,retain_negotiated:true,use_radix:true,use_dial:false,use_astar:true,budget_bound:false,free_dist:Vec::new(),check_state:false,name:"trunk".into(),w:3,h:2,l:1,wh:6,n:6,ld:vec![2],vd:3,nets:vec![Net{driver:0,sinks:vec![2,4]}],pin_owner:vec![0,-1,0,-1,0,-1]};
+        let inst=Inst{early_stop:true,retain_negotiated:true,use_radix:true,use_astar:true,budget_bound:false,free_dist:Vec::new(),check_state:false,name:"trunk".into(),w:3,h:2,l:1,wh:6,n:6,ld:vec![2],vd:3,nets:vec![Net{driver:0,sinks:vec![2,4]}],pin_owner:vec![0,-1,0,-1,0,-1]};
         assert_eq!(physical_tree_delay(&inst,0,&[(0,1),(1,2),(1,4)]),8);
     }
 }

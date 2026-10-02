@@ -15,8 +15,9 @@ Hardware: i7-13700HX, Windows; worker counts are recorded per command. Timing
 was measured alongside other workloads and is not normalized across authors.
 
 The method uses exact radix/A* shortest-path trees with feasible per-sink
-bounds, neutral and group moves, preserved-route repair, bounded excursions,
-CPU search portfolios, and two-parent minimum-cut crossover following PR24.
+bounds, neutral and group moves, preserved-route and displacement-chain repair,
+bounded excursions, CPU search portfolios, and two-parent minimum-cut crossover
+following PR24. An opt-in circular bucket queue accelerates integer searches.
 The CUDA prototypes were benchmarked separately and did not produce these routes.
 
 The versioned Windows replay bundle, source, commands and full provenance are

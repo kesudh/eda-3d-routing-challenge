@@ -58,7 +58,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto |
 |---:|---|---|---:|:---:|---:|---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.1277 | 8/8 | 537444 | 7543.00 | ✓ |
+| 1 | warm_lns_refinement † | kesudh | 1.1277 | 8/8 | 537432 | 7543.00 | ✓ |
 | 2 | pathfinder_lns | Tazeem Mahashin | 1.1277 | 8/8 | 537468 | 62411.00 |  |
 | 3 | coordinated_refinement † | jay-tau | 1.1248 | 8/8 | 538876 | — |  |
 | 4 | spt_lns | James (IrwinJam) | 1.1143 | 8/8 | 543962 | 4801.50 | ✓ |
@@ -86,7 +86,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto |
 |---:|---|---|---:|:---:|---:|---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.3111 | 4/4 | 490473 | 3621.00 | ✓ |
+| 1 | warm_lns_refinement † | kesudh | 1.3111 | 4/4 | 490469 | 3621.00 | ✓ |
 | 2 | pathfinder_lns | Tazeem Mahashin | 1.3111 | 4/4 | 490499 | 61369.30 |  |
 | 3 | coordinated_refinement † | jay-tau | 1.3042 | 4/4 | 493227 | — |  |
 | 4 | spt_lns | James (IrwinJam) | 1.2625 | 4/4 | 510661 | 9601.63 |  |

@@ -19,9 +19,9 @@
  },
  "selection": "Lowest checker-recomputed delay per case among PR#3's route, this engine's refinements, and our earlier published route; a route is labelled verbatim only when byte-identical.",
  "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation. Omitted where no case in the tier was refined by this engine.",
- "aggregate": 1.1277183141827591,
+ "aggregate": 1.1277385956365251,
  "pr3_aggregate": 1.127666184323117,
- "gap_pct": 0.004623,
+ "gap_pct": 0.006421,
  "legal": "8/8",
  "cases": [
   {
@@ -71,24 +71,24 @@
   {
    "case": "case_05",
    "pr3_total": 66193,
-   "total_delay": 66193,
-   "delta": 0,
+   "total_delay": 66191,
+   "delta": 2,
    "legal": true,
-   "provenance": "verbatim",
-   "route_is_pr3_verbatim": true,
+   "provenance": "refined",
+   "route_is_pr3_verbatim": false,
    "pr3_sha256": "18519b0c20b996f531f260b0ada03ee17ec1c51b70caeaefd6e2207c6bfd270a",
-   "route_sha256": "18519b0c20b996f531f260b0ada03ee17ec1c51b70caeaefd6e2207c6bfd270a"
+   "route_sha256": "ea3314bd3b4c9d01cf11c747e95c805e469021b9bdecad959b85df754ab935a7"
   },
   {
    "case": "case_06",
    "pr3_total": 78145,
-   "total_delay": 78129,
-   "delta": 16,
+   "total_delay": 78123,
+   "delta": 22,
    "legal": true,
    "provenance": "refined",
    "route_is_pr3_verbatim": false,
    "pr3_sha256": "0c23756747b580a4f2215d0ebd2a42bc0edc1124fc138f7dbd8e88ca13325e2e",
-   "route_sha256": "2e0129c1f0be3016b62f535987058a0600cb7c0e02e6ca154c365b9d6750870d"
+   "route_sha256": "c1a6ffe3358750b55339ba9d78ddd5fb1f3f06f612ee4de76912a2b4479194f3"
   },
   {
    "case": "case_07",
@@ -104,13 +104,13 @@
   {
    "case": "case_08",
    "pr3_total": 108519,
-   "total_delay": 108519,
-   "delta": 0,
+   "total_delay": 108515,
+   "delta": 4,
    "legal": true,
-   "provenance": "verbatim",
-   "route_is_pr3_verbatim": true,
+   "provenance": "refined",
+   "route_is_pr3_verbatim": false,
    "pr3_sha256": "9b6ab0708cc4ee65b3961cbeeae6644df788c5cf5ff800d0da3fd9b748c6908d",
-   "route_sha256": "9b6ab0708cc4ee65b3961cbeeae6644df788c5cf5ff800d0da3fd9b748c6908d"
+   "route_sha256": "9f9fa875b0417182e6a7cc61d987abdf3577498bf12f709f71561546af74d87b"
   }
  ]
 }

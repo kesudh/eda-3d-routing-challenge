@@ -58,7 +58,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto |
 |---:|---|---|---:|:---:|---:|---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.1277 | 8/8 | 537432 | 7543.00 | ✓ |
+| 1 | warm_lns_refinement † | kesudh | 1.1278 | 8/8 | 537416 | 7543.00 | ✓ |
 | 2 | pathfinder_lns | Tazeem Mahashin | 1.1277 | 8/8 | 537468 | 62411.00 |  |
 | 3 | coordinated_refinement † | jay-tau | 1.1248 | 8/8 | 538876 | — |  |
 | 4 | spt_lns | James (IrwinJam) | 1.1143 | 8/8 | 543962 | 4801.50 | ✓ |
@@ -73,7 +73,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto |
 |---:|---|---|---:|:---:|---:|---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.0914 | 1/1 | 1048986 | 2070.00 | ✓ |
+| 1 | warm_lns_refinement † | kesudh | 1.0914 | 1/1 | 1048978 | 2070.00 | ✓ |
 | 2 | pathfinder_lns | Tazeem Mahashin | 1.0914 | 1/1 | 1048990 | 43262.89 |  |
 | 3 | coordinated_refinement † | jay-tau | 1.0906 | 1/1 | 1049764 | — |  |
 | 4 | spt_lns | James (IrwinJam) | 1.0763 | 1/1 | 1063692 | 3603.75 |  |
@@ -86,7 +86,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto |
 |---:|---|---|---:|:---:|---:|---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.3111 | 4/4 | 490469 | 3621.00 | ✓ |
+| 1 | warm_lns_refinement † | kesudh | 1.3112 | 4/4 | 490459 | 3621.00 | ✓ |
 | 2 | pathfinder_lns | Tazeem Mahashin | 1.3111 | 4/4 | 490499 | 61369.30 |  |
 | 3 | coordinated_refinement † | jay-tau | 1.3042 | 4/4 | 493227 | — |  |
 | 4 | spt_lns | James (IrwinJam) | 1.2625 | 4/4 | 510661 | 9601.63 |  |
@@ -100,7 +100,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto |
 |---:|---|---|---:|:---:|---:|---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.4355 | 3/3 | 209153 | 3615.00 | ✓ |
+| 1 | warm_lns_refinement † | kesudh | 1.4356 | 3/3 | 209145 | 3615.00 | ✓ |
 | 2 | pathfinder_lns | Tazeem Mahashin | 1.4354 | 3/3 | 209175 | 47267.61 |  |
 | 3 | coordinated_refinement † | jay-tau | 1.4257 | 3/3 | 210639 | — |  |
 | 4 | spt_lns | James (IrwinJam) | 1.3867 | 3/3 | 216825 | 7200.88 |  |

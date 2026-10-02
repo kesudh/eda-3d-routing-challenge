@@ -19,21 +19,21 @@
  },
  "selection": "Lowest checker-recomputed delay per case among PR#3's route, this engine's refinements, and our earlier published route; a route is labelled verbatim only when byte-identical.",
  "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation. Omitted where no case in the tier was refined by this engine.",
- "aggregate": 1.4354894023412557,
+ "aggregate": 1.435550299853414,
  "pr3_aggregate": 1.4353558348777067,
- "gap_pct": 0.009306,
+ "gap_pct": 0.013548,
  "legal": "3/3",
  "cases": [
   {
    "case": "ctrl",
    "pr3_total": 49944,
-   "total_delay": 49940,
-   "delta": 4,
+   "total_delay": 49938,
+   "delta": 6,
    "legal": true,
    "provenance": "refined",
    "route_is_pr3_verbatim": false,
    "pr3_sha256": "028ae93bb3c8c23eb0e12bb0bcb84ed5889f33f98254a6ba4a1611ca82082490",
-   "route_sha256": "c7f46f6d8772d8fb18ea23637204ea8e631d731a49392bbf80e86a5320313376"
+   "route_sha256": "62f2b95caf670c8466274f73dd3230ce18bc6e32710d857fd0c504e2cc7c1707"
   },
   {
    "case": "int2float",
@@ -49,13 +49,13 @@
   {
    "case": "router",
    "pr3_total": 68797,
-   "total_delay": 68797,
-   "delta": 0,
+   "total_delay": 68791,
+   "delta": 6,
    "legal": true,
-   "provenance": "verbatim",
-   "route_is_pr3_verbatim": true,
+   "provenance": "refined",
+   "route_is_pr3_verbatim": false,
    "pr3_sha256": "c520ed3499a52e8b5d1ba9edc0f41424cca548b034e1debf1b9d00f0c7c739ca",
-   "route_sha256": "c520ed3499a52e8b5d1ba9edc0f41424cca548b034e1debf1b9d00f0c7c739ca"
+   "route_sha256": "7fbe8cb65e6044e3e8afa3bd5c27958910142d90d842ae352a46aea24d9d525a"
   }
  ]
 }

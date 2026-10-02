@@ -19,9 +19,9 @@
  },
  "selection": "Lowest checker-recomputed delay per case among PR#3's route, this engine's refinements, and our earlier published route; a route is labelled verbatim only when byte-identical.",
  "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation. Omitted where no case in the tier was refined by this engine.",
- "aggregate": 1.3111401179349238,
+ "aggregate": 1.3111601293837034,
  "pr3_aggregate": 1.3110683373231677,
- "gap_pct": 0.005475,
+ "gap_pct": 0.007001,
  "legal": "4/4",
  "cases": [
   {
@@ -49,13 +49,13 @@
   {
    "case": "case_03",
    "pr3_total": 163815,
-   "total_delay": 163805,
-   "delta": 10,
+   "total_delay": 163795,
+   "delta": 20,
    "legal": true,
    "provenance": "refined",
    "route_is_pr3_verbatim": false,
    "pr3_sha256": "f8ca72cda31ab3a99a42e0bb9f757ad83d473814771fc140787d3ccc776e2ff8",
-   "route_sha256": "dafdae88d4e325c4659d8de1332137ebb7170622517fd9d07f37a12e0416df07"
+   "route_sha256": "9fd884ad7144d138647f0af2ccbb2fb2230b57186c089a0862a6d58d47923ec0"
   },
   {
    "case": "case_04",

@@ -19,21 +19,21 @@
  },
  "selection": "Lowest checker-recomputed delay per case among PR#3's route, this engine's refinements, and our earlier published route; a route is labelled verbatim only when byte-identical.",
  "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation. Omitted where no case in the tier was refined by this engine.",
- "aggregate": 1.1277385956365251,
+ "aggregate": 1.1277735956104964,
  "pr3_aggregate": 1.127666184323117,
- "gap_pct": 0.006421,
+ "gap_pct": 0.009525,
  "legal": "8/8",
  "cases": [
   {
    "case": "case_01",
    "pr3_total": 39282,
-   "total_delay": 39280,
-   "delta": 2,
+   "total_delay": 39276,
+   "delta": 6,
    "legal": true,
    "provenance": "refined",
    "route_is_pr3_verbatim": false,
    "pr3_sha256": "cbdf71c9a2c16b3235b3c3bb9e85df25c2b8b2a73c6274142e9a5ce0d8b86b12",
-   "route_sha256": "e5a164c4c813d8abcd8ee6773aa19494a6b960092b027014652345207327617e"
+   "route_sha256": "f83d1aff977578be79e488fc8c5a89fe1879d278885120c9342a4e7f71903e6a"
   },
   {
    "case": "case_02",
@@ -82,13 +82,13 @@
   {
    "case": "case_06",
    "pr3_total": 78145,
-   "total_delay": 78123,
-   "delta": 22,
+   "total_delay": 78113,
+   "delta": 32,
    "legal": true,
    "provenance": "refined",
    "route_is_pr3_verbatim": false,
    "pr3_sha256": "0c23756747b580a4f2215d0ebd2a42bc0edc1124fc138f7dbd8e88ca13325e2e",
-   "route_sha256": "c1a6ffe3358750b55339ba9d78ddd5fb1f3f06f612ee4de76912a2b4479194f3"
+   "route_sha256": "ff20962facc6b3bb58d75ac77d71619382828ce5fd772144ae67e39d3d638b7e"
   },
   {
    "case": "case_07",
@@ -104,13 +104,13 @@
   {
    "case": "case_08",
    "pr3_total": 108519,
-   "total_delay": 108515,
-   "delta": 4,
+   "total_delay": 108513,
+   "delta": 6,
    "legal": true,
    "provenance": "refined",
    "route_is_pr3_verbatim": false,
    "pr3_sha256": "9b6ab0708cc4ee65b3961cbeeae6644df788c5cf5ff800d0da3fd9b748c6908d",
-   "route_sha256": "9f9fa875b0417182e6a7cc61d987abdf3577498bf12f709f71561546af74d87b"
+   "route_sha256": "8a4bbb93ca4a145b044c341c6a3380b41b9cbb7d11260db87c0c1f296ee7ed16"
   }
  ]
 }

@@ -2,89 +2,126 @@
  "author": "kesudh",
  "url": "https://github.com/kesudh",
  "method": "Rust warm-start large-neighborhood search: exact per-net SPT reroute with equal-delay tie exploration, group rip-up with negotiated-congestion rounds (PathFinder-style history/present costs), bounded threshold acceptance; every accepted state re-verified by the repository checker.",
- "date": "2026-10-01",
+ "date": "2026-10-02",
+ "tier": "hard",
  "warm_start": {
-  "author": "Taz33m",
+  "author": "Tazeem Mahashin",
   "submission": "pathfinder_lns",
   "pull_request": "https://github.com/partcleda/eda-3d-routing-challenge/pull/3",
-  "commit": "4e21227"
+  "commit": "c2d9d9f583d2f332ebb84d22592ee511f6e56e33"
  },
  "upstream_credit": {
-  "author": "Taz33m",
+  "author": "Tazeem Mahashin",
   "submission": "pathfinder_lns",
   "pull_request": "https://github.com/partcleda/eda-3d-routing-challenge/pull/3",
-  "commit": "4e21227867ee1f8f72c9f4d9ad446e05c20fe452",
-  "note": "Warm starts are PR#3's routes at head 4e21227, the version that led all six tier aggregates before this refinement."
+  "commit": "c2d9d9f583d2f332ebb84d22592ee511f6e56e33",
+  "note": "Warm starts are PR#3's routes at head c2d9d9f, the version merged into main. Where a route is carried unchanged the route_sha256 equals the pr3_sha256 and the credit is his."
  },
- "selection": "Lowest checker-recomputed delay across the warm start and every refinement run; the warm-start route is retained verbatim (identical sha256) on cases with no strict win.",
- "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation.",
- "tier": "hard",
- "aggregate": 1.38739417,
- "warm_start_aggregate": 1.38736633,
+ "selection": "Lowest checker-recomputed delay per case among PR#3's route, this engine's refinements, and our earlier published route; a route is labelled verbatim only when byte-identical.",
+ "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation. Omitted where no case in the tier was refined by this engine.",
+ "aggregate": 1.38841985775966,
+ "pr3_aggregate": 1.38841985775966,
+ "gap_pct": 0.0,
  "legal": "9/9",
  "cases": [
   {
    "case": "case_01",
-   "warm_start_delay": 8666,
+   "pr3_total": 8666,
    "total_delay": 8666,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "afc85979e54971d7348de713eff2d962ea14c171f1053a82f2e4ca02d2a10c60",
+   "route_sha256": "afc85979e54971d7348de713eff2d962ea14c171f1053a82f2e4ca02d2a10c60"
   },
   {
    "case": "case_02",
-   "warm_start_delay": 13156,
-   "total_delay": 13156,
+   "pr3_total": 13140,
+   "total_delay": 13140,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "28177563dda0b6c62d15710c4c593dc8adcbf91207cf3adba57b1bdb0541adbc",
+   "route_sha256": "28177563dda0b6c62d15710c4c593dc8adcbf91207cf3adba57b1bdb0541adbc"
   },
   {
    "case": "case_03",
-   "warm_start_delay": 11074,
-   "total_delay": 11072,
-   "delta": 2,
-   "method": "refined (rust LNS)"
+   "pr3_total": 11062,
+   "total_delay": 11062,
+   "delta": 0,
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "f21cb3153ae418fd8755d52c3b6c54923f74417ac1a7a8eddea4722bcac8f66c",
+   "route_sha256": "f21cb3153ae418fd8755d52c3b6c54923f74417ac1a7a8eddea4722bcac8f66c"
   },
   {
    "case": "case_04",
-   "warm_start_delay": 13059,
-   "total_delay": 13059,
+   "pr3_total": 13033,
+   "total_delay": 13033,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "4b9c9cc7477ea9a93c6c6768389a5cfb884fd07b1f360bdbc969bb6da66ffc74",
+   "route_sha256": "4b9c9cc7477ea9a93c6c6768389a5cfb884fd07b1f360bdbc969bb6da66ffc74"
   },
   {
    "case": "case_05",
-   "warm_start_delay": 15211,
-   "total_delay": 15211,
+   "pr3_total": 15207,
+   "total_delay": 15207,
    "delta": 0,
-   "method": "own earlier route (ties PR#3)"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "2e684a44a1282591d956d3d9f7bd15840a2757d214713e44b86c7dd75f2c9345",
+   "route_sha256": "2e684a44a1282591d956d3d9f7bd15840a2757d214713e44b86c7dd75f2c9345"
   },
   {
    "case": "case_06",
-   "warm_start_delay": 19786,
-   "total_delay": 19786,
+   "pr3_total": 19778,
+   "total_delay": 19778,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "d31e2501bd7d5cc691f063961be910d47978f63c6a7e07dff8060ebfa3579ced",
+   "route_sha256": "d31e2501bd7d5cc691f063961be910d47978f63c6a7e07dff8060ebfa3579ced"
   },
   {
    "case": "case_07",
-   "warm_start_delay": 21295,
-   "total_delay": 21295,
+   "pr3_total": 21287,
+   "total_delay": 21287,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "8adc6ce64b268807a059c61115b760b9ae507efbb890a8d7a55987eff411b789",
+   "route_sha256": "8adc6ce64b268807a059c61115b760b9ae507efbb890a8d7a55987eff411b789"
   },
   {
    "case": "case_08",
-   "warm_start_delay": 21432,
-   "total_delay": 21432,
+   "pr3_total": 21424,
+   "total_delay": 21424,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "62f37c33b5da4680251de4e891e97e69bd45c9e2377c34cf52ae8bd6e655cf76",
+   "route_sha256": "62f37c33b5da4680251de4e891e97e69bd45c9e2377c34cf52ae8bd6e655cf76"
   },
   {
    "case": "case_09",
-   "warm_start_delay": 21418,
-   "total_delay": 21418,
+   "pr3_total": 21394,
+   "total_delay": 21394,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "3a7c5c305c75eb486dd08c5211b1d61b5a0ebd127913f3b1d555d604e03af488",
+   "route_sha256": "3a7c5c305c75eb486dd08c5211b1d61b5a0ebd127913f3b1d555d604e03af488"
   }
  ]
 }

@@ -2,82 +2,115 @@
  "author": "kesudh",
  "url": "https://github.com/kesudh",
  "method": "Rust warm-start large-neighborhood search: exact per-net SPT reroute with equal-delay tie exploration, group rip-up with negotiated-congestion rounds (PathFinder-style history/present costs), bounded threshold acceptance; every accepted state re-verified by the repository checker.",
- "date": "2026-10-01",
+ "date": "2026-10-02",
+ "tier": "scale",
  "warm_start": {
-  "author": "Taz33m",
+  "author": "Tazeem Mahashin",
   "submission": "pathfinder_lns",
   "pull_request": "https://github.com/partcleda/eda-3d-routing-challenge/pull/3",
-  "commit": "4e21227"
+  "commit": "c2d9d9f583d2f332ebb84d22592ee511f6e56e33"
  },
  "upstream_credit": {
-  "author": "Taz33m",
+  "author": "Tazeem Mahashin",
   "submission": "pathfinder_lns",
   "pull_request": "https://github.com/partcleda/eda-3d-routing-challenge/pull/3",
-  "commit": "4e21227867ee1f8f72c9f4d9ad446e05c20fe452",
-  "note": "Warm starts are PR#3's routes at head 4e21227, the version that led all six tier aggregates before this refinement."
+  "commit": "c2d9d9f583d2f332ebb84d22592ee511f6e56e33",
+  "note": "Warm starts are PR#3's routes at head c2d9d9f, the version merged into main. Where a route is carried unchanged the route_sha256 equals the pr3_sha256 and the credit is his."
  },
- "selection": "Lowest checker-recomputed delay across the warm start and every refinement run; the warm-start route is retained verbatim (identical sha256) on cases with no strict win.",
- "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation.",
- "tier": "scale",
- "aggregate": 1.12740055,
- "warm_start_aggregate": 1.12722454,
+ "selection": "Lowest checker-recomputed delay per case among PR#3's route, this engine's refinements, and our earlier published route; a route is labelled verbatim only when byte-identical.",
+ "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation. Omitted where no case in the tier was refined by this engine.",
+ "aggregate": 1.1277183141827591,
+ "pr3_aggregate": 1.127666184323117,
+ "gap_pct": 0.004623,
  "legal": "8/8",
  "cases": [
   {
    "case": "case_01",
-   "warm_start_delay": 39308,
-   "total_delay": 39294,
-   "delta": 14,
-   "method": "refined (rust LNS)"
+   "pr3_total": 39282,
+   "total_delay": 39280,
+   "delta": 2,
+   "legal": true,
+   "provenance": "refined",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "cbdf71c9a2c16b3235b3c3bb9e85df25c2b8b2a73c6274142e9a5ce0d8b86b12",
+   "route_sha256": "e5a164c4c813d8abcd8ee6773aa19494a6b960092b027014652345207327617e"
   },
   {
    "case": "case_02",
-   "warm_start_delay": 45458,
-   "total_delay": 45452,
-   "delta": 6,
-   "method": "refined (rust LNS)"
+   "pr3_total": 45406,
+   "total_delay": 45404,
+   "delta": 2,
+   "legal": true,
+   "provenance": "refined",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "39988b8bc48ae4dd8ccfd54eb65c2b589eebf6e29dc37294b110c7e20fe79631",
+   "route_sha256": "17cbec073290ce63c1fe49f3ae53dc45ab29a4846e5d522a7af910271bca9b49"
   },
   {
    "case": "case_03",
-   "warm_start_delay": 56440,
-   "total_delay": 56436,
-   "delta": 4,
-   "method": "refined (rust LNS)"
+   "pr3_total": 56434,
+   "total_delay": 56434,
+   "delta": 0,
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "96b4de4fdd5e2d486a44006c748c37f560428cdf32d305b8de6af94fdf98b94f",
+   "route_sha256": "96b4de4fdd5e2d486a44006c748c37f560428cdf32d305b8de6af94fdf98b94f"
   },
   {
    "case": "case_04",
-   "warm_start_delay": 57086,
-   "total_delay": 57080,
-   "delta": 6,
-   "method": "refined (rust LNS)"
+   "pr3_total": 57076,
+   "total_delay": 57072,
+   "delta": 4,
+   "legal": true,
+   "provenance": "refined",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "33b0ae836125dff3fdf0a4b047ca6dc80d4de2f543078a78803951485d89a8a1",
+   "route_sha256": "dd2d6a9425023c10f9ffed78477af576a316710542db1a328fde2ea60387e425"
   },
   {
    "case": "case_05",
-   "warm_start_delay": 66215,
-   "total_delay": 66209,
-   "delta": 6,
-   "method": "refined (rust LNS)"
+   "pr3_total": 66193,
+   "total_delay": 66193,
+   "delta": 0,
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "18519b0c20b996f531f260b0ada03ee17ec1c51b70caeaefd6e2207c6bfd270a",
+   "route_sha256": "18519b0c20b996f531f260b0ada03ee17ec1c51b70caeaefd6e2207c6bfd270a"
   },
   {
    "case": "case_06",
-   "warm_start_delay": 78155,
+   "pr3_total": 78145,
    "total_delay": 78129,
-   "delta": 26,
-   "method": "refined (rust LNS)"
+   "delta": 16,
+   "legal": true,
+   "provenance": "refined",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "0c23756747b580a4f2215d0ebd2a42bc0edc1124fc138f7dbd8e88ca13325e2e",
+   "route_sha256": "2e0129c1f0be3016b62f535987058a0600cb7c0e02e6ca154c365b9d6750870d"
   },
   {
    "case": "case_07",
-   "warm_start_delay": 86427,
-   "total_delay": 86421,
-   "delta": 6,
-   "method": "refined (rust LNS)"
+   "pr3_total": 86413,
+   "total_delay": 86413,
+   "delta": 0,
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "d7c09cef2a268079da20e0bd106150b946c3f3f4c5a1e7f1943ab8c50d8adda3",
+   "route_sha256": "d7c09cef2a268079da20e0bd106150b946c3f3f4c5a1e7f1943ab8c50d8adda3"
   },
   {
    "case": "case_08",
-   "warm_start_delay": 108565,
-   "total_delay": 108555,
-   "delta": 10,
-   "method": "refined (rust LNS)"
+   "pr3_total": 108519,
+   "total_delay": 108519,
+   "delta": 0,
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "9b6ab0708cc4ee65b3961cbeeae6644df788c5cf5ff800d0da3fd9b748c6908d",
+   "route_sha256": "9b6ab0708cc4ee65b3961cbeeae6644df788c5cf5ff800d0da3fd9b748c6908d"
   }
  ]
 }

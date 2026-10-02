@@ -2,33 +2,38 @@
  "author": "kesudh",
  "url": "https://github.com/kesudh",
  "method": "Rust warm-start large-neighborhood search: exact per-net SPT reroute with equal-delay tie exploration, group rip-up with negotiated-congestion rounds (PathFinder-style history/present costs), bounded threshold acceptance; every accepted state re-verified by the repository checker.",
- "date": "2026-10-01",
+ "date": "2026-10-02",
+ "tier": "stress",
  "warm_start": {
-  "author": "Taz33m",
+  "author": "Tazeem Mahashin",
   "submission": "pathfinder_lns",
   "pull_request": "https://github.com/partcleda/eda-3d-routing-challenge/pull/3",
-  "commit": "4e21227"
+  "commit": "c2d9d9f583d2f332ebb84d22592ee511f6e56e33"
  },
  "upstream_credit": {
-  "author": "Taz33m",
+  "author": "Tazeem Mahashin",
   "submission": "pathfinder_lns",
   "pull_request": "https://github.com/partcleda/eda-3d-routing-challenge/pull/3",
-  "commit": "4e21227867ee1f8f72c9f4d9ad446e05c20fe452",
-  "note": "Warm starts are PR#3's routes at head 4e21227, the version that led all six tier aggregates before this refinement."
+  "commit": "c2d9d9f583d2f332ebb84d22592ee511f6e56e33",
+  "note": "Warm starts are PR#3's routes at head c2d9d9f, the version merged into main. Where a route is carried unchanged the route_sha256 equals the pr3_sha256 and the credit is his."
  },
- "selection": "Lowest checker-recomputed delay across the warm start and every refinement run; the warm-start route is retained verbatim (identical sha256) on cases with no strict win.",
- "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation.",
- "tier": "stress",
- "aggregate": 1.0910789,
- "warm_start_aggregate": 1.09106642,
+ "selection": "Lowest checker-recomputed delay per case among PR#3's route, this engine's refinements, and our earlier published route; a route is labelled verbatim only when byte-identical.",
+ "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation. Omitted where no case in the tier was refined by this engine.",
+ "aggregate": 1.0914387799265195,
+ "pr3_aggregate": 1.0914346180611827,
+ "gap_pct": 0.000381,
  "legal": "1/1",
  "cases": [
   {
    "case": "case_01",
-   "warm_start_delay": 1049344,
-   "total_delay": 1049332,
-   "delta": 12,
-   "method": "refined (rust LNS)"
+   "pr3_total": 1048990,
+   "total_delay": 1048986,
+   "delta": 4,
+   "legal": true,
+   "provenance": "refined",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "abe462c5c755994f7951ac88d4222cf68366c3b61dac713b349f58560d2c8f0a",
+   "route_sha256": "50490b1be1eab269c131912d47b4a68d90bf89c0f51fb042ce4efdf458f57029"
   }
  ]
 }

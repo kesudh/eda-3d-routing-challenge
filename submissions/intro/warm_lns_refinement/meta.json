@@ -2,166 +2,247 @@
  "author": "kesudh",
  "url": "https://github.com/kesudh",
  "method": "Rust warm-start large-neighborhood search: exact per-net SPT reroute with equal-delay tie exploration, group rip-up with negotiated-congestion rounds (PathFinder-style history/present costs), bounded threshold acceptance; every accepted state re-verified by the repository checker.",
- "date": "2026-10-01",
+ "date": "2026-10-02",
+ "tier": "intro",
  "warm_start": {
-  "author": "Taz33m",
+  "author": "Tazeem Mahashin",
   "submission": "pathfinder_lns",
   "pull_request": "https://github.com/partcleda/eda-3d-routing-challenge/pull/3",
-  "commit": "4e21227"
+  "commit": "c2d9d9f583d2f332ebb84d22592ee511f6e56e33"
  },
  "upstream_credit": {
-  "author": "Taz33m",
+  "author": "Tazeem Mahashin",
   "submission": "pathfinder_lns",
   "pull_request": "https://github.com/partcleda/eda-3d-routing-challenge/pull/3",
-  "commit": "4e21227867ee1f8f72c9f4d9ad446e05c20fe452",
-  "note": "Warm starts are PR#3's routes at head 4e21227, the version that led all six tier aggregates before this refinement."
+  "commit": "c2d9d9f583d2f332ebb84d22592ee511f6e56e33",
+  "note": "Warm starts are PR#3's routes at head c2d9d9f, the version merged into main. Where a route is carried unchanged the route_sha256 equals the pr3_sha256 and the credit is his."
  },
- "selection": "Lowest checker-recomputed delay across the warm start and every refinement run; the warm-start route is retained verbatim (identical sha256) on cases with no strict win.",
- "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation.",
- "tier": "intro",
- "aggregate": 1.15087837,
- "warm_start_aggregate": 1.15082522,
+ "selection": "Lowest checker-recomputed delay per case among PR#3's route, this engine's refinements, and our earlier published route; a route is labelled verbatim only when byte-identical.",
+ "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation. Omitted where no case in the tier was refined by this engine.",
+ "aggregate": 1.151430948548959,
+ "pr3_aggregate": 1.151409075068229,
+ "gap_pct": 0.0019,
  "legal": "20/20",
  "cases": [
   {
    "case": "case_01",
-   "warm_start_delay": 206,
+   "pr3_total": 206,
    "total_delay": 206,
    "delta": 0,
-   "method": "own earlier route (ties PR#3)"
+   "legal": true,
+   "provenance": "own_earlier",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "104576b698eed282f89f707e4085fed7de6e58e3b27623cc941dc3913062433a",
+   "route_sha256": "a707d72d2019af5d64d034a1a1e2f8a7bad2dbf140644e6e822ffaae8ab792a7"
   },
   {
    "case": "case_02",
-   "warm_start_delay": 1030,
+   "pr3_total": 1030,
    "total_delay": 1030,
    "delta": 0,
-   "method": "own earlier route (ties PR#3)"
+   "legal": true,
+   "provenance": "own_earlier",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "65edbed9c9350912b32782bec9e9afa363d89abfba11b38af179f25e0f58e31b",
+   "route_sha256": "bbb310ba4f26e270434fa9ca93c3e8db421dc4a1a5b509ec09fdcc80dd140d27"
   },
   {
    "case": "case_03",
-   "warm_start_delay": 1611,
+   "pr3_total": 1611,
    "total_delay": 1611,
    "delta": 0,
-   "method": "own earlier route (ties PR#3)"
+   "legal": true,
+   "provenance": "own_earlier",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "4dfadbc4166a0eb849ac2265fea122f92f381a24d4b3f8cfa503ea10cd30388a",
+   "route_sha256": "7afb4b190c21e78970dff6cc63da20b68151e6149eab210b78ccca4637461143"
   },
   {
    "case": "case_04",
-   "warm_start_delay": 1980,
+   "pr3_total": 1980,
    "total_delay": 1980,
    "delta": 0,
-   "method": "own earlier route (ties PR#3)"
+   "legal": true,
+   "provenance": "own_earlier",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "6f5b010143985922f060a171a657be6e05994b8bb9ae3d00c3e82f07b00508df",
+   "route_sha256": "3641cd8dedf2d73f9fd103abcd13bb3453eecdcf30893a44e1d500737e271021"
   },
   {
    "case": "case_05",
-   "warm_start_delay": 3687,
+   "pr3_total": 3687,
    "total_delay": 3687,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "99d49a9b813ff97ffe4bd3760cc90209d0eb617230f87f31d3e7666f46ef7797",
+   "route_sha256": "99d49a9b813ff97ffe4bd3760cc90209d0eb617230f87f31d3e7666f46ef7797"
   },
   {
    "case": "case_06",
-   "warm_start_delay": 5189,
-   "total_delay": 5189,
+   "pr3_total": 5185,
+   "total_delay": 5185,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "13fc90b86db5980ae2b1c85d735834c78cdf9e8e66ec3bc21c6de209a075e416",
+   "route_sha256": "13fc90b86db5980ae2b1c85d735834c78cdf9e8e66ec3bc21c6de209a075e416"
   },
   {
    "case": "case_07",
-   "warm_start_delay": 5267,
+   "pr3_total": 5265,
    "total_delay": 5263,
-   "delta": 4,
-   "method": "refined (rust LNS)"
+   "delta": 2,
+   "legal": true,
+   "provenance": "refined",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "64f26a73a1801a1862cb28ed48947e35c4bd903044ea948f74848ce7e817e175",
+   "route_sha256": "a3558d3810349752a99be409483d33015af0fee057a6482956d28b89d0c608f6"
   },
   {
    "case": "case_08",
-   "warm_start_delay": 7487,
+   "pr3_total": 7487,
    "total_delay": 7487,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "7f4b61d73578d3d2e8fbb980f862d2813a230ccbb2f7b7459f8b3e48486ea8fb",
+   "route_sha256": "7f4b61d73578d3d2e8fbb980f862d2813a230ccbb2f7b7459f8b3e48486ea8fb"
   },
   {
    "case": "case_09",
-   "warm_start_delay": 8144,
-   "total_delay": 8144,
+   "pr3_total": 8138,
+   "total_delay": 8138,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "bfbccf3b6cdfbd52eb7a937b5ca8a95965331671876338b60befe291ed8acf14",
+   "route_sha256": "bfbccf3b6cdfbd52eb7a937b5ca8a95965331671876338b60befe291ed8acf14"
   },
   {
    "case": "case_10",
-   "warm_start_delay": 10551,
+   "pr3_total": 10551,
    "total_delay": 10551,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "0115e1ce51129c4ee597ca9b176d78e051dd2af112cece5322968a54c3bd9e23",
+   "route_sha256": "0115e1ce51129c4ee597ca9b176d78e051dd2af112cece5322968a54c3bd9e23"
   },
   {
    "case": "case_11",
-   "warm_start_delay": 12200,
+   "pr3_total": 12198,
    "total_delay": 12198,
-   "delta": 2,
-   "method": "refined (rust LNS)"
+   "delta": 0,
+   "legal": true,
+   "provenance": "own_earlier",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "32d27cd7e05d4fbba0039a033e196512e410cc3fec19ea5d0d31093c20abc1cc",
+   "route_sha256": "cd4b5cb07a7825fbe16e4805729851dba57dfe4fb1a4611b6bad018a7a7d055c"
   },
   {
    "case": "case_12",
-   "warm_start_delay": 16093,
-   "total_delay": 16093,
+   "pr3_total": 16081,
+   "total_delay": 16081,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "beb9488eb613ca6c6fd0f8bd999669270bb4c3f337e720116a93033413ab028a",
+   "route_sha256": "beb9488eb613ca6c6fd0f8bd999669270bb4c3f337e720116a93033413ab028a"
   },
   {
    "case": "case_13",
-   "warm_start_delay": 19593,
-   "total_delay": 19593,
+   "pr3_total": 19567,
+   "total_delay": 19567,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "0f59eaacdaeefab7617cfdf0e8610d04af06f2142bacd646acc315de5074ab58",
+   "route_sha256": "0f59eaacdaeefab7617cfdf0e8610d04af06f2142bacd646acc315de5074ab58"
   },
   {
    "case": "case_14",
-   "warm_start_delay": 21197,
-   "total_delay": 21197,
+   "pr3_total": 21193,
+   "total_delay": 21193,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "690d0b042d811b42ba4d838285ec3c5f9ef47bb24b68c70073d4ecd2cc28cbb1",
+   "route_sha256": "690d0b042d811b42ba4d838285ec3c5f9ef47bb24b68c70073d4ecd2cc28cbb1"
   },
   {
    "case": "case_15",
-   "warm_start_delay": 23938,
-   "total_delay": 23938,
+   "pr3_total": 23896,
+   "total_delay": 23896,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "ff0daae0fb5d60e1affbe4821651e695cbddc7671677119f3501ae4128547706",
+   "route_sha256": "ff0daae0fb5d60e1affbe4821651e695cbddc7671677119f3501ae4128547706"
   },
   {
    "case": "case_16",
-   "warm_start_delay": 32866,
-   "total_delay": 32866,
+   "pr3_total": 32836,
+   "total_delay": 32836,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "3389095d2ea174de9d5fe0facaaeb52de5325551ec106c7818449251e8c603be",
+   "route_sha256": "3389095d2ea174de9d5fe0facaaeb52de5325551ec106c7818449251e8c603be"
   },
   {
    "case": "case_17",
-   "warm_start_delay": 41622,
-   "total_delay": 41622,
+   "pr3_total": 41602,
+   "total_delay": 41602,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "c588cfd9b331949d0a9837bf8ecaa6546c9cb898fab22121b981e4b763158a9d",
+   "route_sha256": "c588cfd9b331949d0a9837bf8ecaa6546c9cb898fab22121b981e4b763158a9d"
   },
   {
    "case": "case_18",
-   "warm_start_delay": 44601,
-   "total_delay": 44601,
+   "pr3_total": 44549,
+   "total_delay": 44549,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "7f868b674696efd453ffdaaf3afcfdb765c4f97349e7b27b32889c79542df10b",
+   "route_sha256": "7f868b674696efd453ffdaaf3afcfdb765c4f97349e7b27b32889c79542df10b"
   },
   {
    "case": "case_19",
-   "warm_start_delay": 40024,
-   "total_delay": 40024,
+   "pr3_total": 40010,
+   "total_delay": 40010,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "5c98a1dc890da067377fe66ae28268107245abecfa2f57c4e109cfcdf0226944",
+   "route_sha256": "5c98a1dc890da067377fe66ae28268107245abecfa2f57c4e109cfcdf0226944"
   },
   {
    "case": "case_20",
-   "warm_start_delay": 44726,
-   "total_delay": 44726,
+   "pr3_total": 44674,
+   "total_delay": 44674,
    "delta": 0,
-   "method": "PR#3 route verbatim"
+   "legal": true,
+   "provenance": "verbatim",
+   "route_is_pr3_verbatim": true,
+   "pr3_sha256": "5b41aa6a02542d410b304d5dfe92ea3a78e0494332c81da062e8819bd329a671",
+   "route_sha256": "5b41aa6a02542d410b304d5dfe92ea3a78e0494332c81da062e8819bd329a671"
   }
  ]
 }

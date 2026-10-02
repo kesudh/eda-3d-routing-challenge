@@ -2,54 +2,71 @@
  "author": "kesudh",
  "url": "https://github.com/kesudh",
  "method": "Rust warm-start large-neighborhood search: exact per-net SPT reroute with equal-delay tie exploration, group rip-up with negotiated-congestion rounds (PathFinder-style history/present costs), bounded threshold acceptance; every accepted state re-verified by the repository checker.",
- "date": "2026-10-01",
+ "date": "2026-10-02",
+ "tier": "congested",
  "warm_start": {
-  "author": "Taz33m",
+  "author": "Tazeem Mahashin",
   "submission": "pathfinder_lns",
   "pull_request": "https://github.com/partcleda/eda-3d-routing-challenge/pull/3",
-  "commit": "4e21227"
+  "commit": "c2d9d9f583d2f332ebb84d22592ee511f6e56e33"
  },
  "upstream_credit": {
-  "author": "Taz33m",
+  "author": "Tazeem Mahashin",
   "submission": "pathfinder_lns",
   "pull_request": "https://github.com/partcleda/eda-3d-routing-challenge/pull/3",
-  "commit": "4e21227867ee1f8f72c9f4d9ad446e05c20fe452",
-  "note": "Warm starts are PR#3's routes at head 4e21227, the version that led all six tier aggregates before this refinement."
+  "commit": "c2d9d9f583d2f332ebb84d22592ee511f6e56e33",
+  "note": "Warm starts are PR#3's routes at head c2d9d9f, the version merged into main. Where a route is carried unchanged the route_sha256 equals the pr3_sha256 and the credit is his."
  },
- "selection": "Lowest checker-recomputed delay across the warm start and every refinement run; the warm-start route is retained verbatim (identical sha256) on cases with no strict win.",
- "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation.",
- "tier": "congested",
- "aggregate": 1.3084751,
- "warm_start_aggregate": 1.30832897,
+ "selection": "Lowest checker-recomputed delay per case among PR#3's route, this engine's refinements, and our earlier published route; a route is labelled verbatim only when byte-identical.",
+ "runtime": "Per-case wall seconds of the incremental refinement only; excludes warm-start generation. Omitted where no case in the tier was refined by this engine.",
+ "aggregate": 1.3111321137829894,
+ "pr3_aggregate": 1.3110683373231677,
+ "gap_pct": 0.004864,
  "legal": "4/4",
  "cases": [
   {
    "case": "case_01",
-   "warm_start_delay": 54077,
-   "total_delay": 54073,
-   "delta": 4,
-   "method": "refined (rust LNS)"
+   "pr3_total": 53973,
+   "total_delay": 53971,
+   "delta": 2,
+   "legal": true,
+   "provenance": "refined",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "a344d27190f904b63edc5a08addecb6db1c608a18b52327e0160fdf2be96ef5b",
+   "route_sha256": "76a7c0de37865a7c65991cc22e4c6a5b4e2079df246216d329f8bf7ea2b308b0"
   },
   {
    "case": "case_02",
-   "warm_start_delay": 95660,
-   "total_delay": 95650,
-   "delta": 10,
-   "method": "refined (rust LNS)"
+   "pr3_total": 95438,
+   "total_delay": 95434,
+   "delta": 4,
+   "legal": true,
+   "provenance": "refined",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "c525f769e442856acfb63a3a5676229f0f2f084404b78ed5fde4d96175ab7f4b",
+   "route_sha256": "f250c1796d547583711e552ddc40615c4355644595df03df04af9012a9d6f550"
   },
   {
    "case": "case_03",
-   "warm_start_delay": 164165,
-   "total_delay": 164145,
-   "delta": 20,
-   "method": "refined (rust LNS)"
+   "pr3_total": 163815,
+   "total_delay": 163809,
+   "delta": 6,
+   "legal": true,
+   "provenance": "refined",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "f8ca72cda31ab3a99a42e0bb9f757ad83d473814771fc140787d3ccc776e2ff8",
+   "route_sha256": "5ca5a47c2218b43f43b47f0c3d19e3cd0fb541cafc2c0cd273a5d72a0ee22bd1"
   },
   {
    "case": "case_04",
-   "warm_start_delay": 177625,
-   "total_delay": 177599,
-   "delta": 26,
-   "method": "refined (rust LNS)"
+   "pr3_total": 177273,
+   "total_delay": 177259,
+   "delta": 14,
+   "legal": true,
+   "provenance": "refined",
+   "route_is_pr3_verbatim": false,
+   "pr3_sha256": "ad999deaec3672bfe15973ff7029f9ae0d8676beb65b82ca86167a81315890ad",
+   "route_sha256": "5d10f268caea3c3efa8340c67a7c6ad9cba6bf55caeafc1e18f4a6af35c14d62"
   }
  ]
 }

@@ -2,7 +2,7 @@
   "author": "kesudh",
   "url": "https://github.com/kesudh/eda-3d-routing-challenge/tree/submission/warm_lns_refinement_v2/submissions/intro/warm_lns_refinement/replay",
   "date": "2026-10-02",
-  "method": "Exact shortest-path-tree warm refinement: radix A*, feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, optional circular integer buckets, multiple CPU search workers, strict final-walk polishing, and exact two-parent minimum-cut crossover following PR24. Our GPU kernels are audited prototypes and did not generate these refinements; selected PR26 public warm starts are attributed to its GPU-accelerated engine.",
+  "method": "Exact shortest-path-tree warm refinement: radix A*, feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, optional circular integer buckets, multiple CPU search workers, strict final-walk polishing, and exact two-parent minimum-cut crossover following PR24. Our GPU kernels are audited prototypes and did not generate these refinements; selected PR26 public warm starts are attributed to its GPU-accelerated engine. Bounded conflict-based search over static multi-sink trees, alternated with neutral group reroutes; opt-in specialized chain pricing avoids full-grid cost setup.",
   "derived_from": {
     "submission": "coordinated_refinement",
     "author": "jay-tau"
@@ -590,6 +590,13 @@
         "EXPERIMENT/runs/adversarial_mixed/coordinated_refinement/designs/router.sol.json",
         "EXPERIMENT/runs/crossover/designs/router.02.sol.json"
       ]
+    }
+  ],
+  "algorithm_references": [
+    {
+      "method": "conflict splitting, adapted to static vertex-disjoint multi-sink trees",
+      "citation": "Sharon, Stern, Felner and Sturtevant, Conflict-based search for optimal multi-agent pathfinding",
+      "url": "https://doi.org/10.1016/j.artint.2014.11.006"
     }
   ],
   "tier": "designs",

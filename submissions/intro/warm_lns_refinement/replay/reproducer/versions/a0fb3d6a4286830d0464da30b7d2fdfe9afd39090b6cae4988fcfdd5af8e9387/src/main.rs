@@ -672,7 +672,6 @@ struct Scratch {
     pce: std::collections::HashMap<u64, u32>,
     phe: std::collections::HashMap<u64, f64>,
     entry_owner: Vec<i32>,
-    direct_chain_prices: Option<bool>,
     par: Vec<u32>,
     par_stamp: Vec<u32>,
     xcur: u32,
@@ -705,7 +704,6 @@ impl Scratch {
             pce: std::collections::HashMap::new(),
             phe: std::collections::HashMap::new(),
             entry_owner: Vec::new(),
-            direct_chain_prices: None,
             par: vec![0; n as usize],
             par_stamp: vec![0; n as usize],
             xcur: 0,
@@ -943,16 +941,6 @@ impl Scratch {
         pres_fac: f64,
         vcong: f64,
     ) {
-        match self.direct_chain_prices {
-            Some(true)=>self.pdijkstra_impl::<true,true>(inst,owner,ing,me,src,pres_fac,vcong),
-            Some(false)=>self.pdijkstra_impl::<true,false>(inst,owner,ing,me,src,pres_fac,vcong),
-            None=>self.pdijkstra_impl::<false,false>(inst,owner,ing,me,src,pres_fac,vcong),
-        }
-    }
-
-    fn pdijkstra_impl<const CHAIN:bool,const ENTRY:bool>(
-        &mut self,inst:&Inst,owner:&[i32],ing:&[bool],me:i32,src:u32,pres_fac:f64,vcong:f64,
-    ) {
         self.pcur += 1;
         let st = self.pcur;
         let ng = self.ncur;
@@ -984,18 +972,16 @@ impl Scratch {
                 if o >= 0 && o != me && !ing[o as usize] {
                     continue;
                 }
-                let mut vcost = if CHAIN {
-                    if owner[u as usize]>=0 && (!ENTRY || owner[u as usize]!=owner[v as usize]) {pres_fac}else{0.0}
-                } else if self.pvst[u as usize] == ng {
+                let mut vcost = if self.pvst[u as usize] == ng {
                     self.phv[u as usize] + pres_fac * self.pcv[u as usize] as f64
                 } else {
                     0.0
                 };
-                if !CHAIN && !self.entry_owner.is_empty() && owner[u as usize]>=0
+                if !self.entry_owner.is_empty() && owner[u as usize]>=0
                     && owner[u as usize]==owner[v as usize] {vcost=0.0;}
                 let ek = ekey(v, u);
-                let he = if CHAIN {0.0}else{self.phe.get(&ek).copied().unwrap_or(0.0)};
-                let pe = if CHAIN {0.0}else{self.pce.get(&ek).copied().unwrap_or(0) as f64};
+                let he = self.phe.get(&ek).copied().unwrap_or(0.0);
+                let pe = self.pce.get(&ek).copied().unwrap_or(0) as f64;
                 let nd = d + (wb[i] as f64) * (1.0 + he + pres_fac * pe) + vcong * vcost;
                 let ui = u as usize;
                 if self.pstamp[ui] != st || nd < self.pdist[ui] {
@@ -1017,23 +1003,6 @@ impl Scratch {
         pres_fac: f64,
         vcong: f64,
     ) -> Option<(Vec<u32>, Vec<(u32, u32)>)> {
-        self.extract_pen_with_owner(inst,net,pres_fac,vcong,None)
-    }
-
-    fn extract_pen_with_owner(
-        &mut self, inst:&Inst, net:&Net, pres_fac:f64, vcong:f64,
-        chain_owner:Option<&[i32]>,
-    ) -> Option<(Vec<u32>, Vec<(u32,u32)>)> {
-        match self.direct_chain_prices {
-            Some(true)=>self.extract_pen_impl::<true,true>(inst,net,pres_fac,vcong,chain_owner),
-            Some(false)=>self.extract_pen_impl::<true,false>(inst,net,pres_fac,vcong,chain_owner),
-            None=>self.extract_pen_impl::<false,false>(inst,net,pres_fac,vcong,chain_owner),
-        }
-    }
-
-    fn extract_pen_impl<const CHAIN:bool,const ENTRY:bool>(
-        &mut self,inst:&Inst,net:&Net,pres_fac:f64,vcong:f64,chain_owner:Option<&[i32]>,
-    ) -> Option<(Vec<u32>,Vec<(u32,u32)>)> {
         let st = self.pcur;
         let ng = self.ncur;
         let mut verts: Vec<u32> = Vec::with_capacity(96);
@@ -1066,9 +1035,7 @@ impl Scratch {
                     let mut picks: [u32; 6] = [0; 6];
                     let mut np = 0usize;
                     let dcur = self.pdist[cur as usize];
-                    let vcost_cur = if CHAIN {
-                        if chain_owner.expect("direct prices require ownership")[cur as usize]>=0 {pres_fac}else{0.0}
-                    } else if self.pvst[cur as usize] == ng {
+                    let vcost_cur = if self.pvst[cur as usize] == ng {
                         self.phv[cur as usize] + pres_fac * self.pcv[cur as usize] as f64
                     } else {
                         0.0
@@ -1079,13 +1046,10 @@ impl Scratch {
                             continue;
                         }
                         let ek = ekey(u, cur);
-                        let he = if CHAIN {0.0}else{self.phe.get(&ek).copied().unwrap_or(0.0)};
-                        let pe = if CHAIN {0.0}else{self.pce.get(&ek).copied().unwrap_or(0) as f64};
+                        let he = self.phe.get(&ek).copied().unwrap_or(0.0);
+                        let pe = self.pce.get(&ek).copied().unwrap_or(0) as f64;
                         let ec = (wb[i] as f64) * (1.0 + he + pres_fac * pe);
-                        let vc=if CHAIN && ENTRY {
-                            let owners=chain_owner.unwrap();
-                            if owners[cur as usize]>=0 && owners[cur as usize]==owners[u as usize] {0.0}else{vcost_cur}
-                        }else if !CHAIN && !self.entry_owner.is_empty() && self.entry_owner[cur as usize]>=0
+                        let vc=if !self.entry_owner.is_empty() && self.entry_owner[cur as usize]>=0
                             && self.entry_owner[cur as usize]==self.entry_owner[u as usize] {0.0}else{vcost_cur};
                         if self.pdist[u as usize] + ec + vcong * vc == dcur {
                             picks[np] = u;
@@ -1589,7 +1553,7 @@ fn detour_move(inst:&Inst, sol:&mut Solution, owner:&mut [i32], ws:&mut Scratch,
 /// repair the actual displaced nets. Already repaired trees remain hard
 /// obstacles. All edits are transactional until the complete chain is legal.
 fn chain_move(inst:&Inst, sol:&mut Solution, owner:&mut [i32], ws:&mut Scratch,
-              seed:usize, cap:usize, threshold:i64, entry_price:bool, direct_price:bool) -> Option<i64> {
+              seed:usize, cap:usize, threshold:i64, entry_price:bool) -> Option<i64> {
     let nn=inst.nets.len();
     let mut saved=vec![Saved{nid:seed,verts:sol.verts[seed].clone(),edges:sol.edges[seed].clone(),delay:sol.delay[seed]}];
     let mut member=vec![false;nn];member[seed]=true;
@@ -1601,23 +1565,19 @@ fn chain_move(inst:&Inst, sol:&mut Solution, owner:&mut [i32], ws:&mut Scratch,
     while cursor<saved.len() {
         let nid=saved[cursor].nid;
         for n in 0..nn {soft[n]=!locked[n] && (member[n] || saved.len()<cap);}
-        ws.ncur+=1;ws.pce.clear();ws.phe.clear();
+        ws.ncur+=1;let ng=ws.ncur;ws.pce.clear();ws.phe.clear();
         // Charge each transition into an occupied net, rather than every
         // occupied vertex, so long contiguous blockers are not over-penalized.
         // Re-entering a net is charged again; this is not a distinct-net cost.
         ws.entry_owner.clear();
-        // Chain prices are a pure function of the existing ownership map.
-        // Read them on demand instead of touching three arrays over the whole
-        // grid before every (usually local) shortest-path search.
-        ws.direct_chain_prices=if direct_price {Some(entry_price)}else{None};
-        if !direct_price {
-            if entry_price {ws.entry_owner.extend_from_slice(owner);}
-            for v in 0..inst.n as usize {if owner[v]>=0 {ws.pvst[v]=ws.ncur;ws.pcv[v]=1;ws.phv[v]=0.0;}}
+        if entry_price {ws.entry_owner.extend_from_slice(owner);}
+        for v in 0..inst.n as usize {
+            if owner[v]>=0 {
+                ws.pvst[v]=ng;ws.pcv[v]=1;ws.phv[v]=0.0;
+            }
         }
         ws.pdijkstra(inst,owner,&soft,nid as i32,inst.nets[nid].driver,price,1.0);
-        let extracted=ws.extract_pen_with_owner(inst,&inst.nets[nid],price,1.0,Some(owner));
-        ws.direct_chain_prices=None;
-        let Some((verts,edges))=extracted else {failed=true;break;};
+        let Some((verts,edges))=ws.extract_pen(inst,&inst.nets[nid],price,1.0) else {failed=true;break;};
         let mut displaced:Vec<usize>=verts.iter().filter_map(|&v| {
             let o=owner[v as usize];if o>=0 && o as usize!=nid {Some(o as usize)}else{None}
         }).collect();
@@ -1912,7 +1872,7 @@ fn main() {
     if args.len() < 4 {
         eprintln!("usage: m3d-lns <instance.json> <init.sol.json> <out.sol.json> [flags]");
         eprintln!("  --secs F  --seed N  --workers N  --kmin N  --kmax N  --rmax N  --passes N");
-        eprintln!("  --mode region|blocker|mixed|single|chain|chain-fast|chain-entry|chain-entry-fast|cbs|cbs-mixed   --expected N  --tag STR  --verify-only");
+        eprintln!("  --mode region|blocker|mixed|single   --expected N  --tag STR  --verify-only");
         eprintln!("  --t0 F  --neg-frac F  --neg-rounds N  --neg-pf0 F  --neg-pm F  --neg-hf F  --neg-vc F");
         std::process::exit(2);
     }
@@ -2332,7 +2292,7 @@ fn worker(
             }
         }
         let u: f64 = (ws.rng.next() >> 11) as f64 / ((1u64 << 53) as f64);
-        let do_mode: u8 = if mode == "chain" || mode == "chain-entry" || mode == "chain-fast" || mode == "chain-entry-fast" {3} else if mode == "mixed" {
+        let do_mode: u8 = if mode == "chain" || mode == "chain-entry" {3} else if mode == "mixed" {
             if u < 0.75 {
                 0
             } else if u < 0.90 {
@@ -2368,7 +2328,7 @@ fn worker(
             }
         }
         if do_mode == 3 {
-            match chain_move(&inst,&mut sol,&mut owner,&mut ws,seed_net,k,thr,mode=="chain-entry"||mode=="chain-entry-fast",mode.ends_with("-fast")) {
+            match chain_move(&inst,&mut sol,&mut owner,&mut ws,seed_net,k,thr,mode=="chain-entry") {
                 Some(d) if d<0=>imp+=1,
                 Some(0)=>eq+=1,
                 Some(_)=>uphill+=1,
@@ -2620,25 +2580,5 @@ mod tests {
     fn tree_objective_charges_shared_trunk_for_each_sink() {
         let inst=Inst{early_stop:true,retain_negotiated:true,use_radix:true,use_dial:false,use_astar:true,budget_bound:false,free_dist:Vec::new(),check_state:false,name:"trunk".into(),w:3,h:2,l:1,wh:6,n:6,ld:vec![2],vd:3,nets:vec![Net{driver:0,sinks:vec![2,4]}],pin_owner:vec![0,-1,0,-1,0,-1]};
         assert_eq!(physical_tree_delay(&inst,0,&[(0,1),(1,2),(1,4)]),8);
-    }
-
-    #[test]
-    fn direct_chain_prices_match_materialized_costs() {
-        for seed in 1..=40 {for entry in [false,true] {
-            let mut rng=Rng::new(seed);let n=100;
-            let mut pins=vec![-1;n];pins[0]=0;pins[n-1]=0;pins[n/2]=0;
-            let inst=Inst{early_stop:true,retain_negotiated:false,use_radix:true,use_dial:true,use_astar:true,budget_bound:false,free_dist:Vec::new(),check_state:false,name:"direct-chain".into(),w:5,h:5,l:4,wh:25,n:n as u32,ld:vec![1,3,2,4],vd:2,nets:vec![Net{driver:0,sinks:vec![(n-1) as u32,(n/2) as u32]}],pin_owner:pins};
-            let mut owner=vec![-1;n];for v in 1..n {if rng.below(3)>0 {owner[v]=1+rng.below(2) as i32;}}
-            let mut legacy=Scratch::new(n as u32,3,seed);let mut direct=Scratch::new(n as u32,3,seed);
-            legacy.ncur=1;direct.ncur=1;
-            if entry {legacy.entry_owner=owner.clone();}
-            for v in 0..n {if owner[v]>=0 {legacy.pvst[v]=1;legacy.pcv[v]=1;}}
-            direct.direct_chain_prices=Some(entry);
-            let price=[0.25,0.5,1.0,2.0,4.0,8.0][seed as usize%6];
-            legacy.pdijkstra(&inst,&owner,&[true,true,true],0,0,price,1.0);
-            direct.pdijkstra(&inst,&owner,&[true,true,true],0,0,price,1.0);
-            assert_eq!(legacy.pstamp,direct.pstamp);assert_eq!(legacy.pdist,direct.pdist);
-            assert_eq!(legacy.extract_pen(&inst,&inst.nets[0],price,1.0),direct.extract_pen_with_owner(&inst,&inst.nets[0],price,1.0,Some(&owner)));
-        }}
     }
 }

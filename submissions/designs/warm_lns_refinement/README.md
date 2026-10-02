@@ -20,6 +20,13 @@ The method uses exact radix/A* shortest-path trees with feasible per-sink
 bounds, neutral and group moves, preserved-route and displacement-chain repair,
 bounded excursions, CPU search portfolios, and two-parent minimum-cut crossover
 following PR24. An opt-in circular bucket queue accelerates integer searches.
+The new `cbs-mixed` mode alternates neutral group moves with bounded conflict
+search over static vertex-disjoint trees. Its exact shortest-path lower bounds
+prune group configurations that cannot improve the incumbent. This adapts the
+conflict-splitting principle of [Sharon et al.](https://doi.org/10.1016/j.artint.2014.11.006)
+to multi-sink routing; a node/time-limited run makes no global-optimality claim.
+The opt-in `chain-fast` and `chain-entry-fast` modes specialize congestion pricing,
+avoiding repeated whole-grid setup while preserving fixed-work route choices.
 Our CUDA prototypes were benchmarked separately and did not generate these
 refinements. PR26 credits its public warm starts to a GPU-accelerated engine.
 

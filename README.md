@@ -79,7 +79,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.1299 | 8/8 | 536522 | 87.03 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.1299 | 8/8 | 536508 | 124.56 | ✓ | — |
 | 2 | pathfinder_lns | Tazeem Mahashin | 1.1277 | 8/8 | 537468 | 62411.00 |  | — |
 | 3 | coordinated_refinement † | jay-tau | 1.1248 | 8/8 | 538876 | — |  | — |
 | 4 | spt_lns | James (IrwinJam) | 1.1143 | 8/8 | 543962 | 4801.50 |  | — |

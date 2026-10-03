@@ -13,7 +13,7 @@ do not edit it by hand.
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.1528 | 20/20 | 341368 | 155.83 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.1528 | 20/20 | 341362 | 155.83 | ✓ | — |
 | 2 | pathfinder_lns | Tazeem Mahashin | 1.1514 | 20/20 | 341746 | 46476.76 |  | — |
 | 3 | coordinated_refinement † | jay-tau | 1.1495 | 20/20 | 342578 | — |  | — |
 | 4 | spt_lns | James (IrwinJam) | 1.1383 | 20/20 | 347680 | 5141.43 |  | — |

@@ -29,7 +29,7 @@ do not edit it by hand.
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.3961 | 9/9 | 144335 | 42.53 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.3966 | 9/9 | 144307 | 42.53 | ✓ | — |
 | 2 | pathfinder_lns | Tazeem Mahashin | 1.3884 | 9/9 | 144991 | — |  | — |
 | 3 | coordinated_refinement † | jay-tau | 1.3858 | 9/9 | 145305 | — |  | — |
 | 4 | reubalink | reubalink | 1.3622 | 9/9 | 147825 | — |  | — |
@@ -79,7 +79,7 @@ do not edit it by hand.
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.3137 | 4/4 | 489561 | 291.91 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.3325 | 4/4 | 483633 | 291.91 | ✓ | — |
 | 2 | pathfinder_lns | Tazeem Mahashin | 1.3111 | 4/4 | 490499 | 61369.30 |  | — |
 | 3 | coordinated_refinement † | jay-tau | 1.3042 | 4/4 | 493227 | — |  | — |
 | 4 | spt_lns | James (IrwinJam) | 1.2625 | 4/4 | 510661 | 9601.63 |  | — |
@@ -93,7 +93,7 @@ do not edit it by hand.
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.4380 | 3/3 | 208815 | 127.20 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.4678 | 3/3 | 204415 | 127.20 | ✓ | — |
 | 2 | pathfinder_lns | Tazeem Mahashin | 1.4354 | 3/3 | 209175 | 47267.61 |  | — |
 | 3 | coordinated_refinement † | jay-tau | 1.4257 | 3/3 | 210639 | — |  | — |
 | 4 | spt_lns | James (IrwinJam) | 1.3867 | 3/3 | 216825 | 7200.88 |  | — |

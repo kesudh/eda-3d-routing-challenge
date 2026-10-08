@@ -7,7 +7,10 @@
   "submission": "coordinated_refinement",
   "author": "jay-tau",
   "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
-  "note": "per-case provenance in `cases`; cases identical to the parent are carried verbatim and excluded from runtime.json"
+  "also_carried_from": [
+   "coordinated_refinement"
+  ],
+  "note": "per-case provenance in `cases`; cases byte-identical to a public entry are carried verbatim and excluded from runtime.json"
  },
  "warm_starts": [
   {
@@ -115,10 +118,11 @@
      "log": "[w] loaded ctrl: nets=182 total=49928\nPOLISH passes=1 before=49928 after=49928 gain=0\nEND_TO_END_SECONDS=0.044380000\n"
     }
    },
-   "method": "warm-start refinement (chained) from retained public route",
+   "method": "warm-start refinement (chained)",
    "provenance": {
     "method": "refinement of a retained public route",
     "parent_submission": "coordinated_refinement",
+    "parent_ref": "pr36",
     "parent_author": "jay-tau",
     "parent_commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
     "parent_sha256": "a260c7761da627d960a8ea8b34bce77f99160d57cd1b719217497ad018a7ab54",
@@ -289,10 +293,11 @@
      }
     }
    },
-   "method": "warm-start refinement (chained) from retained public route",
+   "method": "warm-start refinement (chained)",
    "provenance": {
     "method": "refinement of a retained public route",
     "parent_submission": "coordinated_refinement",
+    "parent_ref": "pr36",
     "parent_author": "jay-tau",
     "parent_commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
     "parent_sha256": "97ffca1c26185ac4be527a34a12d1c9d259e2b40a46eb103ae4619b4835d304d",
@@ -316,7 +321,7 @@
    "tier": "designs",
    "case": "router",
    "kind": "pairwise",
-   "source": "pr36",
+   "source": "pr36:coordinated_refinement",
    "algorithm_sha256": "59c038818c60a136d5b1dbe3e1caf9f7a6cce57ce7b324a5cc88b60b1b69684b",
    "source_sha256": "b30b26c1e79e89b5344dc632f823a805c1ee011a39e8d6dd827de99ee0cd35c6",
    "parent_measurements": [
@@ -537,7 +542,8 @@
     "method": "retained public route",
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+    "ref": "pr36",
+    "commit": "845e94d",
     "route": "submissions/designs/coordinated_refinement/router.sol.json",
     "sha256": "03a2fe493b14c1a5b747f1cd9eaf782c1a899393e06bf6bca2c4b3f18a7d8370",
     "total_delay": 67467

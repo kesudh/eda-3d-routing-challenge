@@ -7,7 +7,10 @@
   "submission": "coordinated_refinement",
   "author": "jay-tau",
   "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
-  "note": "per-case provenance in `cases`; cases identical to the parent are carried verbatim and excluded from runtime.json"
+  "also_carried_from": [
+   "coordinated_refinement"
+  ],
+  "note": "per-case provenance in `cases`; cases byte-identical to a public entry are carried verbatim and excluded from runtime.json"
  },
  "warm_starts": [
   {
@@ -24,7 +27,7 @@
   {
    "tier": "scale",
    "case": "case_01",
-   "source": "pr36",
+   "source": "pr36:coordinated_refinement",
    "delay": 38984,
    "legal": true,
    "reasons": [],
@@ -43,7 +46,8 @@
     "method": "retained public route",
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+    "ref": "pr36",
+    "commit": "845e94d",
     "route": "submissions/scale/coordinated_refinement/case_01.sol.json",
     "sha256": "c514e02e186ea4e6fe0a1caf084a3421c74a62ed8630bf2e5894b8713995b7f2",
     "total_delay": 38984
@@ -52,7 +56,7 @@
   {
    "tier": "scale",
    "case": "case_02",
-   "source": "pr36",
+   "source": "origin/main:coordinated_refinement",
    "delay": 44760,
    "legal": true,
    "reasons": [],
@@ -63,7 +67,8 @@
     "method": "retained public route",
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+    "ref": "origin/main",
+    "commit": "55d8a32",
     "route": "submissions/scale/coordinated_refinement/case_02.sol.json",
     "sha256": "eaa312b99ca9da166c5a96dc1cc0bd443b2e8985e5538ddd7c8d72bd29e9bfba",
     "total_delay": 44760
@@ -73,7 +78,7 @@
   {
    "tier": "scale",
    "case": "case_03",
-   "source": "pr36",
+   "source": "pr36:coordinated_refinement",
    "delay": 55972,
    "legal": true,
    "reasons": [],
@@ -92,7 +97,8 @@
     "method": "retained public route",
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+    "ref": "pr36",
+    "commit": "845e94d",
     "route": "submissions/scale/coordinated_refinement/case_03.sol.json",
     "sha256": "ac92b84a18ceff3e2af0b4a8b4a8230c2feda5435b5b225de57bb8b09b90be57",
     "total_delay": 55972
@@ -101,7 +107,7 @@
   {
    "tier": "scale",
    "case": "case_04",
-   "source": "pr36",
+   "source": "origin/main:coordinated_refinement",
    "delay": 56212,
    "legal": true,
    "reasons": [],
@@ -112,7 +118,8 @@
     "method": "retained public route",
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+    "ref": "origin/main",
+    "commit": "55d8a32",
     "route": "submissions/scale/coordinated_refinement/case_04.sol.json",
     "sha256": "41cdfe4f05e5da05050c2a6cbcd8c8f649eeb153fe146181c7b0a58b2cd47ea8",
     "total_delay": 56212
@@ -122,7 +129,7 @@
   {
    "tier": "scale",
    "case": "case_05",
-   "source": "pr36",
+   "source": "origin/main:coordinated_refinement",
    "delay": 65475,
    "legal": true,
    "reasons": [],
@@ -133,7 +140,8 @@
     "method": "retained public route",
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+    "ref": "origin/main",
+    "commit": "55d8a32",
     "route": "submissions/scale/coordinated_refinement/case_05.sol.json",
     "sha256": "c0309ad7ab20aab6dcff01fc81eec28e0b8f5c4bedcfd620cfee123b981da77f",
     "total_delay": 65475
@@ -143,7 +151,7 @@
   {
    "tier": "scale",
    "case": "case_06",
-   "source": "pr36",
+   "source": "pr36:coordinated_refinement",
    "delay": 77405,
    "legal": true,
    "reasons": [],
@@ -162,7 +170,8 @@
     "method": "retained public route",
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+    "ref": "pr36",
+    "commit": "845e94d",
     "route": "submissions/scale/coordinated_refinement/case_06.sol.json",
     "sha256": "3b48a7c2fe80122754654aeb1be0777007f2a1fa07b41866a94b0d5b0481d1df",
     "total_delay": 77405
@@ -171,7 +180,7 @@
   {
    "tier": "scale",
    "case": "case_07",
-   "source": "pr36",
+   "source": "origin/main:coordinated_refinement",
    "delay": 85841,
    "legal": true,
    "reasons": [],
@@ -182,7 +191,8 @@
     "method": "retained public route",
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+    "ref": "origin/main",
+    "commit": "55d8a32",
     "route": "submissions/scale/coordinated_refinement/case_07.sol.json",
     "sha256": "6b4d7e8c7fc0e30be408df5cf1e92c09fa861fd42cb00dc7c6cc024d75c0826d",
     "total_delay": 85841
@@ -192,7 +202,7 @@
   {
    "tier": "scale",
    "case": "case_08",
-   "source": "pr36",
+   "source": "pr36:coordinated_refinement",
    "delay": 107015,
    "legal": true,
    "reasons": [],
@@ -257,7 +267,8 @@
     "method": "retained public route",
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+    "ref": "pr36",
+    "commit": "845e94d",
     "route": "submissions/scale/coordinated_refinement/case_08.sol.json",
     "sha256": "cf91abcb6e41c2096d9f44b05de6502e1066d00c9ab494f797bd0b10cc7e11d3",
     "total_delay": 107015

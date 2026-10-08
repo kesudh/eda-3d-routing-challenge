@@ -7,7 +7,10 @@
   "submission": "coordinated_refinement",
   "author": "jay-tau",
   "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
-  "note": "per-case provenance in `cases`; cases identical to the parent are carried verbatim and excluded from runtime.json"
+  "also_carried_from": [
+   "coordinated_refinement"
+  ],
+  "note": "per-case provenance in `cases`; cases byte-identical to a public entry are carried verbatim and excluded from runtime.json"
  },
  "warm_starts": [
   {
@@ -24,7 +27,7 @@
   {
    "tier": "stress",
    "case": "case_01",
-   "source": "pr36",
+   "source": "pr36:coordinated_refinement",
    "delay": 1042306,
    "legal": true,
    "reasons": [],
@@ -54,7 +57,8 @@
     "method": "retained public route",
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+    "ref": "pr36",
+    "commit": "845e94d",
     "route": "submissions/stress/coordinated_refinement/case_01.sol.json",
     "sha256": "f9b9d9907a533237be8b4b81829f96173fae96e9cfcec5d4ea592f5852bdb709",
     "total_delay": 1042306

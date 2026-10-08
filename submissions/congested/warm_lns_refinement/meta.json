@@ -7,7 +7,10 @@
   "submission": "coordinated_refinement",
   "author": "jay-tau",
   "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
-  "note": "per-case provenance in `cases`; cases identical to the parent are carried verbatim and excluded from runtime.json"
+  "also_carried_from": [
+   "coordinated_refinement"
+  ],
+  "note": "per-case provenance in `cases`; cases byte-identical to a public entry are carried verbatim and excluded from runtime.json"
  },
  "warm_starts": [
   {
@@ -38,10 +41,11 @@
    "source_sha256": "f25e50c09da0e92d778468357174765bb5fa9f960b604ca71379ccedef8d6e58",
    "exe_sha256": "62ecc2d8bfda88da565842e77fb1b0581463851ed50f38daf044f9ca16d52703",
    "measured_at": "2026-10-02T09:54:05.571577+00:00",
-   "method": "warm-start refinement (chained) from retained public route",
+   "method": "warm-start refinement (chained)",
    "provenance": {
     "method": "refinement of a retained public route",
     "parent_submission": "coordinated_refinement",
+    "parent_ref": "pr36",
     "parent_author": "jay-tau",
     "parent_commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
     "parent_sha256": "9c1adb8af56cb8fef5b04e9b156bae30a80e1fffe433f58c4e114b5bec3ad561",
@@ -54,7 +58,7 @@
   {
    "tier": "congested",
    "case": "case_02",
-   "source": "pr36",
+   "source": "pr36:coordinated_refinement",
    "delay": 92840,
    "legal": true,
    "reasons": [],
@@ -199,7 +203,8 @@
     "method": "retained public route",
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+    "ref": "pr36",
+    "commit": "845e94d",
     "route": "submissions/congested/coordinated_refinement/case_02.sol.json",
     "sha256": "1d81b27e57636b3c952afdab22a52b82ddc5c9c5b4dc5fddfb46b8ac2bd68ab7",
     "total_delay": 92840
@@ -411,10 +416,11 @@
      }
     }
    },
-   "method": "warm-start refinement (chained) from retained public route",
+   "method": "warm-start refinement (chained)",
    "provenance": {
     "method": "refinement of a retained public route",
     "parent_submission": "coordinated_refinement",
+    "parent_ref": "pr36",
     "parent_author": "jay-tau",
     "parent_commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
     "parent_sha256": "4408e98f3087be414169fb9a7b10ddc2d1e9e49210bb6fd41bc52f2042045741",
@@ -619,10 +625,11 @@
      }
     }
    },
-   "method": "warm-start refinement (chained) from retained public route",
+   "method": "warm-start refinement (chained)",
    "provenance": {
     "method": "refinement of a retained public route",
     "parent_submission": "coordinated_refinement",
+    "parent_ref": "pr36",
     "parent_author": "jay-tau",
     "parent_commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
     "parent_sha256": "8ef8a5fbd0140312a31c75ce55e07c94878a4d796770b3beff0410181382360c",

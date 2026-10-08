@@ -1,92 +1,73 @@
 {
-  "author": "kesudh",
-  "url": "https://github.com/kesudh/eda-3d-routing-challenge/tree/submission/warm_lns_refinement_v2/submissions/intro/warm_lns_refinement/replay",
-  "date": "2026-10-02",
-  "method": "Exact shortest-path-tree warm refinement: radix A*, feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, optional circular integer buckets, multiple CPU search workers, strict final-walk polishing, and exact two-parent minimum-cut crossover following PR24. Our GPU kernels are audited prototypes and did not generate these refinements; selected PR26 public warm starts are attributed to its GPU-accelerated engine. Bounded conflict-based search over static multi-sink trees, alternated with neutral group reroutes; opt-in specialized chain pricing avoids full-grid cost setup. 2026-10-04 adoption update: 1 case(s) where a merged entry's route is strictly better than this entry's previous route are carried verbatim from coordinated_refinement (main 2566f5f1); documented as \"retained public route\" in the cases list, credited via derived_from. 2026-10-04 sole-first update: stress case_01 improved 1,042,314 -> 1,042,310 by a bounded portfolio refinement (cbs-mixed / portfolio / mixed / cbs configs from the carried route; the portfolio config won; route archived from a mid-run snapshot); the route is again our own refinement, parented on the carried coordinated_refinement route.",
-  "derived_from": {
+ "author": "kesudh",
+ "url": "https://github.com/kesudh/eda-3d-routing-challenge/tree/submission/warm_lns_refinement_v2/submissions/intro/warm_lns_refinement/replay",
+ "date": "2026-10-02",
+ "method": "Exact shortest-path-tree warm refinement: radix A*, feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, optional circular integer buckets, multiple CPU search workers, strict final-walk polishing, and exact two-parent minimum-cut crossover following PR24. Our GPU kernels are audited prototypes and did not generate these refinements; selected PR26 public warm starts are attributed to its GPU-accelerated engine. Bounded conflict-based search over static multi-sink trees, alternated with neutral group reroutes; opt-in specialized chain pricing avoids full-grid cost setup. 2026-10-04 adoption update: 1 case(s) where a merged entry's route is strictly better than this entry's previous route are carried verbatim from coordinated_refinement (main 2566f5f1); documented as \"retained public route\" in the cases list, credited via derived_from. 2026-10-04 sole-first update: stress case_01 improved 1,042,314 -> 1,042,310 by a bounded portfolio refinement (cbs-mixed / portfolio / mixed / cbs configs from the carried route; the portfolio config won; route archived from a mid-run snapshot); the route is again our own refinement, parented on the carried coordinated_refinement route.",
+ "derived_from": {
+  "submission": "coordinated_refinement",
+  "author": "jay-tau",
+  "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+  "note": "per-case provenance in `cases`; cases identical to the parent are carried verbatim and excluded from runtime.json"
+ },
+ "warm_starts": [
+  {
+   "submission": "coordinated_refinement",
+   "author": "jay-tau",
+   "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+   "input": "submissions/stress/coordinated_refinement/<case>.sol.json"
+  }
+ ],
+ "runtime": "Measured incremental refinement only: complete native processes including parsing/checking, search and output, plus independent checker loading and validation. Every private parent stage is charged recursively. Excludes generation of public warm starts, compilation, persistent-harness interpreter imports, and the exploratory/tuning campaign. This is not a from-scratch runtime comparison. 2026-10-04 adoption update: carried cases exclude refinement compute (their routes were produced upstream) and carry no runtime.json entry. 2026-10-04 sole-first update: the stress runtime entry is the measured wall time of the winning bounded portfolio refinement from the carried route, plus independent validation.",
+ "runtime_hardware": "Windows, Intel i7-13700HX, 16 cores/24 threads; actual worker count recorded per command; concurrent Hermes and benchmark workloads. Observed wall times, not normalized.",
+ "selection": "Best independently legal output per case; ties select shortest measured invocation. The per-case commands disclose benchmark-specific selection. Timed multiworker search is nondeterministic.",
+ "cases": [
+  {
+   "tier": "stress",
+   "case": "case_01",
+   "source": "pr36",
+   "delay": 1042306,
+   "legal": true,
+   "reasons": [],
+   "solver_wall_s": 624.0,
+   "independent_validation_s": 3.930021,
+   "runtime_s": 627.93,
+   "output": "F:/eda3d-wt/publish_v3/stress_attempt/run_portfolio-600/case_01.sol.json",
+   "sha256": "f9b9d9907a533237be8b4b81829f96173fae96e9cfcec5d4ea592f5852bdb709",
+   "source_sha256": "c85dd4867373786c4f956f28fa33ecc70eca782cb53d5ba9455fbdc71251761c",
+   "exe_sha256": "a341ff7d5b475a53347a3bdf9555f0a6a2e473a56f44cc10fb363fb30e120d70",
+   "measured_at": "2026-10-04T20:00:00Z",
+   "parent_measurement": {
+    "tier": "stress",
+    "case": "case_01",
+    "variant": "retained public route (carried 2026-10-04)",
+    "source": "coordinated_refinement",
+    "author": "jay-tau",
+    "delay": 1042314,
+    "legal": true,
+    "reasons": [],
+    "route_sha256": "c85dd4867373786c4f956f28fa33ecc70eca782cb53d5ba9455fbdc71251761c",
+    "commit": "2566f5f120392182dd97db77ba7760f8bb9b0828",
+    "route": "submissions/stress/coordinated_refinement/case_01.sol.json"
+   },
+   "method": "retained public route",
+   "provenance": {
+    "method": "retained public route",
     "submission": "coordinated_refinement",
-    "author": "jay-tau"
-  },
-  "warm_starts": [
-    {
-      "submission": "coordinated_refinement",
-      "author": "jay-tau",
-      "input": "PR24/submissions/stress/coordinated_refinement/case_01.sol.json",
-      "sha256": "895eeb9dc8519ff5d4866054476bf778d77c4a877e2da2c0432fe1e731dbd3e9",
-      "commit": "58585d7b496d505dfa35f2426df4269974e583fa"
-    }
-  ],
-  "runtime": "Measured incremental refinement only: complete native processes including parsing/checking, search and output, plus independent checker loading and validation. Every private parent stage is charged recursively. Excludes generation of public warm starts, compilation, persistent-harness interpreter imports, and the exploratory/tuning campaign. This is not a from-scratch runtime comparison. 2026-10-04 adoption update: carried cases exclude refinement compute (their routes were produced upstream) and carry no runtime.json entry. 2026-10-04 sole-first update: the stress runtime entry is the measured wall time of the winning bounded portfolio refinement from the carried route, plus independent validation.",
-  "runtime_hardware": "Windows, Intel i7-13700HX, 16 cores/24 threads; actual worker count recorded per command; concurrent Hermes and benchmark workloads. Observed wall times, not normalized.",
-  "selection": "Best independently legal output per case; ties select shortest measured invocation. The per-case commands disclose benchmark-specific selection. Timed multiworker search is nondeterministic.",
-  "cases": [
-    {
-      "tier": "stress",
-      "case": "case_01",
-      "variant": "portfolio-600",
-      "source": "local_envelope",
-      "delay": 1042310,
-      "legal": true,
-      "reasons": [],
-      "solver_wall_s": 624.0,
-      "independent_validation_s": 3.930021,
-      "runtime_s": 627.93,
-      "output": "F:/eda3d-wt/publish_v3/stress_attempt/run_portfolio-600/case_01.sol.json",
-      "sha256": "535295a255b5aba7615fd9f60e3f83bc08b1b8392c88d0a4a2aca7374a8b3da3",
-      "source_sha256": "c85dd4867373786c4f956f28fa33ecc70eca782cb53d5ba9455fbdc71251761c",
-      "exe_sha256": "a341ff7d5b475a53347a3bdf9555f0a6a2e473a56f44cc10fb363fb30e120d70",
-      "command": [
-        "F:/eda3d-wt/pareto-refinement-20261002/build_optimized_specialized_20261002/m3d-lns.exe",
-        "F:/eda3d-wt/sub3-wt\\benchmarks_stress\\case_01.json",
-        "F:/eda3d-wt/publish_v3/stress_attempt\\warm_case_01.sol.json",
-        "F:/eda3d-wt/publish_v3/stress_attempt/run_portfolio-600/case_01.sol.json",
-        "--mode",
-        "portfolio",
-        "--kmin",
-        "2",
-        "--kmax",
-        "5",
-        "--rmax",
-        "3",
-        "--passes",
-        "1",
-        "--t0",
-        "8",
-        "--walk-slack",
-        "8",
-        "--secs",
-        "600",
-        "--workers",
-        "3",
-        "--seed",
-        "202610202",
-        "--finish-walk",
-        "--polish-final",
-        "--budget-bound"
-      ],
-      "measured_at": "2026-10-04T20:00:00Z",
-      "parent_measurement": {
-        "tier": "stress",
-        "case": "case_01",
-        "variant": "retained public route (carried 2026-10-04)",
-        "source": "coordinated_refinement",
-        "author": "jay-tau",
-        "delay": 1042314,
-        "legal": true,
-        "reasons": [],
-        "route_sha256": "c85dd4867373786c4f956f28fa33ecc70eca782cb53d5ba9455fbdc71251761c",
-        "commit": "2566f5f120392182dd97db77ba7760f8bb9b0828",
-        "route": "submissions/stress/coordinated_refinement/case_01.sol.json"
-      }
-    }
-  ],
-  "algorithm_references": [
-    {
-      "method": "conflict splitting, adapted to static vertex-disjoint multi-sink trees",
-      "citation": "Sharon, Stern, Felner and Sturtevant, Conflict-based search for optimal multi-agent pathfinding",
-      "url": "https://doi.org/10.1016/j.artint.2014.11.006"
-    }
-  ],
-  "tier": "stress",
-  "replay_bundle": "submissions/intro/warm_lns_refinement/replay"
+    "author": "jay-tau",
+    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+    "route": "submissions/stress/coordinated_refinement/case_01.sol.json",
+    "sha256": "f9b9d9907a533237be8b4b81829f96173fae96e9cfcec5d4ea592f5852bdb709",
+    "total_delay": 1042306
+   }
+  }
+ ],
+ "algorithm_references": [
+  {
+   "method": "conflict splitting, adapted to static vertex-disjoint multi-sink trees",
+   "citation": "Sharon, Stern, Felner and Sturtevant, Conflict-based search for optimal multi-agent pathfinding",
+   "url": "https://doi.org/10.1016/j.artint.2014.11.006"
+  }
+ ],
+ "tier": "stress",
+ "replay_bundle": "submissions/intro/warm_lns_refinement/replay"
 }

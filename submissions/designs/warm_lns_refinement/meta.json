@@ -26,7 +26,7 @@
    "case": "ctrl",
    "variant": "resilience_incumbent",
    "source": "own_refinement",
-   "delay": 48890,
+   "delay": 48888,
    "legal": true,
    "reasons": [],
    "solver_wall_s": 12.223860199999763,
@@ -34,7 +34,7 @@
    "independent_validation_s": 0.09983510000165552,
    "runtime_s": 24.74438950001786,
    "output": "EXPERIMENT/runs/resilience_incumbent/designs/ctrl.sol.json",
-   "sha256": "8502cb27e8408903fd36acf6d1132ac11527567f7893144b79993c670f2e97ea",
+   "sha256": "eaa5711940596e6ea583cd073524d82dc73013a70f9a2649c2993fc6bf8c638f",
    "source_sha256": "998b68cb6ca87a91fc2f298b3a91e235d44035e8fe497dc74015b4f0ef6a3862",
    "exe_sha256": "62ecc2d8bfda88da565842e77fb1b0581463851ed50f38daf044f9ca16d52703",
    "measured_at": "2026-10-02T10:05:59.648317+00:00",
@@ -123,9 +123,9 @@
     "parent_commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
     "parent_sha256": "a260c7761da627d960a8ea8b34bce77f99160d57cd1b719217497ad018a7ab54",
     "parent_delay": 48898,
-    "gain": 8,
-    "sha256": "8502cb27e8408903fd36acf6d1132ac11527567f7893144b79993c670f2e97ea",
-    "total_delay": 48890
+    "gain": 10,
+    "sha256": "eaa5711940596e6ea583cd073524d82dc73013a70f9a2649c2993fc6bf8c638f",
+    "total_delay": 48888
    }
   },
   {
@@ -133,7 +133,7 @@
    "case": "int2float",
    "variant": "focused_escape",
    "source": "own_refinement",
-   "delay": 87866,
+   "delay": 87860,
    "legal": true,
    "reasons": [],
    "solver_wall_s": 20.20366749999812,
@@ -141,7 +141,7 @@
    "independent_validation_s": 0.10488709999481216,
    "runtime_s": 75.82009259996994,
    "output": "EXPERIMENT/runs/focused_escape/designs/int2float.sol.json",
-   "sha256": "e55241ba1a37032b9bbf3fa5a86e1e05aa379dfdb24d5ad18fb53f3ef41603da",
+   "sha256": "5ab51e4150e75b716f1e737c0efcfd6a2adf810d54e0901882f38220aa1b81cb",
    "source_sha256": "c4ee7b6424f0ea0a85b8765751d1d3a650f0f7a17053cf4479f12d748e5b112e",
    "exe_sha256": "b5803388e99ad375a5e53754eefb1184f05a1d2d0e1e5f9240ad6bd1e5bda63d",
    "measured_at": "2026-10-02T10:16:36.758323+00:00",
@@ -297,9 +297,9 @@
     "parent_commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
     "parent_sha256": "97ffca1c26185ac4be527a34a12d1c9d259e2b40a46eb103ae4619b4835d304d",
     "parent_delay": 87880,
-    "gain": 14,
-    "sha256": "e55241ba1a37032b9bbf3fa5a86e1e05aa379dfdb24d5ad18fb53f3ef41603da",
-    "total_delay": 87866
+    "gain": 20,
+    "sha256": "5ab51e4150e75b716f1e737c0efcfd6a2adf810d54e0901882f38220aa1b81cb",
+    "total_delay": 87860
    }
   },
   {

@@ -3,15 +3,15 @@
   "date": "2026-10-08",
   "method": "Exact shortest-path-tree warm refinement: radix A*, feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, optional circular integer buckets, multiple CPU search workers, strict final-walk polishing, and exact two-parent minimum-cut crossover following PR24. Our GPU kernels are audited prototypes and did not generate these refinements; selected PR26 public warm starts are attributed to its GPU-accelerated engine. Bounded conflict-based search over static multi-sink trees, alternated with neutral group reroutes; opt-in specialized chain pricing avoids full-grid cost setup. 2026-10-04 adoption update: 5 case(s) where a merged entry's route is strictly better than this entry's previous route are carried verbatim from coordinated_refinement (main 2566f5f1); documented as \"retained public route\" in the cases list, credited via derived_from.",
   "derived_from": {
-    "submission": "coordinated_refinement",
-    "author": "jay-tau",
-    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
-    "carried_verbatim_from": [
-      "coordinated_refinement",
-      "cuda-have-been-shorter"
-    ],
-    "carried_case_count": 6,
-    "warm_started_from": "coordinated_refinement (jay-tau) and its upstream entries",
+    "submission": "leonid-popryho",
+    "author": "Leonid Popryho",
+    "carried_verbatim_from": {
+      "coordinated_refinement": 1,
+      "cuda-have-been-shorter": 3,
+      "leonid-popryho": 5
+    },
+    "carried_case_count": 9,
+    "warm_started_from": "coordinated_refinement (jay-tau) and its upstream entries; cases refined here were warm-started from the published route for that case",
     "note": "Per-case provenance is byte-verified: each shipped route is compared with every published entry's file and credited to the one it matches. Routes matching none are this entry's own refinement."
   },
   "warm_starts": [
@@ -47,26 +47,26 @@
     {
       "tier": "hard",
       "case": "case_04",
-      "delay": 12861,
-      "source": "coordinated_refinement"
+      "delay": 12819,
+      "source": "leonid-popryho"
     },
     {
       "tier": "hard",
       "case": "case_05",
-      "delay": 14985,
-      "source": "own_refinement"
+      "delay": 14963,
+      "source": "leonid-popryho"
     },
     {
       "tier": "hard",
       "case": "case_06",
-      "delay": 19320,
-      "source": "own_refinement"
+      "delay": 19304,
+      "source": "leonid-popryho"
     },
     {
       "tier": "hard",
       "case": "case_07",
-      "delay": 20887,
-      "source": "coordinated_refinement"
+      "delay": 20775,
+      "source": "leonid-popryho"
     },
     {
       "tier": "hard",
@@ -77,8 +77,8 @@
     {
       "tier": "hard",
       "case": "case_09",
-      "delay": 21058,
-      "source": "own_refinement"
+      "delay": 21046,
+      "source": "leonid-popryho"
     }
   ],
   "algorithm_references": [

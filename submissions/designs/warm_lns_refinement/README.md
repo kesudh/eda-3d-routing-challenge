@@ -5,10 +5,10 @@ published routes. Per-case provenance is byte-verified in `meta.json`.
 
 | legal | total delay | aggregate | runtime (s) |
 |---:|---:|---:|---:|
-| 3/3 | 204215 | 1.4691 | 90.30 |
+| 3/3 | 203095 | 1.4773 | 90.30 |
 
-Refined here: 3 of 3 cases. Carried verbatim from a credited
-public entry: 0 (none).
+Refined here: 0 of 3 cases. Carried verbatim from a credited
+public entry: 3 (ctrl, int2float, router).
 `runtime.json` is one end-to-end run of this router per case at a uniform 30 s
 budget; see `runtime_scope` in `meta.json`.
 

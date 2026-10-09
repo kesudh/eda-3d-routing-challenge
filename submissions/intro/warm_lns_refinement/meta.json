@@ -5,13 +5,13 @@
   "derived_from": {
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
-    "carried_verbatim_from": [
-      "coordinated_refinement",
-      "cuda-have-been-shorter"
-    ],
-    "carried_case_count": 8,
-    "warm_started_from": "coordinated_refinement (jay-tau) and its upstream entries",
+    "carried_verbatim_from": {
+      "coordinated_refinement": 8,
+      "cuda-have-been-shorter": 1,
+      "leonid-popryho": 5
+    },
+    "carried_case_count": 14,
+    "warm_started_from": "coordinated_refinement (jay-tau) and its upstream entries; cases refined here were warm-started from the published route for that case",
     "note": "Per-case provenance is byte-verified: each shipped route is compared with every published entry's file and credited to the one it matches. Routes matching none are this entry's own refinement."
   },
   "warm_starts": [
@@ -72,7 +72,7 @@
       "tier": "intro",
       "case": "case_08",
       "delay": 7447,
-      "source": "own_refinement"
+      "source": "coordinated_refinement"
     },
     {
       "tier": "intro",
@@ -83,14 +83,14 @@
     {
       "tier": "intro",
       "case": "case_10",
-      "delay": 10507,
-      "source": "coordinated_refinement"
+      "delay": 10491,
+      "source": "leonid-popryho"
     },
     {
       "tier": "intro",
       "case": "case_11",
-      "delay": 12170,
-      "source": "coordinated_refinement"
+      "delay": 12160,
+      "source": "leonid-popryho"
     },
     {
       "tier": "intro",
@@ -101,32 +101,32 @@
     {
       "tier": "intro",
       "case": "case_13",
-      "delay": 19413,
-      "source": "cuda-have-been-shorter"
+      "delay": 19405,
+      "source": "leonid-popryho"
     },
     {
       "tier": "intro",
       "case": "case_14",
-      "delay": 21069,
-      "source": "coordinated_refinement"
+      "delay": 21063,
+      "source": "leonid-popryho"
     },
     {
       "tier": "intro",
       "case": "case_15",
       "delay": 23630,
-      "source": "own_refinement"
+      "source": "coordinated_refinement"
     },
     {
       "tier": "intro",
       "case": "case_16",
       "delay": 32604,
-      "source": "own_refinement"
+      "source": "coordinated_refinement"
     },
     {
       "tier": "intro",
       "case": "case_17",
       "delay": 41166,
-      "source": "own_refinement"
+      "source": "coordinated_refinement"
     },
     {
       "tier": "intro",
@@ -138,13 +138,13 @@
       "tier": "intro",
       "case": "case_19",
       "delay": 39638,
-      "source": "own_refinement"
+      "source": "coordinated_refinement"
     },
     {
       "tier": "intro",
       "case": "case_20",
-      "delay": 44308,
-      "source": "own_refinement"
+      "delay": 44294,
+      "source": "leonid-popryho"
     }
   ],
   "algorithm_references": [

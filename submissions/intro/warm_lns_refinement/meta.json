@@ -5,8 +5,8 @@
   "derived_from": {
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "ref": "origin/main",
-    "commit": "b13a8290d052",
+    "ref": "pull/36 head 845e94d6",
+    "commit": "845e94d6c85a",
     "also_carried_from": [
       {
         "entry": "cuda-have-been-shorter",
@@ -19,7 +19,7 @@
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
         "ref": "pull/46 head 2d36fd1e",
-        "commit": "9d9589cd4e2e",
+        "commit": "2d36fd1ec432",
         "routes": 1
       }
     ],
@@ -92,8 +92,8 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/36 head 845e94d6",
+        "commit": "845e94d6c85a"
       }
     },
     {
@@ -134,8 +134,8 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/47 head cb435d0a",
+        "commit": "cb435d0a7559"
       }
     },
     {
@@ -147,7 +147,7 @@
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
         "ref": "pull/46 head 2d36fd1e",
-        "commit": "9d9589cd4e2e"
+        "commit": "2d36fd1ec432"
       }
     },
     {
@@ -158,8 +158,8 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/36 head 845e94d6",
+        "commit": "845e94d6c85a"
       }
     },
     {
@@ -170,8 +170,8 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/36 head 845e94d6",
+        "commit": "845e94d6c85a"
       }
     },
     {
@@ -182,8 +182,8 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/36 head 845e94d6",
+        "commit": "845e94d6c85a"
       }
     },
     {
@@ -206,8 +206,8 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/47 head cb435d0a",
+        "commit": "cb435d0a7559"
       }
     },
     {
@@ -218,8 +218,8 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/47 head cb435d0a",
+        "commit": "cb435d0a7559"
       }
     }
   ],
@@ -241,17 +241,37 @@
         "author": "jay-tau",
         "ref": "origin/main",
         "commit": "b13a8290d052",
-        "merged": null,
-        "routes_carried_verbatim": 10,
+        "merged": true,
+        "routes_carried_verbatim": 3,
         "cases": [
           "case_06",
           "case_07",
+          "case_12"
+        ]
+      },
+      {
+        "entry": "coordinated_refinement",
+        "author": "jay-tau",
+        "ref": "pull/36 head 845e94d6",
+        "commit": "845e94d6c85a",
+        "merged": false,
+        "routes_carried_verbatim": 4,
+        "cases": [
           "case_08",
-          "case_12",
-          "case_13",
           "case_15",
           "case_16",
-          "case_17",
+          "case_17"
+        ]
+      },
+      {
+        "entry": "coordinated_refinement",
+        "author": "jay-tau",
+        "ref": "pull/47 head cb435d0a",
+        "commit": "cb435d0a7559",
+        "merged": false,
+        "routes_carried_verbatim": 3,
+        "cases": [
+          "case_13",
           "case_19",
           "case_20"
         ]
@@ -261,7 +281,7 @@
         "author": "YJ Kim",
         "ref": "origin/main",
         "commit": "2d321cdb5e2f",
-        "merged": null,
+        "merged": true,
         "routes_carried_verbatim": 1,
         "cases": [
           "case_18"
@@ -271,8 +291,8 @@
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
         "ref": "pull/46 head 2d36fd1e",
-        "commit": "9d9589cd4e2e",
-        "merged": null,
+        "commit": "2d36fd1ec432",
+        "merged": false,
         "routes_carried_verbatim": 1,
         "cases": [
           "case_14"

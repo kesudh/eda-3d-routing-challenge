@@ -7,15 +7,7 @@
     "author": "jay-tau",
     "ref": "pull/47 head cb435d0a",
     "commit": "cb435d0a7559",
-    "also_carried_from": [
-      {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1ec432",
-        "routes": 1
-      }
-    ],
+    "also_carried_from": [],
     "warm_start_policy": "Every case refined here was warm-started from the best published route for that case available at run time; the entries listed below publish those routes, directly or upstream.",
     "upstream_chain": "coordinated_refinement (jay-tau) builds on drama3d-portfolio (YJ Kim), leonid-popryho (Leonid Popryho) and pathfinder_lns (Tazeem Mahashin); cuda-have-been-shorter (YJ Kim) is the renamed drama3d-portfolio entry."
   },
@@ -28,11 +20,6 @@
       "case": "case_01",
       "delay": 38982,
       "source": "coordinated_refinement",
-      "source_key": "pr47",
-      "ref": "pull/47 head cb435d0a",
-      "commit": "cb435d0a7559",
-      "author": "jay-tau",
-      "merged": false,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
@@ -57,11 +44,6 @@
       "case": "case_04",
       "delay": 56210,
       "source": "coordinated_refinement",
-      "source_key": "pr47",
-      "ref": "pull/47 head cb435d0a",
-      "commit": "cb435d0a7559",
-      "author": "jay-tau",
-      "merged": false,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
@@ -72,30 +54,14 @@
     {
       "tier": "scale",
       "case": "case_05",
-      "delay": 65457,
-      "source": "leonid-popryho",
-      "source_key": "pr46",
-      "ref": "pull/46 head 2d36fd1e",
-      "commit": "2d36fd1ec432",
-      "author": "Leonid Popryho",
-      "merged": false,
-      "carried_from": {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1ec432"
-      }
+      "delay": 65455,
+      "source": "own_refinement"
     },
     {
       "tier": "scale",
       "case": "case_06",
       "delay": 77383,
       "source": "coordinated_refinement",
-      "source_key": "pr47",
-      "ref": "pull/47 head cb435d0a",
-      "commit": "cb435d0a7559",
-      "author": "jay-tau",
-      "merged": false,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
@@ -108,11 +74,6 @@
       "case": "case_07",
       "delay": 85823,
       "source": "coordinated_refinement",
-      "source_key": "pr47",
-      "ref": "pull/47 head cb435d0a",
-      "commit": "cb435d0a7559",
-      "author": "jay-tau",
-      "merged": false,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
@@ -125,11 +86,6 @@
       "case": "case_08",
       "delay": 106937,
       "source": "coordinated_refinement",
-      "source_key": "pr47",
-      "ref": "pull/47 head cb435d0a",
-      "commit": "cb435d0a7559",
-      "author": "jay-tau",
-      "merged": false,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
@@ -165,17 +121,6 @@
           "case_07",
           "case_08"
         ]
-      },
-      {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1ec432",
-        "merged": false,
-        "routes_carried_verbatim": 1,
-        "cases": [
-          "case_05"
-        ]
       }
     ],
     "warm_starts": {
@@ -184,10 +129,18 @@
         {
           "entry": "coordinated_refinement",
           "author": "jay-tau",
-          "ref": "pull/36 head 845e94d6",
-          "commit": "845e94d6",
+          "ref": "pull/47 head cb435d0a",
+          "commit": "cb435d0a7559",
           "merged": false,
-          "used_as": "warm start for the cases this entry refined"
+          "used_as": "adoption base and warm start for this session's refinement"
+        },
+        {
+          "entry": "coordinated_refinement",
+          "author": "jay-tau",
+          "ref": "pull/36 head 845e94d6",
+          "commit": "845e94d6c85a",
+          "merged": false,
+          "used_as": "warm start for the cases this entry refined earlier"
         },
         {
           "entry": "drama3d-portfolio",
@@ -209,7 +162,7 @@
           "entry": "leonid-popryho",
           "author": "Leonid Popryho",
           "ref": "pull/46 head 2d36fd1e",
-          "commit": "2d36fd1e",
+          "commit": "2d36fd1ec432",
           "merged": false,
           "used_as": "upstream route source"
         }

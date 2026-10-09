@@ -65,11 +65,6 @@
       "case": "case_06",
       "delay": 5175,
       "source": "coordinated_refinement",
-      "source_key": "main",
-      "ref": "origin/main",
-      "commit": "b13a8290d052",
-      "author": null,
-      "merged": true,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
@@ -82,11 +77,6 @@
       "case": "case_07",
       "delay": 5239,
       "source": "coordinated_refinement",
-      "source_key": "main",
-      "ref": "origin/main",
-      "commit": "b13a8290d052",
-      "author": null,
-      "merged": true,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
@@ -99,16 +89,11 @@
       "case": "case_08",
       "delay": 7447,
       "source": "coordinated_refinement",
-      "source_key": "pr36",
-      "ref": "pull/36 head 845e94d6",
-      "commit": "845e94d6c85a",
-      "author": "jay-tau",
-      "merged": false,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/36 head 845e94d6",
+        "commit": "845e94d6c85a"
       }
     },
     {
@@ -134,11 +119,6 @@
       "case": "case_12",
       "delay": 16035,
       "source": "coordinated_refinement",
-      "source_key": "main",
-      "ref": "origin/main",
-      "commit": "b13a8290d052",
-      "author": null,
-      "merged": true,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
@@ -151,16 +131,11 @@
       "case": "case_13",
       "delay": 19397,
       "source": "coordinated_refinement",
-      "source_key": "pr47",
-      "ref": "pull/47 head cb435d0a",
-      "commit": "cb435d0a7559",
-      "author": "jay-tau",
-      "merged": false,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/47 head cb435d0a",
+        "commit": "cb435d0a7559"
       }
     },
     {
@@ -168,11 +143,6 @@
       "case": "case_14",
       "delay": 21063,
       "source": "leonid-popryho",
-      "source_key": "pr46",
-      "ref": "pull/46 head 2d36fd1e",
-      "commit": "2d36fd1ec432",
-      "author": "Leonid Popryho",
-      "merged": false,
       "carried_from": {
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
@@ -185,16 +155,11 @@
       "case": "case_15",
       "delay": 23630,
       "source": "coordinated_refinement",
-      "source_key": "pr36",
-      "ref": "pull/36 head 845e94d6",
-      "commit": "845e94d6c85a",
-      "author": "jay-tau",
-      "merged": false,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/36 head 845e94d6",
+        "commit": "845e94d6c85a"
       }
     },
     {
@@ -202,16 +167,11 @@
       "case": "case_16",
       "delay": 32604,
       "source": "coordinated_refinement",
-      "source_key": "pr36",
-      "ref": "pull/36 head 845e94d6",
-      "commit": "845e94d6c85a",
-      "author": "jay-tau",
-      "merged": false,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/36 head 845e94d6",
+        "commit": "845e94d6c85a"
       }
     },
     {
@@ -219,16 +179,11 @@
       "case": "case_17",
       "delay": 41166,
       "source": "coordinated_refinement",
-      "source_key": "pr36",
-      "ref": "pull/36 head 845e94d6",
-      "commit": "845e94d6c85a",
-      "author": "jay-tau",
-      "merged": false,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/36 head 845e94d6",
+        "commit": "845e94d6c85a"
       }
     },
     {
@@ -236,11 +191,6 @@
       "case": "case_18",
       "delay": 44153,
       "source": "cuda-have-been-shorter",
-      "source_key": "main",
-      "ref": "origin/main",
-      "commit": "2d321cdb5e2f",
-      "author": null,
-      "merged": true,
       "carried_from": {
         "entry": "cuda-have-been-shorter",
         "author": "YJ Kim",
@@ -253,16 +203,11 @@
       "case": "case_19",
       "delay": 39636,
       "source": "coordinated_refinement",
-      "source_key": "pr47",
-      "ref": "pull/47 head cb435d0a",
-      "commit": "cb435d0a7559",
-      "author": "jay-tau",
-      "merged": false,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/47 head cb435d0a",
+        "commit": "cb435d0a7559"
       }
     },
     {
@@ -270,16 +215,11 @@
       "case": "case_20",
       "delay": 44268,
       "source": "coordinated_refinement",
-      "source_key": "pr47",
-      "ref": "pull/47 head cb435d0a",
-      "commit": "cb435d0a7559",
-      "author": "jay-tau",
-      "merged": false,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "b13a8290d052"
+        "ref": "pull/47 head cb435d0a",
+        "commit": "cb435d0a7559"
       }
     }
   ],
@@ -365,10 +305,18 @@
         {
           "entry": "coordinated_refinement",
           "author": "jay-tau",
-          "ref": "pull/36 head 845e94d6",
-          "commit": "845e94d6",
+          "ref": "pull/47 head cb435d0a",
+          "commit": "cb435d0a7559",
           "merged": false,
-          "used_as": "warm start for the cases this entry refined"
+          "used_as": "adoption base and warm start for this session's refinement"
+        },
+        {
+          "entry": "coordinated_refinement",
+          "author": "jay-tau",
+          "ref": "pull/36 head 845e94d6",
+          "commit": "845e94d6c85a",
+          "merged": false,
+          "used_as": "warm start for the cases this entry refined earlier"
         },
         {
           "entry": "drama3d-portfolio",
@@ -390,7 +338,7 @@
           "entry": "leonid-popryho",
           "author": "Leonid Popryho",
           "ref": "pull/46 head 2d36fd1e",
-          "commit": "2d36fd1e",
+          "commit": "2d36fd1ec432",
           "merged": false,
           "used_as": "upstream route source"
         }

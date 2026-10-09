@@ -35,11 +35,6 @@
       "case": "case_01",
       "delay": 8540,
       "source": "cuda-have-been-shorter",
-      "source_key": "main",
-      "ref": "origin/main",
-      "commit": "2d321cdb5e2f",
-      "author": null,
-      "merged": true,
       "carried_from": {
         "entry": "cuda-have-been-shorter",
         "author": "YJ Kim",
@@ -52,11 +47,6 @@
       "case": "case_02",
       "delay": 12794,
       "source": "cuda-have-been-shorter",
-      "source_key": "main",
-      "ref": "origin/main",
-      "commit": "2d321cdb5e2f",
-      "author": null,
-      "merged": true,
       "carried_from": {
         "entry": "cuda-have-been-shorter",
         "author": "YJ Kim",
@@ -69,11 +59,6 @@
       "case": "case_03",
       "delay": 10922,
       "source": "cuda-have-been-shorter",
-      "source_key": "main",
-      "ref": "origin/main",
-      "commit": "2d321cdb5e2f",
-      "author": null,
-      "merged": true,
       "carried_from": {
         "entry": "cuda-have-been-shorter",
         "author": "YJ Kim",
@@ -86,11 +71,6 @@
       "case": "case_04",
       "delay": 12819,
       "source": "leonid-popryho",
-      "source_key": "pr46",
-      "ref": "pull/46 head 2d36fd1e",
-      "commit": "2d36fd1ec432",
-      "author": "Leonid Popryho",
-      "merged": false,
       "carried_from": {
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
@@ -103,11 +83,6 @@
       "case": "case_05",
       "delay": 14963,
       "source": "leonid-popryho",
-      "source_key": "pr46",
-      "ref": "pull/46 head 2d36fd1e",
-      "commit": "2d36fd1ec432",
-      "author": "Leonid Popryho",
-      "merged": false,
       "carried_from": {
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
@@ -120,11 +95,6 @@
       "case": "case_06",
       "delay": 19304,
       "source": "leonid-popryho",
-      "source_key": "pr46",
-      "ref": "pull/46 head 2d36fd1e",
-      "commit": "2d36fd1ec432",
-      "author": "Leonid Popryho",
-      "merged": false,
       "carried_from": {
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
@@ -137,11 +107,6 @@
       "case": "case_07",
       "delay": 20775,
       "source": "leonid-popryho",
-      "source_key": "pr46",
-      "ref": "pull/46 head 2d36fd1e",
-      "commit": "2d36fd1ec432",
-      "author": "Leonid Popryho",
-      "merged": false,
       "carried_from": {
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
@@ -154,11 +119,6 @@
       "case": "case_08",
       "delay": 20932,
       "source": "coordinated_refinement",
-      "source_key": "main",
-      "ref": "origin/main",
-      "commit": "b13a8290d052",
-      "author": null,
-      "merged": true,
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
@@ -171,11 +131,6 @@
       "case": "case_09",
       "delay": 21046,
       "source": "leonid-popryho",
-      "source_key": "pr46",
-      "ref": "pull/46 head 2d36fd1e",
-      "commit": "2d36fd1ec432",
-      "author": "Leonid Popryho",
-      "merged": false,
       "carried_from": {
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
@@ -243,10 +198,18 @@
         {
           "entry": "coordinated_refinement",
           "author": "jay-tau",
-          "ref": "pull/36 head 845e94d6",
-          "commit": "845e94d6",
+          "ref": "pull/47 head cb435d0a",
+          "commit": "cb435d0a7559",
           "merged": false,
-          "used_as": "warm start for the cases this entry refined"
+          "used_as": "adoption base and warm start for this session's refinement"
+        },
+        {
+          "entry": "coordinated_refinement",
+          "author": "jay-tau",
+          "ref": "pull/36 head 845e94d6",
+          "commit": "845e94d6c85a",
+          "merged": false,
+          "used_as": "warm start for the cases this entry refined earlier"
         },
         {
           "entry": "drama3d-portfolio",
@@ -268,7 +231,7 @@
           "entry": "leonid-popryho",
           "author": "Leonid Popryho",
           "ref": "pull/46 head 2d36fd1e",
-          "commit": "2d36fd1e",
+          "commit": "2d36fd1ec432",
           "merged": false,
           "used_as": "upstream route source"
         }

@@ -62,7 +62,7 @@ do not edit it by hand.
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.1404 | 8/8 | 531440 | 241.40 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.1404 | 8/8 | 531438 | 241.40 | ✓ | — |
 | 2 | coordinated_refinement † | jay-tau | 1.1399 | 8/8 | 531688 | missing |  | — |
 | 3 | leonid-popryho | Leonid Popryho | 1.1397 | 8/8 | 531766 | missing |  | — |
 | 4 | cuda-have-been-shorter | YJ Kim | 1.1391 | 8/8 | 532016 | missing |  | — |
@@ -80,7 +80,7 @@ do not edit it by hand.
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.0986 | 1/1 | 1042142 | 43.43 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.0986 | 1/1 | 1042130 | 43.43 | ✓ | — |
 | 2 | coordinated_refinement † | jay-tau | 1.0984 | 1/1 | 1042314 | missing |  | — |
 | 3 | leonid-popryho | Leonid Popryho | 1.0984 | 1/1 | 1042322 | missing |  | — |
 | 4 | cuda-have-been-shorter | YJ Kim | 1.0978 | 1/1 | 1042926 | missing |  | — |

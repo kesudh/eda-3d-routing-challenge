@@ -18,19 +18,8 @@
     {
       "tier": "stress",
       "case": "case_01",
-      "delay": 1042142,
-      "source": "coordinated_refinement",
-      "source_key": "pr47",
-      "ref": "pull/47 head cb435d0a",
-      "commit": "cb435d0a7559",
-      "author": "jay-tau",
-      "merged": false,
-      "carried_from": {
-        "entry": "coordinated_refinement",
-        "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a",
-        "commit": "cb435d0a7559"
-      }
+      "delay": 1042130,
+      "source": "own_refinement"
     }
   ],
   "algorithm_references": [
@@ -45,29 +34,25 @@
   "threads": 4,
   "runtime_scope": "Per case, `runtime.json` reports the wall-clock seconds of one end-to-end run of this entry's router on that case: the benchmark instance in, the shipped route as the warm start, a refined .sol.json out, at a fixed 30 s search budget on 4 worker threads (chain-fast mode). The engine self-reports the elapsed time and that number is recorded. All 45 cases were measured the same way, so the column is uniform. Where the shipped bytes are another entry's file carried verbatim, the reported time is this entry's own run on that instance, not the upstream author's generation time, which is not claimed. Several cases were measured concurrently, so wall-clock values are conservative.",
   "attribution": {
-    "carried_routes": [
-      {
-        "entry": "coordinated_refinement",
-        "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a",
-        "commit": "cb435d0a7559",
-        "merged": false,
-        "routes_carried_verbatim": 1,
-        "cases": [
-          "case_01"
-        ]
-      }
-    ],
+    "carried_routes": [],
     "warm_starts": {
       "policy": "Every case refined here was warm-started from the best published route for that case available at run time; the entries listed below publish those routes, directly or upstream.",
       "entries": [
         {
           "entry": "coordinated_refinement",
           "author": "jay-tau",
-          "ref": "pull/36 head 845e94d6",
-          "commit": "845e94d6",
+          "ref": "pull/47 head cb435d0a",
+          "commit": "cb435d0a7559",
           "merged": false,
-          "used_as": "warm start for the cases this entry refined"
+          "used_as": "adoption base and warm start for this session's refinement"
+        },
+        {
+          "entry": "coordinated_refinement",
+          "author": "jay-tau",
+          "ref": "pull/36 head 845e94d6",
+          "commit": "845e94d6c85a",
+          "merged": false,
+          "used_as": "warm start for the cases this entry refined earlier"
         },
         {
           "entry": "drama3d-portfolio",
@@ -89,7 +74,7 @@
           "entry": "leonid-popryho",
           "author": "Leonid Popryho",
           "ref": "pull/46 head 2d36fd1e",
-          "commit": "2d36fd1e",
+          "commit": "2d36fd1ec432",
           "merged": false,
           "used_as": "upstream route source"
         }

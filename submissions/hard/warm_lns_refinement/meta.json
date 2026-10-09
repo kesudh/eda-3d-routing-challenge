@@ -6,7 +6,7 @@
     "submission": "leonid-popryho",
     "author": "Leonid Popryho",
     "ref": "pull/46 head 2d36fd1e",
-    "commit": "2d36fd1ec432",
+    "commit": "2564be90859e",
     "also_carried_from": [
       {
         "entry": "coordinated_refinement",
@@ -75,7 +75,7 @@
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
         "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1ec432"
+        "commit": "2564be90859e"
       }
     },
     {
@@ -87,7 +87,7 @@
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
         "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1ec432"
+        "commit": "2564be90859e"
       }
     },
     {
@@ -99,7 +99,7 @@
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
         "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1ec432"
+        "commit": "2564be90859e"
       }
     },
     {
@@ -111,7 +111,7 @@
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
         "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1ec432"
+        "commit": "2564be90859e"
       }
     },
     {
@@ -135,7 +135,7 @@
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
         "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1ec432"
+        "commit": "2564be90859e"
       }
     }
   ],
@@ -157,7 +157,7 @@
         "author": "jay-tau",
         "ref": "origin/main",
         "commit": "b13a8290d052",
-        "merged": true,
+        "merged": null,
         "routes_carried_verbatim": 1,
         "cases": [
           "case_08"
@@ -168,7 +168,7 @@
         "author": "YJ Kim",
         "ref": "origin/main",
         "commit": "2d321cdb5e2f",
-        "merged": true,
+        "merged": null,
         "routes_carried_verbatim": 3,
         "cases": [
           "case_01",
@@ -180,8 +180,8 @@
         "entry": "leonid-popryho",
         "author": "Leonid Popryho",
         "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1ec432",
-        "merged": false,
+        "commit": "2564be90859e",
+        "merged": null,
         "routes_carried_verbatim": 5,
         "cases": [
           "case_04",

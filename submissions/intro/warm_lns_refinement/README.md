@@ -13,11 +13,9 @@ Routes carried verbatim, with the ref the shipped bytes were taken from:
 
 | entry | author | ref | commit | routes |
 |---|---|---|---|---:|
-| coordinated_refinement | jay-tau | origin/main | `b13a8290d052` | 3 |
-| coordinated_refinement | jay-tau | pull/36 head 845e94d6 | `845e94d6c85a` | 4 |
-| coordinated_refinement | jay-tau | pull/47 head cb435d0a | `cb435d0a7559` | 3 |
+| coordinated_refinement | jay-tau | origin/main | `b13a8290d052` | 10 |
 | cuda-have-been-shorter | YJ Kim | origin/main | `2d321cdb5e2f` | 1 |
-| leonid-popryho | Leonid Popryho | pull/46 head 2d36fd1e | `2d36fd1ec432` | 1 |
+| leonid-popryho | Leonid Popryho | pull/46 head 2d36fd1e | `9d9589cd4e2e` | 1 |
 
 Warm starts: the 8 case(s) refined here were warm-started from the best
 published route for that case, published by coordinated_refinement (jay-tau),

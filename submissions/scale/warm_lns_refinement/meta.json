@@ -5,8 +5,8 @@
   "derived_from": {
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "ref": "pull/47 head cb435d0a",
-    "commit": "cb435d0a7559",
+    "ref": "origin/main",
+    "commit": "b13a8290d052",
     "also_carried_from": [],
     "warm_start_policy": "Every case refined here was warm-started from the best published route for that case available at run time; the entries listed below publish those routes, directly or upstream.",
     "upstream_chain": "coordinated_refinement (jay-tau) builds on drama3d-portfolio (YJ Kim), leonid-popryho (Leonid Popryho) and pathfinder_lns (Tazeem Mahashin); cuda-have-been-shorter (YJ Kim) is the renamed drama3d-portfolio entry."
@@ -23,8 +23,8 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a",
-        "commit": "cb435d0a7559"
+        "ref": "origin/main",
+        "commit": "b13a8290d052"
       }
     },
     {
@@ -47,8 +47,8 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a",
-        "commit": "cb435d0a7559"
+        "ref": "origin/main",
+        "commit": "b13a8290d052"
       }
     },
     {
@@ -65,8 +65,8 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a",
-        "commit": "cb435d0a7559"
+        "ref": "origin/main",
+        "commit": "b13a8290d052"
       }
     },
     {
@@ -77,8 +77,8 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a",
-        "commit": "cb435d0a7559"
+        "ref": "origin/main",
+        "commit": "b13a8290d052"
       }
     },
     {
@@ -89,8 +89,8 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a",
-        "commit": "cb435d0a7559"
+        "ref": "origin/main",
+        "commit": "b13a8290d052"
       }
     }
   ],
@@ -110,9 +110,9 @@
       {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a",
-        "commit": "cb435d0a7559",
-        "merged": false,
+        "ref": "origin/main",
+        "commit": "b13a8290d052",
+        "merged": null,
         "routes_carried_verbatim": 5,
         "cases": [
           "case_01",

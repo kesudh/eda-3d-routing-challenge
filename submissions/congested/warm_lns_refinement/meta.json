@@ -5,17 +5,9 @@
   "derived_from": {
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "ref": "pull/47 head cb435d0a",
-    "commit": "cb435d0a7559",
-    "also_carried_from": [
-      {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1ec432",
-        "routes": 1
-      }
-    ],
+    "ref": "origin/main",
+    "commit": "b13a8290d052",
+    "also_carried_from": [],
     "warm_start_policy": "Every case refined here was warm-started from the best published route for that case available at run time; the entries listed below publish those routes, directly or upstream.",
     "upstream_chain": "coordinated_refinement (jay-tau) builds on drama3d-portfolio (YJ Kim), leonid-popryho (Leonid Popryho) and pathfinder_lns (Tazeem Mahashin); cuda-have-been-shorter (YJ Kim) is the renamed drama3d-portfolio entry."
   },
@@ -31,8 +23,8 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a",
-        "commit": "cb435d0a7559"
+        "ref": "origin/main",
+        "commit": "b13a8290d052"
       }
     },
     {
@@ -43,33 +35,21 @@
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a",
-        "commit": "cb435d0a7559"
+        "ref": "origin/main",
+        "commit": "b13a8290d052"
       }
     },
     {
       "tier": "congested",
       "case": "case_03",
-      "delay": 157635,
-      "source": "leonid-popryho",
-      "carried_from": {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1ec432"
-      }
+      "delay": 157629,
+      "source": "own_refinement"
     },
     {
       "tier": "congested",
       "case": "case_04",
-      "delay": 170367,
-      "source": "coordinated_refinement",
-      "carried_from": {
-        "entry": "coordinated_refinement",
-        "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a",
-        "commit": "cb435d0a7559"
-      }
+      "delay": 170359,
+      "source": "own_refinement"
     }
   ],
   "algorithm_references": [
@@ -88,25 +68,13 @@
       {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a",
-        "commit": "cb435d0a7559",
-        "merged": false,
-        "routes_carried_verbatim": 3,
+        "ref": "origin/main",
+        "commit": "b13a8290d052",
+        "merged": null,
+        "routes_carried_verbatim": 2,
         "cases": [
           "case_01",
-          "case_02",
-          "case_04"
-        ]
-      },
-      {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1ec432",
-        "merged": false,
-        "routes_carried_verbatim": 1,
-        "cases": [
-          "case_03"
+          "case_02"
         ]
       }
     ],

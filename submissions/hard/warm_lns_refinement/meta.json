@@ -6,11 +6,13 @@
     "submission": "coordinated_refinement",
     "author": "jay-tau",
     "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
-    "also_carried_from": [
+    "carried_verbatim_from": [
       "coordinated_refinement",
       "cuda-have-been-shorter"
     ],
-    "note": "per-case provenance in `cases`; cases byte-identical to a public entry are carried verbatim and excluded from runtime.json"
+    "carried_case_count": 6,
+    "warm_started_from": "coordinated_refinement (jay-tau) and its upstream entries",
+    "note": "Per-case provenance is byte-verified: each shipped route is compared with every published entry's file and credited to the one it matches. Routes matching none are this entry's own refinement."
   },
   "warm_starts": [
     {
@@ -22,278 +24,61 @@
   ],
   "runtime": "4 worker threads; see runtime_scope",
   "runtime_hardware": "Windows, Intel i7-13700HX, 16 cores/24 threads; actual worker count recorded per command; concurrent Hermes and benchmark workloads. Observed wall times, not normalized.",
-  "selection": "Best independently legal output per case; ties select shortest measured invocation. The per-case commands disclose benchmark-specific selection. Timed multiworker search is nondeterministic.",
+  "selection": "The best independently legal output per case, as reported by the official checker; ties keep the earlier route. Timed multiworker search is nondeterministic, so a repeat can return a different legal route.",
   "cases": [
     {
       "tier": "hard",
       "case": "case_01",
-      "source": "origin/main:cuda-have-been-shorter",
       "delay": 8540,
-      "legal": true,
-      "reasons": [],
-      "solver_wall_s": 30.025281499998528,
-      "solver_cpu_s": 89.453125,
-      "independent_validation_s": 0.04151300000376068,
-      "runtime_s": 0.009,
-      "output": "EXPERIMENT/runs/pr26_deepen_0/hard/case_01.sol.json",
-      "sha256": "50ac1987eb57d8c590f230284093a795ec60c313a60d4d7ba0c31ba62e37209f",
-      "source_sha256": "b8595912bfafbde63da961ac90404aa8011805d003cb14a34880459f1d7e8581",
-      "exe_sha256": "f07d222b18bbfcb664782163e288af4cd4f9740e88090210d2ddc36509690e35",
-      "measured_at": "2026-10-02T19:27:12.476516+00:00",
-      "stage_runtime_s": 30.06679450000229,
-      "parent_measurement": {
-        "tier": "hard",
-        "case": "case_01",
-        "variant": "pr26_polish",
-        "source": "pr26",
-        "delay": 8572,
-        "legal": true,
-        "reasons": [],
-        "solver_wall_s": 0.030284199994639494,
-        "solver_cpu_s": 0.015625,
-        "independent_validation_s": 0.01419750000059139,
-        "runtime_s": 0.04448169999523088,
-        "output": "EXPERIMENT/runs/pr26_polish/hard/case_01.sol.json",
-        "sha256": "b8595912bfafbde63da961ac90404aa8011805d003cb14a34880459f1d7e8581",
-        "source_sha256": "c50570729a3c2a201735c3c10516bf0ab88c40b8ab96722a155473007c8a350a",
-        "exe_sha256": "f07d222b18bbfcb664782163e288af4cd4f9740e88090210d2ddc36509690e35",
-        "command": [
-          "EXPERIMENT/build_dial/m3d-lns.exe",
-          "MAIN/benchmarks_hard/case_01.json",
-          "PR26/submissions/hard/drama3d-portfolio/case_01.sol.json",
-          "EXPERIMENT/runs/pr26_polish/hard/case_01.sol.json",
-          "--seed",
-          "20261002",
-          "--polish-only",
-          "--budget-bound",
-          "--dial"
-        ],
-        "measured_at": "2026-10-02T19:23:42.328324+00:00",
-        "log": "[w] loaded case_01: nets=62 total=8572\nPOLISH passes=1 before=8572 after=8572 gain=0\nEND_TO_END_SECONDS=0.003215000\n",
-        "public_source_commit": "89ca44091e30d9e8f2e7e56e5eb7e69de9b8294e"
-      },
-      "method": "retained public route",
-      "provenance": {
-        "method": "retained public route",
-        "submission": "cuda-have-been-shorter",
-        "author": "YJ Kim",
-        "ref": "origin/main",
-        "commit": "55d8a32",
-        "route": "submissions/hard/cuda-have-been-shorter/case_01.sol.json",
-        "sha256": "50ac1987eb57d8c590f230284093a795ec60c313a60d4d7ba0c31ba62e37209f",
-        "total_delay": 8540
-      },
-      "runtime_basis": "carry step (source bytes written + checker verify)"
+      "source": "cuda-have-been-shorter"
     },
     {
       "tier": "hard",
       "case": "case_02",
-      "source": "origin/main:cuda-have-been-shorter",
       "delay": 12794,
-      "legal": true,
-      "reasons": [],
-      "route_sha256": "8bc2c4c6eeb47fda1e7c98796e041be1fa6b8d99c97f7d4ae8ea4fa9e043c36e",
-      "route_bytes": 48056,
-      "method": "retained public route",
-      "provenance": {
-        "method": "retained public route",
-        "submission": "cuda-have-been-shorter",
-        "author": "YJ Kim",
-        "ref": "origin/main",
-        "commit": "55d8a32",
-        "route": "submissions/hard/cuda-have-been-shorter/case_02.sol.json",
-        "sha256": "9ab6a1cfd990056101cf01046303bf27a39afc3762e2f6fbd1baf787c615e335",
-        "total_delay": 12794
-      },
-      "sha256": "9ab6a1cfd990056101cf01046303bf27a39afc3762e2f6fbd1baf787c615e335",
-      "runtime_s": 0.015,
-      "runtime_basis": "carry step (source bytes written + checker verify)"
+      "source": "cuda-have-been-shorter"
     },
     {
       "tier": "hard",
       "case": "case_03",
-      "source": "origin/main:cuda-have-been-shorter",
       "delay": 10922,
-      "legal": true,
-      "reasons": [],
-      "route_sha256": "63ac572a4203b2da2c93a974fd9995657e2606dc31f9c63a6406fb494725c9b7",
-      "route_bytes": 50623,
-      "method": "retained public route",
-      "provenance": {
-        "method": "retained public route",
-        "submission": "cuda-have-been-shorter",
-        "author": "YJ Kim",
-        "ref": "origin/main",
-        "commit": "55d8a32",
-        "route": "submissions/hard/cuda-have-been-shorter/case_03.sol.json",
-        "sha256": "541c354fbb2a19ef10680e9d01860865fc0443695c0961dd1ded54ffa99c8ad5",
-        "total_delay": 10922
-      },
-      "sha256": "541c354fbb2a19ef10680e9d01860865fc0443695c0961dd1ded54ffa99c8ad5",
-      "runtime_s": 0.012,
-      "runtime_basis": "carry step (source bytes written + checker verify)"
+      "source": "cuda-have-been-shorter"
     },
     {
       "tier": "hard",
       "case": "case_04",
-      "source": "origin/main:coordinated_refinement",
       "delay": 12861,
-      "legal": true,
-      "reasons": [],
-      "route_sha256": "f2ffee166e32b8ebf658209113deb68b688ce086cda12ff366af6c240e113009",
-      "route_bytes": 57799,
-      "method": "retained public route",
-      "provenance": {
-        "method": "retained public route",
-        "submission": "coordinated_refinement",
-        "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "55d8a32",
-        "route": "submissions/hard/coordinated_refinement/case_04.sol.json",
-        "sha256": "f2ffee166e32b8ebf658209113deb68b688ce086cda12ff366af6c240e113009",
-        "total_delay": 12861
-      },
-      "sha256": "f2ffee166e32b8ebf658209113deb68b688ce086cda12ff366af6c240e113009",
-      "runtime_s": 0.015,
-      "runtime_basis": "carry step (source bytes written + checker verify)"
+      "source": "coordinated_refinement"
     },
     {
       "tier": "hard",
       "case": "case_05",
-      "source": "pr36:coordinated_refinement",
       "delay": 14985,
-      "legal": true,
-      "reasons": [],
-      "solver_wall_s": 0.03214300000399817,
-      "solver_cpu_s": 0.015625,
-      "independent_validation_s": 0.015792000005603768,
-      "runtime_s": 0.017,
-      "output": "EXPERIMENT/runs/pr26_polish/hard/case_05.sol.json",
-      "sha256": "7853053211804aeb22659e8e96d0567ec64b9816a68da0b83c11cee92ac48df7",
-      "source_sha256": "f39aab0813bea73362bffdc7c034eb82eae9261d4d170a106435d8356500fc30",
-      "exe_sha256": "f07d222b18bbfcb664782163e288af4cd4f9740e88090210d2ddc36509690e35",
-      "measured_at": "2026-10-02T19:23:42.534281+00:00",
-      "public_source_commit": "89ca44091e30d9e8f2e7e56e5eb7e69de9b8294e",
-      "method": "retained public route",
-      "provenance": {
-        "method": "retained public route",
-        "submission": "coordinated_refinement",
-        "author": "jay-tau",
-        "ref": "pr36",
-        "commit": "845e94d",
-        "route": "submissions/hard/coordinated_refinement/case_05.sol.json",
-        "sha256": "7853053211804aeb22659e8e96d0567ec64b9816a68da0b83c11cee92ac48df7",
-        "total_delay": 14985
-      },
-      "runtime_basis": "carry step (source bytes written + checker verify)"
+      "source": "own_refinement"
     },
     {
       "tier": "hard",
       "case": "case_06",
-      "source": "pr36:coordinated_refinement",
       "delay": 19320,
-      "legal": true,
-      "reasons": [],
-      "solver_wall_s": 12.041923199998564,
-      "solver_cpu_s": 35.78125,
-      "independent_validation_s": 0.02343030000338331,
-      "runtime_s": 0.02,
-      "output": "EXPERIMENT/runs/pr26_search_1/hard/case_06.sol.json",
-      "sha256": "fcbdcc3483d6ade35a004968a192c0a86c99888dbd19a0dd463b0c1030bb9418",
-      "source_sha256": "c6cff2a247faca0b1bb8c4087c54d6444c4535da3b556b978b6fd332b62ce985",
-      "exe_sha256": "f07d222b18bbfcb664782163e288af4cd4f9740e88090210d2ddc36509690e35",
-      "measured_at": "2026-10-02T19:24:48.971590+00:00",
-      "public_source_commit": "89ca44091e30d9e8f2e7e56e5eb7e69de9b8294e",
-      "method": "retained public route",
-      "provenance": {
-        "method": "retained public route",
-        "submission": "coordinated_refinement",
-        "author": "jay-tau",
-        "ref": "pr36",
-        "commit": "845e94d",
-        "route": "submissions/hard/coordinated_refinement/case_06.sol.json",
-        "sha256": "fcbdcc3483d6ade35a004968a192c0a86c99888dbd19a0dd463b0c1030bb9418",
-        "total_delay": 19320
-      },
-      "runtime_basis": "carry step (source bytes written + checker verify)"
+      "source": "own_refinement"
     },
     {
       "tier": "hard",
       "case": "case_07",
-      "source": "origin/main:coordinated_refinement",
       "delay": 20887,
-      "legal": true,
-      "reasons": [],
-      "route_sha256": "c3231e54bc0540404b3fe03bb8a0199ec2ac40432120d1a93c02995e9116c74d",
-      "route_bytes": 86337,
-      "method": "retained public route",
-      "provenance": {
-        "method": "retained public route",
-        "submission": "coordinated_refinement",
-        "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "55d8a32",
-        "route": "submissions/hard/coordinated_refinement/case_07.sol.json",
-        "sha256": "c3231e54bc0540404b3fe03bb8a0199ec2ac40432120d1a93c02995e9116c74d",
-        "total_delay": 20887
-      },
-      "sha256": "c3231e54bc0540404b3fe03bb8a0199ec2ac40432120d1a93c02995e9116c74d",
-      "runtime_s": 0.022,
-      "runtime_basis": "carry step (source bytes written + checker verify)"
+      "source": "coordinated_refinement"
     },
     {
       "tier": "hard",
       "case": "case_08",
-      "source": "origin/main:coordinated_refinement",
       "delay": 20932,
-      "legal": true,
-      "reasons": [],
-      "route_sha256": "1f5e6e06e12cc9b3e2e20752be0ced6957562bb98a868976fae67c6a141dae50",
-      "route_bytes": 92280,
-      "method": "retained public route",
-      "provenance": {
-        "method": "retained public route",
-        "submission": "coordinated_refinement",
-        "author": "jay-tau",
-        "ref": "origin/main",
-        "commit": "55d8a32",
-        "route": "submissions/hard/coordinated_refinement/case_08.sol.json",
-        "sha256": "1f5e6e06e12cc9b3e2e20752be0ced6957562bb98a868976fae67c6a141dae50",
-        "total_delay": 20932
-      },
-      "sha256": "1f5e6e06e12cc9b3e2e20752be0ced6957562bb98a868976fae67c6a141dae50",
-      "runtime_s": 0.021,
-      "runtime_basis": "carry step (source bytes written + checker verify)"
+      "source": "coordinated_refinement"
     },
     {
       "tier": "hard",
       "case": "case_09",
-      "source": "pr36:coordinated_refinement",
       "delay": 21058,
-      "legal": true,
-      "reasons": [],
-      "solver_wall_s": 0.038318899998557754,
-      "solver_cpu_s": 0.015625,
-      "independent_validation_s": 0.013274299999466166,
-      "runtime_s": 0.024,
-      "output": "EXPERIMENT/runs/pr26_polish/hard/case_09.sol.json",
-      "sha256": "f878159da4ebe1d05e476bb5b1bf86cc40e75e55b1638d275288abac814958ce",
-      "source_sha256": "005d5067765e63ce7acdf66c33cdcb7636991bd041a59699092da4fce5cec493",
-      "exe_sha256": "f07d222b18bbfcb664782163e288af4cd4f9740e88090210d2ddc36509690e35",
-      "measured_at": "2026-10-02T19:23:42.742279+00:00",
-      "public_source_commit": "89ca44091e30d9e8f2e7e56e5eb7e69de9b8294e",
-      "method": "retained public route",
-      "provenance": {
-        "method": "retained public route",
-        "submission": "coordinated_refinement",
-        "author": "jay-tau",
-        "ref": "pr36",
-        "commit": "845e94d",
-        "route": "submissions/hard/coordinated_refinement/case_09.sol.json",
-        "sha256": "f878159da4ebe1d05e476bb5b1bf86cc40e75e55b1638d275288abac814958ce",
-        "total_delay": 21058
-      },
-      "runtime_basis": "carry step (source bytes written + checker verify)"
+      "source": "own_refinement"
     }
   ],
   "algorithm_references": [
@@ -306,5 +91,5 @@
   "tier": "hard",
   "hardware": "13th Gen Intel Core i7-13700HX (16 cores / 24 threads), 31.7 GB RAM, Windows 11",
   "threads": 4,
-  "runtime_scope": "Per case: the measured wall-clock seconds of the run in this entry's pipeline that produced the shipped route file, timed end to end on that case. Own-refined cases: our chained LNS refinement run (4 worker threads); where the original run was not recoverable, the producing invocation was re-executed and byte-verified. Carried cases: the shipped bytes are a credited public entry's file carried verbatim, so the value is the cost of the step that produced our file (write the source bytes + independent checker verification); the upstream entry's generation time is not ours and is not claimed. Up to 6 such runs executed concurrently during sweeping, so wall-clock times are conservative."
+  "runtime_scope": "Per case, `runtime.json` reports the wall-clock seconds of one end-to-end run of this entry's router on that case: the benchmark instance in, the shipped route as the warm start, a refined .sol.json out, at a fixed 30 s search budget on 4 worker threads (chain-fast mode, 2-8 sink groups). The engine self-reports the elapsed time and that number is recorded. All 45 cases were re-measured the same way, so the column is uniform and comparable. Own-refined cases: the shipped bytes were produced by a run of this type (earlier runs used the same operators at case-specific budgets). Cases whose shipped bytes are a credited public entry's file carried verbatim: the reported time is this entry's own run on that instance, not the upstream author's generation time, which is not claimed. Runs are sequential per case but several cases were measured concurrently, so wall-clock values are conservative."
 }

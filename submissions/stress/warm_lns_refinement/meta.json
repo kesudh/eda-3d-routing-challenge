@@ -1,81 +1,79 @@
 {
- "author": "kesudh",
- "url": "https://github.com/kesudh/eda-3d-routing-challenge/tree/submission/warm_lns_refinement_v2/submissions/intro/warm_lns_refinement/replay",
- "date": "2026-10-02",
- "method": "Exact shortest-path-tree warm refinement: radix A*, feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, optional circular integer buckets, multiple CPU search workers, strict final-walk polishing, and exact two-parent minimum-cut crossover following PR24. Our GPU kernels are audited prototypes and did not generate these refinements; selected PR26 public warm starts are attributed to its GPU-accelerated engine. Bounded conflict-based search over static multi-sink trees, alternated with neutral group reroutes; opt-in specialized chain pricing avoids full-grid cost setup. 2026-10-04 adoption update: 1 case(s) where a merged entry's route is strictly better than this entry's previous route are carried verbatim from coordinated_refinement (main 2566f5f1); documented as \"retained public route\" in the cases list, credited via derived_from. 2026-10-04 sole-first update: stress case_01 improved 1,042,314 -> 1,042,310 by a bounded portfolio refinement (cbs-mixed / portfolio / mixed / cbs configs from the carried route; the portfolio config won; route archived from a mid-run snapshot); the route is again our own refinement, parented on the carried coordinated_refinement route.",
- "derived_from": {
-  "submission": "coordinated_refinement",
-  "author": "jay-tau",
-  "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
-  "also_carried_from": [
-   "coordinated_refinement"
-  ],
-  "note": "per-case provenance in `cases`; cases byte-identical to a public entry are carried verbatim and excluded from runtime.json"
- },
- "warm_starts": [
-  {
-   "submission": "coordinated_refinement",
-   "author": "jay-tau",
-   "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
-   "input": "submissions/stress/coordinated_refinement/<case>.sol.json"
-  }
- ],
- "runtime": "4 worker threads; see runtime_scope",
- "runtime_hardware": "Windows, Intel i7-13700HX, 16 cores/24 threads; actual worker count recorded per command; concurrent Hermes and benchmark workloads. Observed wall times, not normalized.",
- "selection": "Best independently legal output per case; ties select shortest measured invocation. The per-case commands disclose benchmark-specific selection. Timed multiworker search is nondeterministic.",
- "cases": [
-  {
-   "tier": "stress",
-   "case": "case_01",
-   "source": "pr36:coordinated_refinement",
-   "delay": 1042306,
-   "legal": true,
-   "reasons": [],
-   "solver_wall_s": 624.0,
-   "independent_validation_s": 3.930021,
-   "runtime_s": 2.084,
-   "output": "F:/eda3d-wt/publish_v3/stress_attempt/run_portfolio-600/case_01.sol.json",
-   "sha256": "f9b9d9907a533237be8b4b81829f96173fae96e9cfcec5d4ea592f5852bdb709",
-   "source_sha256": "c85dd4867373786c4f956f28fa33ecc70eca782cb53d5ba9455fbdc71251761c",
-   "exe_sha256": "a341ff7d5b475a53347a3bdf9555f0a6a2e473a56f44cc10fb363fb30e120d70",
-   "measured_at": "2026-10-04T20:00:00Z",
-   "parent_measurement": {
-    "tier": "stress",
-    "case": "case_01",
-    "variant": "retained public route (carried 2026-10-04)",
-    "source": "coordinated_refinement",
-    "author": "jay-tau",
-    "delay": 1042314,
-    "legal": true,
-    "reasons": [],
-    "route_sha256": "c85dd4867373786c4f956f28fa33ecc70eca782cb53d5ba9455fbdc71251761c",
-    "commit": "2566f5f120392182dd97db77ba7760f8bb9b0828",
-    "route": "submissions/stress/coordinated_refinement/case_01.sol.json"
-   },
-   "method": "retained public route",
-   "provenance": {
-    "method": "retained public route",
+  "author": "kesudh",
+  "date": "2026-10-08",
+  "method": "Exact shortest-path-tree warm refinement: radix A*, feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, optional circular integer buckets, multiple CPU search workers, strict final-walk polishing, and exact two-parent minimum-cut crossover following PR24. Our GPU kernels are audited prototypes and did not generate these refinements; selected PR26 public warm starts are attributed to its GPU-accelerated engine. Bounded conflict-based search over static multi-sink trees, alternated with neutral group reroutes; opt-in specialized chain pricing avoids full-grid cost setup. 2026-10-04 adoption update: 1 case(s) where a merged entry's route is strictly better than this entry's previous route are carried verbatim from coordinated_refinement (main 2566f5f1); documented as \"retained public route\" in the cases list, credited via derived_from. 2026-10-04 sole-first update: stress case_01 improved 1,042,314 -> 1,042,310 by a bounded portfolio refinement (cbs-mixed / portfolio / mixed / cbs configs from the carried route; the portfolio config won; route archived from a mid-run snapshot); the route is again our own refinement, parented on the carried coordinated_refinement route.",
+  "derived_from": {
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "ref": "pr36",
-    "commit": "845e94d",
-    "route": "submissions/stress/coordinated_refinement/case_01.sol.json",
-    "sha256": "f9b9d9907a533237be8b4b81829f96173fae96e9cfcec5d4ea592f5852bdb709",
-    "total_delay": 1042306
-   },
-   "runtime_basis": "carry step (source bytes written + checker verify)"
-  }
- ],
- "algorithm_references": [
-  {
-   "method": "conflict splitting, adapted to static vertex-disjoint multi-sink trees",
-   "citation": "Sharon, Stern, Felner and Sturtevant, Conflict-based search for optimal multi-agent pathfinding",
-   "url": "https://doi.org/10.1016/j.artint.2014.11.006"
-  }
- ],
- "tier": "stress",
- "replay_bundle": "submissions/intro/warm_lns_refinement/replay",
- "hardware": "13th Gen Intel Core i7-13700HX (16 cores / 24 threads), 31.7 GB RAM, Windows 11",
- "threads": 4,
- "runtime_scope": "Per case: the measured wall-clock seconds of the run in this entry's pipeline that produced the shipped route file, timed end to end on that case. Own-refined cases: our chained LNS refinement run (4 worker threads); where the original run was not recoverable, the producing invocation was re-executed and byte-verified. Carried cases: the shipped bytes are a credited public entry's file carried verbatim, so the value is the cost of the step that produced our file (write the source bytes + independent checker verification); the upstream entry's generation time is not ours and is not claimed. Up to 6 such runs executed concurrently during sweeping, so wall-clock times are conservative."
+    "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+    "also_carried_from": [
+      "coordinated_refinement"
+    ],
+    "note": "per-case provenance in `cases`; cases byte-identical to a public entry are carried verbatim and excluded from runtime.json"
+  },
+  "warm_starts": [
+    {
+      "submission": "coordinated_refinement",
+      "author": "jay-tau",
+      "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
+      "input": "submissions/stress/coordinated_refinement/<case>.sol.json"
+    }
+  ],
+  "runtime": "4 worker threads; see runtime_scope",
+  "runtime_hardware": "Windows, Intel i7-13700HX, 16 cores/24 threads; actual worker count recorded per command; concurrent Hermes and benchmark workloads. Observed wall times, not normalized.",
+  "selection": "Best independently legal output per case; ties select shortest measured invocation. The per-case commands disclose benchmark-specific selection. Timed multiworker search is nondeterministic.",
+  "cases": [
+    {
+      "tier": "stress",
+      "case": "case_01",
+      "source": "pr36:coordinated_refinement",
+      "delay": 1042306,
+      "legal": true,
+      "reasons": [],
+      "solver_wall_s": 624.0,
+      "independent_validation_s": 3.930021,
+      "runtime_s": 2.084,
+      "output": "F:/eda3d-wt/publish_v3/stress_attempt/run_portfolio-600/case_01.sol.json",
+      "sha256": "f9b9d9907a533237be8b4b81829f96173fae96e9cfcec5d4ea592f5852bdb709",
+      "source_sha256": "c85dd4867373786c4f956f28fa33ecc70eca782cb53d5ba9455fbdc71251761c",
+      "exe_sha256": "a341ff7d5b475a53347a3bdf9555f0a6a2e473a56f44cc10fb363fb30e120d70",
+      "measured_at": "2026-10-04T20:00:00Z",
+      "parent_measurement": {
+        "tier": "stress",
+        "case": "case_01",
+        "variant": "retained public route (carried 2026-10-04)",
+        "source": "coordinated_refinement",
+        "author": "jay-tau",
+        "delay": 1042314,
+        "legal": true,
+        "reasons": [],
+        "route_sha256": "c85dd4867373786c4f956f28fa33ecc70eca782cb53d5ba9455fbdc71251761c",
+        "commit": "2566f5f120392182dd97db77ba7760f8bb9b0828",
+        "route": "submissions/stress/coordinated_refinement/case_01.sol.json"
+      },
+      "method": "retained public route",
+      "provenance": {
+        "method": "retained public route",
+        "submission": "coordinated_refinement",
+        "author": "jay-tau",
+        "ref": "pr36",
+        "commit": "845e94d",
+        "route": "submissions/stress/coordinated_refinement/case_01.sol.json",
+        "sha256": "f9b9d9907a533237be8b4b81829f96173fae96e9cfcec5d4ea592f5852bdb709",
+        "total_delay": 1042306
+      },
+      "runtime_basis": "carry step (source bytes written + checker verify)"
+    }
+  ],
+  "algorithm_references": [
+    {
+      "method": "conflict splitting, adapted to static vertex-disjoint multi-sink trees",
+      "citation": "Sharon, Stern, Felner and Sturtevant, Conflict-based search for optimal multi-agent pathfinding",
+      "url": "https://doi.org/10.1016/j.artint.2014.11.006"
+    }
+  ],
+  "tier": "stress",
+  "hardware": "13th Gen Intel Core i7-13700HX (16 cores / 24 threads), 31.7 GB RAM, Windows 11",
+  "threads": 4,
+  "runtime_scope": "Per case: the measured wall-clock seconds of the run in this entry's pipeline that produced the shipped route file, timed end to end on that case. Own-refined cases: our chained LNS refinement run (4 worker threads); where the original run was not recoverable, the producing invocation was re-executed and byte-verified. Carried cases: the shipped bytes are a credited public entry's file carried verbatim, so the value is the cost of the step that produced our file (write the source bytes + independent checker verification); the upstream entry's generation time is not ours and is not claimed. Up to 6 such runs executed concurrently during sweeping, so wall-clock times are conservative."
 }

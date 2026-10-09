@@ -1,38 +1,14 @@
 # warm_lns_refinement — intro
 
-By [kesudh](https://github.com/kesudh). Incremental warm refinement of published
-routes, with complete upstream credits and source hashes in `meta.json`.
+By [kesudh](https://github.com/kesudh). Exact shortest-path-tree warm refinement of
+published routes; per-case provenance and source hashes are in `meta.json`.
 
-This revision has 20/20 legal cases, total delay
-341,400, and aggregate 1.152761746716. It improves
-PR26 at `89ca44091e30d9e8f2e7e56e5eb7e69de9b8294e` by 1972 total-delay units.
-Warm starts from PR26's drama3d-portfolio are credited to YJ Kim where selected,
-alongside the previous coordinated_refinement and pathfinder_lns sources.
+| legal | total delay | aggregate | runtime (s) |
+|---:|---:|---:|---:|
+| 20/20 | 339192 | 1.1568 | 0.69 |
 
-`runtime.json` reports 155.826910 seconds across this tier. These
-are measured **incremental refinement** times, including private ancestor
-stages and independent checking. They exclude public warm-start generation,
-compilation and the tuning campaign; they are not from-scratch routing times.
-Hardware: i7-13700HX, Windows; worker counts are recorded per command. Timing
-was measured alongside other workloads and is not normalized across authors.
+Routes carried unchanged are credited in every case record; the rest were refined
+here. Sources drawn on in this tier: coordinated_refinement, cuda-have-been-shorter.
 
-The method uses exact radix/A* shortest-path trees with feasible per-sink
-bounds, neutral and group moves, preserved-route and displacement-chain repair,
-bounded excursions, CPU search portfolios, and two-parent minimum-cut crossover
-following PR24. An opt-in circular bucket queue accelerates integer searches.
-The new `cbs-mixed` mode alternates neutral group moves with bounded conflict
-search over static vertex-disjoint trees. Its exact shortest-path lower bounds
-prune group configurations that cannot improve the incumbent. This adapts the
-conflict-splitting principle of [Sharon et al.](https://doi.org/10.1016/j.artint.2014.11.006)
-to multi-sink routing; a node/time-limited run makes no global-optimality claim.
-The opt-in `chain-fast` and `chain-entry-fast` modes specialize congestion pricing,
-avoiding repeated whole-grid setup while preserving fixed-work route choices.
-Our CUDA prototypes were benchmarked separately and did not generate these
-refinements. PR26 credits its public warm starts to a GPU-accelerated engine.
-
-The versioned Windows replay bundle, source, commands and full provenance are
-in `submissions/intro/warm_lns_refinement/replay`. Timed parallel searches can
-produce different legal routes when repeated. Current experimental detour and
-pair-sweep operators are included in the latest source but did not improve the
-selected hard-case routes. No global optimality or immunity to future tuning
-is claimed.
+Timed parallel search is nondeterministic, so a repeat can return a different legal
+route. No global-optimality claim is made.

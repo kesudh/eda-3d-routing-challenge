@@ -1,2 +1,1 @@
 *.sol.json -text
-replay/reproducer/** -text whitespace=cr-at-eol

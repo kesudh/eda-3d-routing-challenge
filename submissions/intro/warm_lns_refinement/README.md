@@ -5,7 +5,7 @@ published routes; per-case provenance is byte-verified in `meta.json`.
 
 | legal | total delay | aggregate | runtime (s) |
 |---:|---:|---:|---:|
-| 20/20 | 339138 | 1.1570 | 600.65 |
+| 20/20 | 339108 | 1.1571 | 600.65 |
 
 ## Attribution
 
@@ -15,9 +15,9 @@ Routes carried verbatim, with the ref the shipped bytes were taken from:
 |---|---|---|---|---:|
 | coordinated_refinement | jay-tau | origin/main | `b13a8290d052` | 8 |
 | cuda-have-been-shorter | YJ Kim | origin/main | `2d321cdb5e2f` | 1 |
-| leonid-popryho | Leonid Popryho | pull/46 head 2d36fd1e | `2d36fd1e` | 5 |
+| leonid-popryho | Leonid Popryho | pull/46 head 2d36fd1e | `2d36fd1e` | 1 |
 
-Warm starts: the 6 case(s) refined here were warm-started from the best
+Warm starts: the 10 case(s) refined here were warm-started from the best
 published route for that case, published by coordinated_refinement (jay-tau),
 drama3d-portfolio / cuda-have-been-shorter (YJ Kim), leonid-popryho (Leonid
 Popryho) or pathfinder_lns (Tazeem Mahashin).

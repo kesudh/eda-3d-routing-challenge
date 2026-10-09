@@ -45,7 +45,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.1570 | 20/20 | 339138 | 600.65 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.1571 | 20/20 | 339108 | 600.65 | ✓ | — |
 | 2 | coordinated_refinement † | jay-tau | 1.1566 | 20/20 | 339328 | missing |  | — |
 | 3 | leonid-popryho | Leonid Popryho | 1.1563 | 20/20 | 339406 | missing |  | — |
 | 4 | cuda-have-been-shorter | YJ Kim | 1.1562 | 20/20 | 339546 | missing |  | — |
@@ -91,7 +91,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.1403 | 8/8 | 531470 | 241.40 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.1404 | 8/8 | 531454 | 241.40 | ✓ | — |
 | 2 | coordinated_refinement † | jay-tau | 1.1399 | 8/8 | 531688 | missing |  | — |
 | 3 | leonid-popryho | Leonid Popryho | 1.1397 | 8/8 | 531766 | missing |  | — |
 | 4 | cuda-have-been-shorter | YJ Kim | 1.1391 | 8/8 | 532016 | missing |  | — |
@@ -124,7 +124,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.3589 | 4/4 | 472647 | 120.56 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.3589 | 4/4 | 472635 | 120.56 | ✓ | — |
 | 2 | coordinated_refinement † | jay-tau | 1.3508 | 4/4 | 476231 | missing |  | — |
 | 3 | leonid-popryho | Leonid Popryho | 1.3505 | 4/4 | 476333 | missing |  | — |
 | 4 | cuda-have-been-shorter | YJ Kim | 1.3392 | 4/4 | 479359 | missing |  | — |
@@ -141,7 +141,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.4773 | 3/3 | 203095 | 90.30 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.4779 | 3/3 | 202985 | 90.30 | ✓ | — |
 | 2 | coordinated_refinement † | jay-tau | 1.4673 | 3/3 | 204497 | missing |  | — |
 | 3 | leonid-popryho | Leonid Popryho | 1.4667 | 3/3 | 204581 | missing |  | — |
 | 4 | cuda-have-been-shorter | YJ Kim | 1.4634 | 3/3 | 204963 | missing |  | — |

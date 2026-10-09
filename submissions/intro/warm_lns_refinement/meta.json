@@ -20,7 +20,7 @@
         "author": "Leonid Popryho",
         "ref": "pull/46 head 2d36fd1e",
         "commit": "2d36fd1e",
-        "routes": 5
+        "routes": 1
       }
     ],
     "warm_start_policy": "Every case refined here was warm-started from the best published route for that case available at run time; the entries listed below publish those routes, directly or upstream.",
@@ -105,26 +105,14 @@
     {
       "tier": "intro",
       "case": "case_10",
-      "delay": 10491,
-      "source": "leonid-popryho",
-      "carried_from": {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1e"
-      }
+      "delay": 10487,
+      "source": "own_refinement"
     },
     {
       "tier": "intro",
       "case": "case_11",
-      "delay": 12160,
-      "source": "leonid-popryho",
-      "carried_from": {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1e"
-      }
+      "delay": 12158,
+      "source": "own_refinement"
     },
     {
       "tier": "intro",
@@ -141,14 +129,8 @@
     {
       "tier": "intro",
       "case": "case_13",
-      "delay": 19405,
-      "source": "leonid-popryho",
-      "carried_from": {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1e"
-      }
+      "delay": 19399,
+      "source": "own_refinement"
     },
     {
       "tier": "intro",
@@ -225,14 +207,8 @@
     {
       "tier": "intro",
       "case": "case_20",
-      "delay": 44294,
-      "source": "leonid-popryho",
-      "carried_from": {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1e"
-      }
+      "delay": 44276,
+      "source": "own_refinement"
     }
   ],
   "algorithm_references": [
@@ -283,13 +259,9 @@
         "ref": "pull/46 head 2d36fd1e",
         "commit": "2d36fd1e",
         "merged": false,
-        "routes_carried_verbatim": 5,
+        "routes_carried_verbatim": 1,
         "cases": [
-          "case_10",
-          "case_11",
-          "case_13",
-          "case_14",
-          "case_20"
+          "case_14"
         ]
       }
     ],

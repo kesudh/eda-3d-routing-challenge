@@ -24,14 +24,8 @@
     {
       "tier": "congested",
       "case": "case_02",
-      "delay": 92402,
-      "source": "leonid-popryho",
-      "carried_from": {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1e"
-      }
+      "delay": 92398,
+      "source": "own_refinement"
     },
     {
       "tier": "congested",
@@ -48,14 +42,8 @@
     {
       "tier": "congested",
       "case": "case_04",
-      "delay": 170377,
-      "source": "leonid-popryho",
-      "carried_from": {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1e"
-      }
+      "delay": 170369,
+      "source": "own_refinement"
     }
   ],
   "algorithm_references": [
@@ -77,11 +65,9 @@
         "ref": "pull/46 head 2d36fd1e",
         "commit": "2d36fd1e",
         "merged": false,
-        "routes_carried_verbatim": 3,
+        "routes_carried_verbatim": 1,
         "cases": [
-          "case_02",
-          "case_03",
-          "case_04"
+          "case_03"
         ]
       }
     ],

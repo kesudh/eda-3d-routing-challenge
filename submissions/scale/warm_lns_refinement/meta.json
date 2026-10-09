@@ -38,26 +38,14 @@
     {
       "tier": "scale",
       "case": "case_02",
-      "delay": 44726,
-      "source": "leonid-popryho",
-      "carried_from": {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1e"
-      }
+      "delay": 44722,
+      "source": "own_refinement"
     },
     {
       "tier": "scale",
       "case": "case_03",
-      "delay": 55934,
-      "source": "leonid-popryho",
-      "carried_from": {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1e"
-      }
+      "delay": 55926,
+      "source": "own_refinement"
     },
     {
       "tier": "scale",
@@ -98,14 +86,8 @@
     {
       "tier": "scale",
       "case": "case_07",
-      "delay": 85829,
-      "source": "leonid-popryho",
-      "carried_from": {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1e"
-      }
+      "delay": 85825,
+      "source": "own_refinement"
     },
     {
       "tier": "scale",
@@ -151,13 +133,10 @@
         "ref": "pull/46 head 2d36fd1e",
         "commit": "2d36fd1e",
         "merged": false,
-        "routes_carried_verbatim": 6,
+        "routes_carried_verbatim": 3,
         "cases": [
-          "case_02",
-          "case_03",
           "case_05",
           "case_06",
-          "case_07",
           "case_08"
         ]
       }

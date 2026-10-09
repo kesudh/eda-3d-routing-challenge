@@ -5,7 +5,7 @@ published routes; per-case provenance is byte-verified in `meta.json`.
 
 | legal | total delay | aggregate | runtime (s) |
 |---:|---:|---:|---:|
-| 1/1 | 1042150 | 1.0986 | 43.43 |
+| 1/1 | 1042142 | 1.0986 | 43.43 |
 
 ## Attribution
 
@@ -13,7 +13,7 @@ Routes carried verbatim, with the ref the shipped bytes were taken from:
 
 | entry | author | ref | commit | routes |
 |---|---|---|---|---:|
-| leonid-popryho | Leonid Popryho | pull/46 head 2d36fd1e | `2d36fd1e` | 1 |
+| coordinated_refinement | jay-tau | pull/47 head cb435d0a | `cb435d0a7559` | 1 |
 
 Warm starts: the 0 case(s) refined here were warm-started from the best
 published route for that case, published by coordinated_refinement (jay-tau),

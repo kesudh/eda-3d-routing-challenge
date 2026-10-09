@@ -3,10 +3,10 @@
   "date": "2026-10-08",
   "method": "Exact shortest-path-tree warm refinement of published routes. Radix/A* trees with feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, bounded excursions, and a multi-worker CPU search portfolio; the opt-in chain-fast modes specialize congestion pricing. Two-parent minimum-cut crossover follows the coordinated_refinement line of work by jay-tau (PR #24). Bounded conflict-based search over static vertex-disjoint multi-sink trees is an adaptation of Sharon et al. (see algorithm_references). This entry's own GPU kernels are audited prototypes and did not generate these routes.",
   "derived_from": {
-    "submission": "leonid-popryho",
-    "author": "Leonid Popryho",
-    "ref": "pull/46 head 2d36fd1e",
-    "commit": "2d36fd1e",
+    "submission": "coordinated_refinement",
+    "author": "jay-tau",
+    "ref": "pull/47 head cb435d0a",
+    "commit": "cb435d0a7559",
     "also_carried_from": [],
     "warm_start_policy": "Every case refined here was warm-started from the best published route for that case available at run time; the entries listed below publish those routes, directly or upstream.",
     "upstream_chain": "coordinated_refinement (jay-tau) builds on drama3d-portfolio (YJ Kim), leonid-popryho (Leonid Popryho) and pathfinder_lns (Tazeem Mahashin); cuda-have-been-shorter (YJ Kim) is the renamed drama3d-portfolio entry."
@@ -18,8 +18,19 @@
     {
       "tier": "designs",
       "case": "ctrl",
-      "delay": 48662,
-      "source": "own_refinement"
+      "delay": 48656,
+      "source": "coordinated_refinement",
+      "source_key": "pr47",
+      "ref": "pull/47 head cb435d0a",
+      "commit": "cb435d0a7559",
+      "author": "jay-tau",
+      "merged": false,
+      "carried_from": {
+        "entry": "coordinated_refinement",
+        "author": "jay-tau",
+        "ref": "pull/47 head cb435d0a",
+        "commit": "cb435d0a7559"
+      }
     },
     {
       "tier": "designs",
@@ -30,13 +41,18 @@
     {
       "tier": "designs",
       "case": "router",
-      "delay": 66953,
-      "source": "leonid-popryho",
+      "delay": 66945,
+      "source": "coordinated_refinement",
+      "source_key": "pr47",
+      "ref": "pull/47 head cb435d0a",
+      "commit": "cb435d0a7559",
+      "author": "jay-tau",
+      "merged": false,
       "carried_from": {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1e"
+        "entry": "coordinated_refinement",
+        "author": "jay-tau",
+        "ref": "pull/47 head cb435d0a",
+        "commit": "cb435d0a7559"
       }
     }
   ],
@@ -54,13 +70,14 @@
   "attribution": {
     "carried_routes": [
       {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1e",
-        "commit": "2d36fd1e",
+        "entry": "coordinated_refinement",
+        "author": "jay-tau",
+        "ref": "pull/47 head cb435d0a",
+        "commit": "cb435d0a7559",
         "merged": false,
-        "routes_carried_verbatim": 1,
+        "routes_carried_verbatim": 2,
         "cases": [
+          "ctrl",
           "router"
         ]
       }

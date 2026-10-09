@@ -16,7 +16,7 @@ do not edit it by hand.
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.1571 | 20/20 | 339108 | 600.65 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.1571 | 20/20 | 339096 | 600.65 | ✓ | — |
 | 2 | coordinated_refinement † | jay-tau | 1.1566 | 20/20 | 339328 | missing |  | — |
 | 3 | leonid-popryho | Leonid Popryho | 1.1563 | 20/20 | 339406 | missing |  | — |
 | 4 | cuda-have-been-shorter | YJ Kim | 1.1562 | 20/20 | 339546 | missing |  | — |
@@ -62,7 +62,7 @@ do not edit it by hand.
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.1404 | 8/8 | 531454 | 241.40 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.1404 | 8/8 | 531440 | 241.40 | ✓ | — |
 | 2 | coordinated_refinement † | jay-tau | 1.1399 | 8/8 | 531688 | missing |  | — |
 | 3 | leonid-popryho | Leonid Popryho | 1.1397 | 8/8 | 531766 | missing |  | — |
 | 4 | cuda-have-been-shorter | YJ Kim | 1.1391 | 8/8 | 532016 | missing |  | — |
@@ -74,13 +74,13 @@ do not edit it by hand.
 | 10 | synapse-surge | Sameer-Deepak | 1.0496 | 8/8 | 579306 | missing |  | — |
 | 11 | shivaahir158 | Shiva Ahir (PhD Candidate, Stony Brook University) | 1.0108 | 8/8 | 598244 | 2196.48 |  | — |
 
-† derivative entry (refines another entry's routes): warm_lns_refinement builds on leonid-popryho (Leonid Popryho); coordinated_refinement builds on leonid-popryho (Leonid Popryho).
+† derivative entry (refines another entry's routes): warm_lns_refinement builds on coordinated_refinement (jay-tau); coordinated_refinement builds on leonid-popryho (Leonid Popryho).
 
 ## stress  (1 cases)
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.0986 | 1/1 | 1042150 | 43.43 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.0986 | 1/1 | 1042142 | 43.43 | ✓ | — |
 | 2 | coordinated_refinement † | jay-tau | 1.0984 | 1/1 | 1042314 | missing |  | — |
 | 3 | leonid-popryho | Leonid Popryho | 1.0984 | 1/1 | 1042322 | missing |  | — |
 | 4 | cuda-have-been-shorter | YJ Kim | 1.0978 | 1/1 | 1042926 | missing |  | — |
@@ -89,13 +89,13 @@ do not edit it by hand.
 | 7 | lns_negotiated | adityuhkapoor | 1.0669 | 1/1 | 1073124 | missing |  | — |
 | 8 | synapse-surge | Sameer-Deepak | 1.0008 | 1/1 | 1143964 | missing |  | — |
 
-† derivative entry (refines another entry's routes): warm_lns_refinement builds on leonid-popryho (Leonid Popryho); coordinated_refinement builds on leonid-popryho (Leonid Popryho).
+† derivative entry (refines another entry's routes): warm_lns_refinement builds on coordinated_refinement (jay-tau); coordinated_refinement builds on leonid-popryho (Leonid Popryho).
 
 ## congested  (4 cases)
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.3589 | 4/4 | 472635 | 120.56 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.3590 | 4/4 | 472615 | 120.56 | ✓ | — |
 | 2 | coordinated_refinement † | jay-tau | 1.3508 | 4/4 | 476231 | missing |  | — |
 | 3 | leonid-popryho | Leonid Popryho | 1.3505 | 4/4 | 476333 | missing |  | — |
 | 4 | cuda-have-been-shorter | YJ Kim | 1.3392 | 4/4 | 479359 | missing |  | — |
@@ -106,13 +106,13 @@ do not edit it by hand.
 | 9 | shivaahir158 | Shiva Ahir (PhD Candidate, Stony Brook University) | 1.0549 | 4/4 | 608243 | 8756.73 |  | — |
 | 10 | synapse-surge | Sameer-Deepak | 1.0518 | 4/4 | 616017 | missing |  | — |
 
-† derivative entry (refines another entry's routes): warm_lns_refinement builds on leonid-popryho (Leonid Popryho); coordinated_refinement builds on leonid-popryho (Leonid Popryho).
+† derivative entry (refines another entry's routes): warm_lns_refinement builds on coordinated_refinement (jay-tau); coordinated_refinement builds on leonid-popryho (Leonid Popryho).
 
 ## designs  (3 cases)
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.4779 | 3/3 | 202985 | 90.30 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.4780 | 3/3 | 202971 | 90.30 | ✓ | — |
 | 2 | coordinated_refinement † | jay-tau | 1.4673 | 3/3 | 204497 | missing |  | — |
 | 3 | leonid-popryho | Leonid Popryho | 1.4667 | 3/3 | 204581 | missing |  | — |
 | 4 | cuda-have-been-shorter | YJ Kim | 1.4634 | 3/3 | 204963 | missing |  | — |
@@ -125,5 +125,5 @@ do not edit it by hand.
 | 11 | synapse-surge | Sameer-Deepak | 1.1456 | 3/3 | 264847 | missing |  | — |
 | 12 | shivaahir158 | Shiva Ahir (PhD Candidate, Stony Brook University) | 1.0593 | 3/3 | 288347 | 3728.39 |  | — |
 
-† derivative entry (refines another entry's routes): warm_lns_refinement builds on leonid-popryho (Leonid Popryho); coordinated_refinement builds on leonid-popryho (Leonid Popryho).
+† derivative entry (refines another entry's routes): warm_lns_refinement builds on coordinated_refinement (jay-tau); coordinated_refinement builds on leonid-popryho (Leonid Popryho).
 

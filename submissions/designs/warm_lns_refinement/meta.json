@@ -1,25 +1,16 @@
 {
   "author": "kesudh",
   "date": "2026-10-08",
-  "method": "Exact shortest-path-tree warm refinement: radix A*, feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, optional circular integer buckets, multiple CPU search workers, strict final-walk polishing, and exact two-parent minimum-cut crossover following PR24. Our GPU kernels are audited prototypes and did not generate these refinements; selected PR26 public warm starts are attributed to its GPU-accelerated engine. Bounded conflict-based search over static multi-sink trees, alternated with neutral group reroutes; opt-in specialized chain pricing avoids full-grid cost setup.",
+  "method": "Exact shortest-path-tree warm refinement of published routes. Radix/A* trees with feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, bounded excursions, and a multi-worker CPU search portfolio; the opt-in chain-fast modes specialize congestion pricing. Two-parent minimum-cut crossover follows the coordinated_refinement line of work by jay-tau (PR #24). Bounded conflict-based search over static vertex-disjoint multi-sink trees is an adaptation of Sharon et al. (see algorithm_references). This entry's own GPU kernels are audited prototypes and did not generate these routes.",
   "derived_from": {
     "submission": "leonid-popryho",
     "author": "Leonid Popryho",
-    "carried_verbatim_from": {
-      "leonid-popryho": 3
-    },
-    "carried_case_count": 3,
-    "warm_started_from": "coordinated_refinement (jay-tau) and its upstream entries; cases refined here were warm-started from the published route for that case",
-    "note": "Per-case provenance is byte-verified: each shipped route is compared with every published entry's file and credited to the one it matches. Routes matching none are this entry's own refinement."
+    "ref": "pull/46 head 2d36fd1e",
+    "commit": "2d36fd1e",
+    "also_carried_from": [],
+    "warm_start_policy": "Every case refined here was warm-started from the best published route for that case available at run time; the entries listed below publish those routes, directly or upstream.",
+    "upstream_chain": "coordinated_refinement (jay-tau) builds on drama3d-portfolio (YJ Kim), leonid-popryho (Leonid Popryho) and pathfinder_lns (Tazeem Mahashin); cuda-have-been-shorter (YJ Kim) is the renamed drama3d-portfolio entry."
   },
-  "warm_starts": [
-    {
-      "submission": "coordinated_refinement",
-      "author": "jay-tau",
-      "commit": "845e94d6c85adfbb5b5bb1c8773a52b28aefcad6",
-      "input": "submissions/designs/coordinated_refinement/<case>.sol.json"
-    }
-  ],
   "runtime": "4 worker threads; see runtime_scope",
   "runtime_hardware": "Windows, Intel i7-13700HX, 16 cores/24 threads; actual worker count recorded per command; concurrent Hermes and benchmark workloads. Observed wall times, not normalized.",
   "selection": "The best independently legal output per case, as reported by the official checker; ties keep the earlier route. Timed multiworker search is nondeterministic, so a repeat can return a different legal route.",
@@ -28,19 +19,37 @@
       "tier": "designs",
       "case": "ctrl",
       "delay": 48670,
-      "source": "leonid-popryho"
+      "source": "leonid-popryho",
+      "carried_from": {
+        "entry": "leonid-popryho",
+        "author": "Leonid Popryho",
+        "ref": "pull/46 head 2d36fd1e",
+        "commit": "2d36fd1e"
+      }
     },
     {
       "tier": "designs",
       "case": "int2float",
       "delay": 87472,
-      "source": "leonid-popryho"
+      "source": "leonid-popryho",
+      "carried_from": {
+        "entry": "leonid-popryho",
+        "author": "Leonid Popryho",
+        "ref": "pull/46 head 2d36fd1e",
+        "commit": "2d36fd1e"
+      }
     },
     {
       "tier": "designs",
       "case": "router",
       "delay": 66953,
-      "source": "leonid-popryho"
+      "source": "leonid-popryho",
+      "carried_from": {
+        "entry": "leonid-popryho",
+        "author": "Leonid Popryho",
+        "ref": "pull/46 head 2d36fd1e",
+        "commit": "2d36fd1e"
+      }
     }
   ],
   "algorithm_references": [
@@ -53,5 +62,61 @@
   "tier": "designs",
   "hardware": "13th Gen Intel Core i7-13700HX (16 cores / 24 threads), 31.7 GB RAM, Windows 11",
   "threads": 4,
-  "runtime_scope": "Per case, `runtime.json` reports the wall-clock seconds of one end-to-end run of this entry's router on that case: the benchmark instance in, the shipped route as the warm start, a refined .sol.json out, at a fixed 30 s search budget on 4 worker threads (chain-fast mode, 2-8 sink groups). The engine self-reports the elapsed time and that number is recorded. All 45 cases were re-measured the same way, so the column is uniform and comparable. Own-refined cases: the shipped bytes were produced by a run of this type (earlier runs used the same operators at case-specific budgets). Cases whose shipped bytes are a credited public entry's file carried verbatim: the reported time is this entry's own run on that instance, not the upstream author's generation time, which is not claimed. Runs are sequential per case but several cases were measured concurrently, so wall-clock values are conservative."
+  "runtime_scope": "Per case, `runtime.json` reports the wall-clock seconds of one end-to-end run of this entry's router on that case: the benchmark instance in, the shipped route as the warm start, a refined .sol.json out, at a fixed 30 s search budget on 4 worker threads (chain-fast mode). The engine self-reports the elapsed time and that number is recorded. All 45 cases were measured the same way, so the column is uniform. Where the shipped bytes are another entry's file carried verbatim, the reported time is this entry's own run on that instance, not the upstream author's generation time, which is not claimed. Several cases were measured concurrently, so wall-clock values are conservative.",
+  "attribution": {
+    "carried_routes": [
+      {
+        "entry": "leonid-popryho",
+        "author": "Leonid Popryho",
+        "ref": "pull/46 head 2d36fd1e",
+        "commit": "2d36fd1e",
+        "merged": false,
+        "routes_carried_verbatim": 3,
+        "cases": [
+          "ctrl",
+          "int2float",
+          "router"
+        ]
+      }
+    ],
+    "warm_starts": {
+      "policy": "Every case refined here was warm-started from the best published route for that case available at run time; the entries listed below publish those routes, directly or upstream.",
+      "entries": [
+        {
+          "entry": "coordinated_refinement",
+          "author": "jay-tau",
+          "ref": "pull/36 head 845e94d6",
+          "commit": "845e94d6",
+          "merged": false,
+          "used_as": "warm start for the cases this entry refined"
+        },
+        {
+          "entry": "drama3d-portfolio",
+          "author": "YJ Kim",
+          "ref": "origin/main (entry renamed cuda-have-been-shorter)",
+          "commit": "2d321cdb5e2f",
+          "merged": true,
+          "used_as": "upstream of the coordinated_refinement routes"
+        },
+        {
+          "entry": "pathfinder_lns",
+          "author": "Tazeem Mahashin",
+          "ref": "origin/main",
+          "commit": "c2d9d9f583d2",
+          "merged": true,
+          "used_as": "upstream route source"
+        },
+        {
+          "entry": "leonid-popryho",
+          "author": "Leonid Popryho",
+          "ref": "pull/46 head 2d36fd1e",
+          "commit": "2d36fd1e",
+          "merged": false,
+          "used_as": "upstream route source"
+        }
+      ]
+    },
+    "upstream_chain": "coordinated_refinement (jay-tau) builds on drama3d-portfolio (YJ Kim), leonid-popryho (Leonid Popryho) and pathfinder_lns (Tazeem Mahashin); cuda-have-been-shorter (YJ Kim) is the renamed drama3d-portfolio entry.",
+    "note": "Byte-verified: each shipped route is compared with every published entry's file. Ids recorded above are the ref the bytes were taken from, so an open PR is not confused with the merged entry of the same name."
+  }
 }

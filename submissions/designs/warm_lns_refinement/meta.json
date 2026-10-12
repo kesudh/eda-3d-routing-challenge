@@ -30,20 +30,14 @@
     {
       "tier": "designs",
       "case": "int2float",
-      "delay": 87358,
+      "delay": 87354,
       "source": "own_refinement"
     },
     {
       "tier": "designs",
       "case": "router",
-      "delay": 66945,
-      "source": "coordinated_refinement",
-      "carried_from": {
-        "entry": "coordinated_refinement",
-        "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a7559",
-        "commit": "cb435d0a7559"
-      }
+      "delay": 66937,
+      "source": "own_refinement"
     }
   ],
   "algorithm_references": [
@@ -65,10 +59,9 @@
         "ref": "pull/47 head cb435d0a7559",
         "commit": "cb435d0a7559",
         "merged": false,
-        "routes_carried_verbatim": 2,
+        "routes_carried_verbatim": 1,
         "cases": [
-          "ctrl",
-          "router"
+          "ctrl"
         ]
       }
     ],

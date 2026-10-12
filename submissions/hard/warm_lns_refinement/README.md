@@ -15,7 +15,7 @@ Routes carried verbatim, with the ref the shipped bytes were taken from:
 |---|---|---|---|---:|
 | coordinated_refinement | jay-tau | origin/main | `b13a8290d052` | 1 |
 | cuda-have-been-shorter | YJ Kim | origin/main | `2d321cdb5e2f` | 3 |
-| leonid-popryho | Leonid Popryho | pull/46 head 2d36fd1e | `2d36fd1ec432` | 5 |
+| leonid-popryho | Leonid Popryho | pull/46 head 2d36fd1ec432 | `2d36fd1ec432` | 5 |
 
 Warm starts: the 0 case(s) refined here were warm-started from the best
 published route for that case, published by coordinated_refinement (jay-tau),
@@ -23,6 +23,5 @@ drama3d-portfolio / cuda-have-been-shorter (YJ Kim), leonid-popryho (Leonid
 Popryho) or pathfinder_lns (Tazeem Mahashin).
 
 Conflict-based search is adapted from Sharon et al. (see `algorithm_references`).
-`runtime.json` is one end-to-end run of this router per case at a uniform 30 s
-search budget. Timed parallel search is nondeterministic, so a repeat can return a
-different legal route. No global-optimality claim is made.
+`runtime.json` is one end-to-end run of this router per case; 43 of 45 cases at a
+uniform 30 s search budget on 4 threads, and the two most recent refinements at theengine-reported wall clock of the run whose output is shipped (25.15 s and 25.22 s, 2threads). Timed parallel search is nondeterministic, so a repeat can return adifferent legal route. No global-optimality claim is made.

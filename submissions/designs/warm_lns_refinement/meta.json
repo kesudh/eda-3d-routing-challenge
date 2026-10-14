@@ -1,12 +1,12 @@
 {
   "author": "kesudh",
-  "date": "2026-10-12",
+  "date": "2026-10-13",
   "method": "Exact shortest-path-tree warm refinement of published routes. Radix/A* trees with feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, bounded excursions, and a multi-worker CPU search portfolio; the opt-in chain-fast modes specialize congestion pricing. Two-parent minimum-cut crossover follows the coordinated_refinement line of work by jay-tau (PR #24). Bounded conflict-based search over static vertex-disjoint multi-sink trees is an adaptation of Sharon et al. (see algorithm_references). This entry's own GPU kernels are audited prototypes and did not generate these routes.",
   "derived_from": {
     "submission": "coordinated_refinement",
     "author": "jay-tau",
-    "ref": "pull/47 head cb435d0a7559",
-    "commit": "cb435d0a7559",
+    "ref": "pull/51 head afac5dd0e74d",
+    "commit": "afac5dd0e74d",
     "also_carried_from": [],
     "warm_start_policy": "Every case refined here was warm-started from the best published route for that case available at run time; the entries listed below publish those routes, directly or upstream.",
     "upstream_chain": "coordinated_refinement (jay-tau) builds on drama3d-portfolio (YJ Kim), leonid-popryho (Leonid Popryho) and pathfinder_lns (Tazeem Mahashin); cuda-have-been-shorter (YJ Kim) is the renamed drama3d-portfolio entry."
@@ -18,20 +18,26 @@
     {
       "tier": "designs",
       "case": "ctrl",
-      "delay": 48656,
+      "delay": 48654,
       "source": "coordinated_refinement",
       "carried_from": {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a7559",
-        "commit": "cb435d0a7559"
+        "ref": "pull/51 head afac5dd0e74d",
+        "commit": "afac5dd0e74d"
       }
     },
     {
       "tier": "designs",
       "case": "int2float",
-      "delay": 87354,
-      "source": "own_refinement"
+      "delay": 87352,
+      "source": "coordinated_refinement",
+      "carried_from": {
+        "entry": "coordinated_refinement",
+        "author": "jay-tau",
+        "ref": "pull/51 head afac5dd0e74d",
+        "commit": "afac5dd0e74d"
+      }
     },
     {
       "tier": "designs",
@@ -50,18 +56,19 @@
   "tier": "designs",
   "hardware": "13th Gen Intel Core i7-13700HX (16 cores / 24 threads), 31.7 GB RAM, Windows 11",
   "threads": 4,
-  "runtime_scope": "Per case, `runtime.json` reports the wall-clock seconds of the one end-to-end run of this entry's router that produced the shipped route file: the benchmark instance in, the published route for that case as the warm start, a refined .sol.json out. 43 of the 45 cases were measured on a uniform basis at a fixed 30 s search budget on 4 worker threads (chain-fast mode). The two most recent refinements carry the engine's own END_TO_END_SECONDS from the exact run whose output is shipped: designs/int2float (25.15 s, 2 worker threads, cbs-mixed) and congested/case_02 (25.22 s, 2 worker threads, chain). Where the shipped bytes are another entry's file carried verbatim, the reported time is this entry's own run on that instance, not the upstream author's generation time, which is not claimed. Several cases were measured concurrently, so wall-clock values are conservative.",
+  "runtime_scope": "Per case, `runtime.json` reports the wall-clock seconds of one end-to-end run of this entry's router on that case: the benchmark instance in, a route file out. Every case was measured on one basis - a fixed 30 s search budget on 4 worker threads, chain-fast mode, taking the engine's own END_TO_END_SECONDS - with one exception recorded here: on stress/case_01 the budget is checked only at the top of the trial loop and a single 901-net trial can exceed it, so that case reports 62.2 s for a 30 s budget. The 7 cases whose shipped route changed in this revision (intro/case_09, scale/case_02, scale/case_03, stress/case_01, congested/case_04, designs/ctrl, designs/int2float) were re-measured now on that basis; the other 38 records are unchanged from the previous revision and describe the runs that produced the bytes those cases still ship. Where the shipped bytes are another entry's published file carried verbatim, the reported time is this entry's own run on that instance, not the upstream author's generation time, which is not claimed. Several runs were measured concurrently, so wall-clock values are conservative.",
   "attribution": {
     "carried_routes": [
       {
         "entry": "coordinated_refinement",
         "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a7559",
-        "commit": "cb435d0a7559",
+        "ref": "pull/51 head afac5dd0e74d",
+        "commit": "afac5dd0e74d",
         "merged": false,
-        "routes_carried_verbatim": 1,
+        "routes_carried_verbatim": 2,
         "cases": [
-          "ctrl"
+          "ctrl",
+          "int2float"
         ]
       }
     ],

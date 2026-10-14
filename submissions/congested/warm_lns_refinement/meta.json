@@ -1,6 +1,6 @@
 {
   "author": "kesudh",
-  "date": "2026-10-13",
+  "date": "2026-10-14",
   "method": "Exact shortest-path-tree warm refinement of published routes. Radix/A* trees with feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, bounded excursions, and a multi-worker CPU search portfolio; the opt-in chain-fast modes specialize congestion pricing. Two-parent minimum-cut crossover follows the coordinated_refinement line of work by jay-tau (PR #24). Bounded conflict-based search over static vertex-disjoint multi-sink trees is an adaptation of Sharon et al. (see algorithm_references). This entry's own GPU kernels are audited prototypes and did not generate these routes.",
   "derived_from": {
     "submission": "coordinated_refinement",
@@ -56,7 +56,7 @@
   "tier": "congested",
   "hardware": "13th Gen Intel Core i7-13700HX (16 cores / 24 threads), 31.7 GB RAM, Windows 11",
   "threads": 4,
-  "runtime_scope": "Per case, `runtime.json` reports the wall-clock seconds of one end-to-end run of this entry's router on that case: the benchmark instance in, a route file out. Every case was measured on one basis - a fixed 30 s search budget on 4 worker threads, chain-fast mode, taking the engine's own END_TO_END_SECONDS - with one exception recorded here: on stress/case_01 the budget is checked only at the top of the trial loop and a single 901-net trial can exceed it, so that case reports 62.2 s for a 30 s budget. The 7 cases whose shipped route changed in this revision (intro/case_09, scale/case_02, scale/case_03, stress/case_01, congested/case_04, designs/ctrl, designs/int2float) were re-measured now on that basis; the other 38 records are unchanged from the previous revision and describe the runs that produced the bytes those cases still ship. Where the shipped bytes are another entry's published file carried verbatim, the reported time is this entry's own run on that instance, not the upstream author's generation time, which is not claimed. Several runs were measured concurrently, so wall-clock values are conservative.",
+  "runtime_scope": "Per case, `runtime.json` reports the wall-clock seconds of one end-to-end run of this entry's router on that case: the benchmark instance in, a route file out. Every case was measured on one basis - a fixed 30 s search budget on 4 worker threads, chain-fast mode, taking the engine's own END_TO_END_SECONDS - with one exception recorded here: on stress/case_01 the budget is checked only at the top of the trial loop and a single 901-net trial can exceed it, so that case reports 62.2 s for a 30 s budget. This revision changes exactly one shipped route, designs/int2float, which is now carried verbatim from another entry's published file (see attribution), so no run of this router produced its bytes; it was re-measured here on the same basis - one 30 s, 4-worker, chain-fast run of this entry's router warm-started from the route now shipped, which reproduced the same checker total (87,334) - and the reported time is this entry's own run on that instance, not the upstream author's generation time, which is not claimed. The other 44 records describe the runs that produced the bytes those cases still ship. Several runs were measured concurrently, so wall-clock values are conservative.",
   "attribution": {
     "carried_routes": [
       {

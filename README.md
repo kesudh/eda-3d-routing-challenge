@@ -109,7 +109,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 
 | rank | submission | author | aggregate | legal | total delay | runtime (s) | Pareto | verified |
 |---:|---|---|---:|:---:|---:|---:|:---:|:---:|
-| 1 | warm_lns_refinement † | kesudh | 1.0987 | 1/1 | 1042086 | 52.76 | ✓ | — |
+| 1 | warm_lns_refinement † | kesudh | 1.0987 | 1/1 | 1042084 | 69.14 | ✓ | — |
 | 2 | coordinated_refinement † | jay-tau | 1.0984 | 1/1 | 1042314 | missing |  | — |
 | 3 | leonid-popryho | Leonid Popryho | 1.0984 | 1/1 | 1042322 | missing |  | — |
 | 4 | cuda-have-been-shorter | YJ Kim | 1.0978 | 1/1 | 1042926 | missing |  | — |

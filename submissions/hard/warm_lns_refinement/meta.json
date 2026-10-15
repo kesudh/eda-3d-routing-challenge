@@ -69,14 +69,8 @@
     {
       "tier": "hard",
       "case": "case_04",
-      "delay": 12819,
-      "source": "leonid-popryho",
-      "carried_from": {
-        "entry": "leonid-popryho",
-        "author": "Leonid Popryho",
-        "ref": "pull/46 head 2d36fd1ec432",
-        "commit": "2d36fd1ec432"
-      }
+      "delay": 12817,
+      "source": "own_refinement"
     },
     {
       "tier": "hard",
@@ -182,9 +176,8 @@
         "ref": "pull/46 head 2d36fd1ec432",
         "commit": "2d36fd1ec432",
         "merged": false,
-        "routes_carried_verbatim": 5,
+        "routes_carried_verbatim": 4,
         "cases": [
-          "case_04",
           "case_05",
           "case_06",
           "case_07",

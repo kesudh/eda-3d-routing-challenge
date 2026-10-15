@@ -18,7 +18,7 @@
     {
       "tier": "stress",
       "case": "case_01",
-      "delay": 1042084,
+      "delay": 1042080,
       "source": "own_refinement"
     }
   ],

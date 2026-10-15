@@ -72,14 +72,8 @@
     {
       "tier": "scale",
       "case": "case_06",
-      "delay": 77383,
-      "source": "coordinated_refinement",
-      "carried_from": {
-        "entry": "coordinated_refinement",
-        "author": "jay-tau",
-        "ref": "pull/47 head cb435d0a7559",
-        "commit": "cb435d0a7559"
-      }
+      "delay": 77379,
+      "source": "own_refinement"
     },
     {
       "tier": "scale",
@@ -125,11 +119,10 @@
         "ref": "pull/47 head cb435d0a7559",
         "commit": "cb435d0a7559",
         "merged": false,
-        "routes_carried_verbatim": 5,
+        "routes_carried_verbatim": 4,
         "cases": [
           "case_01",
           "case_04",
-          "case_06",
           "case_07",
           "case_08"
         ]

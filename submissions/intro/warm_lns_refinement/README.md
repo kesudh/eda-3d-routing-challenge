@@ -5,7 +5,7 @@ published routes; per-case provenance is byte-verified in `meta.json`.
 
 | legal | total delay | aggregate | runtime (s) |
 |---:|---:|---:|---:|
-| 20/20 | 339094 | 1.1571 | 600.68 |
+| 20/20 | 339092 | 1.1571 | 600.66 |
 
 ## Attribution
 

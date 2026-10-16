@@ -13,10 +13,10 @@ Routes carried verbatim, with the ref the shipped bytes were taken from:
 
 | entry | author | ref | commit | routes |
 |---|---|---|---|---:|
-| coordinated_refinement | jay-tau | pull/47 head cb435d0a7559 | `cb435d0a7559` | 4 |
+| coordinated_refinement | jay-tau | pull/47 head cb435d0a7559 | `cb435d0a7559` | 3 |
 | coordinated_refinement | jay-tau | pull/51 head afac5dd0e74d | `afac5dd0e74d` | 2 |
 
-Warm starts: the 2 case(s) refined here were warm-started from the best
+Warm starts: the 3 case(s) refined here were warm-started from the best
 published route for that case, published by coordinated_refinement (jay-tau),
 drama3d-portfolio / cuda-have-been-shorter (YJ Kim), leonid-popryho (Leonid
 Popryho) or pathfinder_lns (Tazeem Mahashin).

@@ -5,7 +5,7 @@ published routes; per-case provenance is byte-verified in `meta.json`.
 
 | legal | total delay | aggregate | runtime (s) |
 |---:|---:|---:|---:|
-| 4/4 | 472577 | 1.3591 | 120.65 |
+| 4/4 | 472571 | 1.3591 | 122.13 |
 
 ## Attribution
 
@@ -14,6 +14,13 @@ Routes carried verbatim, with the ref the shipped bytes were taken from:
 | entry | author | ref | commit | routes |
 |---|---|---|---|---:|
 | — | — | — | — | 0 |
+
+Net trees carried verbatim: case_01 (52217) is a partition crossover of this entry's
+previous case_01 route (52219) with leonid-popryho's trees for nets 23, 64, 85 and 99,
+taken from their published file (origin/main, `2564be90859e`, Leonid Popryho). The
+swapped nets collide with nothing else, so the result is legal by construction and was
+re-checked with `m3d/checker.py`. Its runtime is the 30.067 s run that produced the
+previous route plus the 1.55 s crossover run (31.617 s).
 
 Warm starts: the 4 case(s) refined here were warm-started from the best
 published route for that case, published by coordinated_refinement (jay-tau),

@@ -3,8 +3,8 @@
   "date": "2026-10-14",
   "method": "Exact shortest-path-tree warm refinement of published routes. Radix/A* trees with feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, bounded excursions, and a multi-worker CPU search portfolio; the opt-in chain-fast modes specialize congestion pricing. Two-parent minimum-cut crossover follows the coordinated_refinement line of work by jay-tau (PR #24). Bounded conflict-based search over static vertex-disjoint multi-sink trees is an adaptation of Sharon et al. (see algorithm_references). This entry's own GPU kernels are audited prototypes and did not generate these routes.",
   "derived_from": {
-    "submission": "leonid-popryho",
-    "author": "Leonid Popryho",
+    "submission": "leonid-popryho; cuda-have-been-shorter; coordinated_refinement",
+    "author": "Leonid Popryho; YJ Kim; jay-tau",
     "ref": "pull/46 head 2d36fd1ec432",
     "commit": "2d36fd1ec432",
     "also_carried_from": [

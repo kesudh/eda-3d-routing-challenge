@@ -3,8 +3,8 @@
   "date": "2026-10-14",
   "method": "Exact shortest-path-tree warm refinement of published routes. Radix/A* trees with feasible per-sink bounds, neutral and group reroutes, preserved-route and displacement-chain repair, bounded excursions, and a multi-worker CPU search portfolio; the opt-in chain-fast modes specialize congestion pricing. Two-parent minimum-cut crossover follows the coordinated_refinement line of work by jay-tau (PR #24). Bounded conflict-based search over static vertex-disjoint multi-sink trees is an adaptation of Sharon et al. (see algorithm_references). This entry's own GPU kernels are audited prototypes and did not generate these routes.",
   "derived_from": {
-    "submission": "coordinated_refinement",
-    "author": "jay-tau",
+    "submission": "coordinated_refinement; cuda-have-been-shorter; leonid-popryho",
+    "author": "jay-tau; YJ Kim; Leonid Popryho",
     "ref": "pull/36 head 845e94d6c85a",
     "commit": "845e94d6c85a",
     "also_carried_from": [
@@ -41,31 +41,66 @@
       "tier": "intro",
       "case": "case_01",
       "delay": 206,
-      "source": "own_refinement"
+      "source": "own_equal_total",
+      "equal_total_earlier": {
+        "entry": "lns_negotiated",
+        "author": "adityuhkapoor",
+        "ref": "origin/main",
+        "commit": "5b5be7045786",
+        "committed_utc": "2026-09-29T23:58Z"
+      }
     },
     {
       "tier": "intro",
       "case": "case_02",
       "delay": 1030,
-      "source": "own_refinement"
+      "source": "own_equal_total",
+      "equal_total_earlier": {
+        "entry": "pathfinder_lns",
+        "author": "Tazeem Mahashin",
+        "ref": "origin/main",
+        "commit": "50f2dd7b64f4",
+        "committed_utc": "2026-09-30T02:29Z"
+      }
     },
     {
       "tier": "intro",
       "case": "case_03",
       "delay": 1611,
-      "source": "own_refinement"
+      "source": "own_equal_total",
+      "equal_total_earlier": {
+        "entry": "pathfinder_lns",
+        "author": "Tazeem Mahashin",
+        "ref": "origin/main",
+        "commit": "50f2dd7b64f4",
+        "committed_utc": "2026-09-30T02:29Z"
+      }
     },
     {
       "tier": "intro",
       "case": "case_04",
       "delay": 1980,
-      "source": "own_refinement"
+      "source": "own_equal_total",
+      "equal_total_earlier": {
+        "entry": "pathfinder_lns",
+        "author": "Tazeem Mahashin",
+        "ref": "origin/main",
+        "commit": "50f2dd7b64f4",
+        "committed_utc": "2026-09-30T02:29Z"
+      }
     },
     {
       "tier": "intro",
       "case": "case_05",
       "delay": 3677,
-      "source": "own_refinement"
+      "source": "own_equal_total",
+      "equal_total_earlier": {
+        "entry": "drama3d-portfolio",
+        "author": "YJ Kim",
+        "ref": "origin/main",
+        "commit": "921ccf12b431",
+        "committed_utc": "2026-10-03T17:50Z"
+      }
     },
     {
       "tier": "intro",

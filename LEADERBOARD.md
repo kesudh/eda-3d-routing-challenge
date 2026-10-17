@@ -31,7 +31,7 @@ do not edit it by hand.
 | 13 | dw_metric_lns | OpenCode (DeepSeek V4.1 Flash) | 1.0584 | 20/20 | 393668 | 25289.93 |  | — |
 | 14 | shivaahir158 | Shiva Ahir (PhD Candidate, Stony Brook University) | 1.0274 | 20/20 | 388638 | 440.56 | ✓ | — |
 
-† derivative entry (refines another entry's routes): warm_lns_refinement builds on coordinated_refinement (jay-tau); coordinated_refinement builds on drama3d-portfolio; leonid-popryho; pathfinder_lns; warm_lns_refinement (Leonid Popryho; Taz33m; Tazeem Mahashin; YJ Kim; kesudh).
+† derivative entry (refines another entry's routes): warm_lns_refinement builds on coordinated_refinement; cuda-have-been-shorter; leonid-popryho (jay-tau; YJ Kim; Leonid Popryho); coordinated_refinement builds on drama3d-portfolio; leonid-popryho; pathfinder_lns; warm_lns_refinement (Leonid Popryho; Taz33m; Tazeem Mahashin; YJ Kim; kesudh).
 
 ## hard  (9 cases)
 
@@ -56,7 +56,7 @@ do not edit it by hand.
 | 17 | negotiated | Anthropic (reference) | 1.0000 | 9/9 | 201863 | 85.20 | ✓ | — |
 | 18 | negotiated_fast | Anthropic (reference) | — | 8/9 | — | 61.74 |  | — |
 
-† derivative entry (refines another entry's routes): warm_lns_refinement builds on leonid-popryho (Leonid Popryho); coordinated_refinement builds on drama3d-portfolio; leonid-popryho (Leonid Popryho; YJ Kim).
+† derivative entry (refines another entry's routes): warm_lns_refinement builds on leonid-popryho; cuda-have-been-shorter; coordinated_refinement (Leonid Popryho; YJ Kim; jay-tau); coordinated_refinement builds on drama3d-portfolio; leonid-popryho (Leonid Popryho; YJ Kim).
 
 ## scale  (8 cases)
 

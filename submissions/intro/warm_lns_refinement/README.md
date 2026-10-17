@@ -20,6 +20,20 @@ Routes carried verbatim, with the ref the shipped bytes were taken from:
 | cuda-have-been-shorter | YJ Kim | pull/53 head 40dbbd8886b7 | `40dbbd8886b7` | 1 |
 | leonid-popryho | Leonid Popryho | pull/46 head 2d36fd1ec432 | `2d36fd1ec432` | 1 |
 
+Equal-total re-derivations: case_01-case_05 ship this router's own output (not
+byte-identical to any published file), but each total equals a route another entry
+published earlier, so they are not counted as this entry's improvements:
+
+| case | total | first published by | ref | commit |
+|---|---:|---|---|---|
+| case_01 | 206 | lns_negotiated (adityuhkapoor) | origin/main | `5b5be7045786` |
+| case_02 | 1030 | pathfinder_lns (Tazeem Mahashin) | origin/main | `50f2dd7b64f4` |
+| case_03 | 1611 | pathfinder_lns (Tazeem Mahashin) | origin/main | `50f2dd7b64f4` |
+| case_04 | 1980 | pathfinder_lns (Tazeem Mahashin) | origin/main | `50f2dd7b64f4` |
+| case_05 | 3677 | drama3d-portfolio (YJ Kim) | origin/main | `921ccf12b431` |
+
+This entry's strictly-lower refinements in this tier: case_10, case_11, case_20.
+
 Warm starts: the 8 case(s) refined here were warm-started from the best
 published route for that case, published by coordinated_refinement (jay-tau),
 drama3d-portfolio / cuda-have-been-shorter (YJ Kim), leonid-popryho (Leonid

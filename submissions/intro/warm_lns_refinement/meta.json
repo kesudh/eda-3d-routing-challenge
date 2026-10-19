@@ -112,6 +112,11 @@
         "author": "jay-tau",
         "ref": "origin/main",
         "commit": "b13a8290d052"
+      },
+      "runtime_source": {
+        "kind": "this_router_unchanged",
+        "note": "the producing author published no runtime for this file; reported is one run of this entry's router on the instance (30 s budget, 4 workers, chain-fast, seed 1) warm-started from the shipped file, which returned it unchanged (0 nets changed), so it re-produces this route but did not originate it",
+        "seconds": 30.052
       }
     },
     {
@@ -124,6 +129,11 @@
         "author": "jay-tau",
         "ref": "origin/main",
         "commit": "b13a8290d052"
+      },
+      "runtime_source": {
+        "kind": "this_router_unchanged",
+        "note": "the producing author published no runtime for this file; reported is one run of this entry's router on the instance (30 s budget, 4 workers, chain-fast, seed 1) warm-started from the shipped file, which returned it unchanged (0 nets changed), so it re-produces this route but did not originate it",
+        "seconds": 30.047
       }
     },
     {
@@ -136,6 +146,11 @@
         "author": "jay-tau",
         "ref": "pull/36 head 845e94d6c85a",
         "commit": "845e94d6c85a"
+      },
+      "runtime_source": {
+        "kind": "this_router_unchanged",
+        "note": "the producing author published no runtime for this file; reported is one run of this entry's router on the instance (30 s budget, 4 workers, chain-fast, seed 1) warm-started from the shipped file, which returned it unchanged (0 nets changed), so it re-produces this route but did not originate it",
+        "seconds": 30.063
       }
     },
     {
@@ -148,6 +163,16 @@
         "author": "YJ Kim",
         "ref": "pull/53 head 40dbbd8886b7",
         "commit": "40dbbd8886b7"
+      },
+      "runtime_source": {
+        "kind": "producing_author",
+        "entry": "cuda-have-been-shorter",
+        "author": "YJ Kim",
+        "ref": "pull/53 head 40dbbd8886b7",
+        "commit": "40dbbd8886b7",
+        "file": "submissions/intro/cuda-have-been-shorter/runtime.json",
+        "seconds": 3577.135,
+        "note": "the producing author's own measurement on their hardware"
       }
     },
     {
@@ -172,6 +197,11 @@
         "author": "jay-tau",
         "ref": "origin/main",
         "commit": "b13a8290d052"
+      },
+      "runtime_source": {
+        "kind": "this_router_unchanged",
+        "note": "the producing author published no runtime for this file; reported is one run of this entry's router on the instance (30 s budget, 4 workers, chain-fast, seed 1) warm-started from the shipped file, which returned it unchanged (0 nets changed), so it re-produces this route but did not originate it",
+        "seconds": 30.071
       }
     },
     {
@@ -184,6 +214,16 @@
         "author": "jay-tau",
         "ref": "pull/47 head cb435d0a7559",
         "commit": "cb435d0a7559"
+      },
+      "runtime_source": {
+        "kind": "producing_author",
+        "entry": "coordinated_refinement",
+        "author": "jay-tau",
+        "ref": "pull/47 head cb435d0a7559",
+        "commit": "cb435d0a7559",
+        "file": "submissions/intro/coordinated_refinement/runtime.json",
+        "seconds": 30.123844336005277,
+        "note": "the producing author's own measurement on their hardware"
       }
     },
     {
@@ -196,6 +236,16 @@
         "author": "Leonid Popryho",
         "ref": "pull/46 head 2d36fd1ec432",
         "commit": "2d36fd1ec432"
+      },
+      "runtime_source": {
+        "kind": "producing_author",
+        "entry": "leonid-popryho",
+        "author": "Leonid Popryho",
+        "ref": "pull/46 head 2d36fd1ec432",
+        "commit": "2d36fd1ec432",
+        "file": "submissions/intro/leonid-popryho/runtime.json",
+        "seconds": 21600.014,
+        "note": "the producing author's own measurement on their hardware"
       }
     },
     {
@@ -208,6 +258,11 @@
         "author": "jay-tau",
         "ref": "pull/36 head 845e94d6c85a",
         "commit": "845e94d6c85a"
+      },
+      "runtime_source": {
+        "kind": "this_router_unchanged",
+        "note": "the producing author published no runtime for this file; reported is one run of this entry's router on the instance (30 s budget, 4 workers, chain-fast, seed 1) warm-started from the shipped file, which returned it unchanged (0 nets changed), so it re-produces this route but did not originate it",
+        "seconds": 30.126
       }
     },
     {
@@ -220,6 +275,11 @@
         "author": "jay-tau",
         "ref": "pull/36 head 845e94d6c85a",
         "commit": "845e94d6c85a"
+      },
+      "runtime_source": {
+        "kind": "this_router_unchanged",
+        "note": "the producing author published no runtime for this file; reported is one run of this entry's router on the instance (30 s budget, 4 workers, chain-fast, seed 1) warm-started from the shipped file, which returned it unchanged (0 nets changed), so it re-produces this route but did not originate it",
+        "seconds": 30.146
       }
     },
     {
@@ -232,6 +292,11 @@
         "author": "jay-tau",
         "ref": "pull/36 head 845e94d6c85a",
         "commit": "845e94d6c85a"
+      },
+      "runtime_source": {
+        "kind": "this_router_unchanged",
+        "note": "the producing author published no runtime for this file; reported is one run of this entry's router on the instance (30 s budget, 4 workers, chain-fast, seed 1) warm-started from the shipped file, which returned it unchanged (0 nets changed), so it re-produces this route but did not originate it",
+        "seconds": 30.132
       }
     },
     {
@@ -244,6 +309,11 @@
         "author": "YJ Kim",
         "ref": "origin/main",
         "commit": "2d321cdb5e2f"
+      },
+      "runtime_source": {
+        "kind": "this_router_unchanged",
+        "note": "the producing author published no runtime for this file; reported is one run of this entry's router on the instance (30 s budget, 4 workers, chain-fast, seed 1) warm-started from the shipped file, which returned it unchanged (0 nets changed), so it re-produces this route but did not originate it",
+        "seconds": 30.163
       }
     },
     {
@@ -256,6 +326,16 @@
         "author": "jay-tau",
         "ref": "pull/47 head cb435d0a7559",
         "commit": "cb435d0a7559"
+      },
+      "runtime_source": {
+        "kind": "producing_author",
+        "entry": "coordinated_refinement",
+        "author": "jay-tau",
+        "ref": "pull/47 head cb435d0a7559",
+        "commit": "cb435d0a7559",
+        "file": "submissions/intro/coordinated_refinement/runtime.json",
+        "seconds": 30.170721037000476,
+        "note": "the producing author's own measurement on their hardware"
       }
     },
     {
@@ -275,7 +355,7 @@
   "tier": "intro",
   "hardware": "13th Gen Intel Core i7-13700HX (16 cores / 24 threads), 31.7 GB RAM, Windows 11",
   "threads": 4,
-  "runtime_scope": "Per case, `runtime.json` reports the wall-clock seconds of one end-to-end run of this entry's router on that case: the benchmark instance in, a route file out. Every case was measured on one basis - a fixed 30 s search budget on 4 worker threads, chain-fast mode, taking the engine's own END_TO_END_SECONDS - with two exceptions recorded here. On stress/case_01 the budget is checked only at the top of the trial loop and a single 901-net trial can exceed it, so that case reports 44.771 s for a 30 s budget. congested/case_01 is the output of a partition-crossover run (single thread, 1.55 s) over this entry's previous case_01 route and every route published for that case; it reports 31.617 s, the 30.067 s run that produced the previous route plus the 1.55 s crossover, which together take the instance to this file. For this entry's own routes the reported time is the run that produced the shipped bytes. Where a shipped route is another entry's file carried verbatim (see attribution), no run of this router produced its bytes: the reported time is this entry's own run on that instance, warm-started from the route now shipped, and the upstream author's generation time is not claimed. Several runs were measured concurrently, so wall-clock values are conservative.",
+  "runtime_scope": "Per case, runtime.json reports: (1) for this entry's own routes, the wall-clock seconds of the run of this entry's router that produced the shipped file - a fixed 30 s search budget on 4 worker threads, chain-fast mode, the engine's own END_TO_END_SECONDS - except stress/case_01 (44.771 s; the budget is checked only at the top of the trial loop and a single 901-net trial can exceed it) and congested/case_01 (31.617 s: the 30.067 s run that produced the previous route plus a 1.55 s single-thread partition-crossover run); (2) for a route carried verbatim whose producing author published a runtime for that exact file, that author's own runtime, read from their runtime.json at the credited commit (14 files; each case's runtime_source names it); (3) for a carried route whose producer published none (12 files), one run of this entry's router on the instance (30 s, 4 workers, chain-fast, seed 1) warm-started from the shipped file, which returns it unchanged - that run re-produces the route but did not originate it, as each case's runtime_source states. Runs of this router were measured concurrently, so their wall-clock values are conservative.",
   "attribution": {
     "carried_routes": [
       {

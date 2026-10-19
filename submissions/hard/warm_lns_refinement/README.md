@@ -5,7 +5,7 @@ published routes; per-case provenance is byte-verified in `meta.json`.
 
 | legal | total delay | aggregate | runtime (s) |
 |---:|---:|---:|---:|
-| 9/9 | 142093 | 1.4157 | 270.16 |
+| 9/9 | 142093 | 1.4157 | 54150.35 |
 
 ## Attribution
 
@@ -23,14 +23,20 @@ drama3d-portfolio / cuda-have-been-shorter (YJ Kim), leonid-popryho (Leonid
 Popryho) or pathfinder_lns (Tazeem Mahashin).
 
 Conflict-based search is adapted from Sharon et al. (see `algorithm_references`).
-`runtime.json` is one end-to-end run of this router per case, all on one basis: 30 s
-search budget, 4 worker threads, chain-fast mode, the engine's own
-END_TO_END_SECONDS. Two exceptions: stress/case_01 reports 44.77 s because the budget is
-checked only at the top of the trial loop and a 901-net trial can exceed it, and
-congested/case_01 reports 31.617 s, the run behind its previous route plus a 1.55 s
-partition-crossover run (see the congested README). For this entry's own routes the time
-is the run that produced the shipped file. Where a shipped route is another entry's file
-carried verbatim, the time is this entry's own run on that instance, warm-started from
-the route now shipped; upstream generation time is not claimed. Timed parallel search is
-nondeterministic, so a repeat can return a different legal route. No global-optimality
-claim is made.
+`runtime.json`, per case:
+
+* **This entry's own routes:** the run of this router that produced the shipped file - 30 s
+  search budget, 4 worker threads, chain-fast mode, the engine's own END_TO_END_SECONDS.
+  stress/case_01 reports 44.77 s because the budget is checked only at the top of the trial
+  loop and a 901-net trial can exceed it; congested/case_01 reports 31.617 s, the run behind
+  its previous route plus a 1.55 s partition-crossover run (see the congested README).
+* **Carried routes, producer runtime published (14 files):** the producing author's own
+  runtime for that exact file, read from their `runtime.json` at the credited commit
+  (their measurement on their hardware). `meta.json` names the source per case.
+* **Carried routes, no producer runtime published (12 files: intro case_06-08, 12, 15-18;
+  hard case_01-03, 08):** one run of this entry's router on the instance (30 s, 4 workers,
+  chain-fast, seed 1), warm-started from the shipped file, which returns it unchanged. That
+  run re-produces the route; it did not originate it, and `meta.json` says so per case.
+
+Timed parallel search is nondeterministic, so a repeat can return a different legal route.
+No global-optimality claim is made.

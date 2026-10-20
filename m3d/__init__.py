@@ -1,4 +1,4 @@
-"""M3D — a reproducible EDA routing challenge for a simplified monolithic-3D stack.
+"""m3d — a reproducible EDA routing challenge for a simplified hybrid-bonded 3D stack.
 
 Two dies share a vertical stack of routing layers. Participants connect cell pins
 across a 3D grid graph while minimizing an abstract additive routing delay.

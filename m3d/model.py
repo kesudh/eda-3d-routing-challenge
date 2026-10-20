@@ -1,6 +1,7 @@
-"""Data model, delay profile, and JSON (de)serialization for the M3D routing challenge.
+"""Data model, delay profile, and JSON (de)serialization for the 3D routing challenge.
 
-M3D = "Monolithic 3D" (simplified). Two dies (bottom = die 0, top = die 1) share a
+The stack is a simplified hybrid-bonded 3D one (the package name ``m3d`` is
+historical). Two dies (bottom = die 0, top = die 1) share a
 vertical stack of ``layers`` routing layers indexed by z in ``0..layers-1``.
 
 Routing graph

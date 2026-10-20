@@ -611,7 +611,7 @@ def cmd_info(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="m3d", description="M3D routing challenge toolkit")
+    p = argparse.ArgumentParser(prog="m3d", description="3D routing challenge toolkit")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     g = sub.add_parser("generate", help="build a deterministic benchmark tier")

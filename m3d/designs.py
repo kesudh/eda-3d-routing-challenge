@@ -1,6 +1,6 @@
 """Build routing-challenge instances from real open-source gate-level netlists.
 
-This turns a **real design** (a BLIF gate-level netlist) into an M3D routing
+This turns a **real design** (a BLIF gate-level netlist) into a 3D routing
 instance that uses the exact same model, JSON format and tooling as the generated
 tiers -- so the checker, scorer, baseline, negotiated router and visualizer all
 work on it unchanged.

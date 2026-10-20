@@ -1,6 +1,6 @@
-# M3D Routing Challenge
+# 3D Routing Challenge
 
-A small, reproducible EDA routing challenge for a **simplified monolithic-3D
+A small, reproducible EDA routing challenge for a **simplified hybrid-bonded 3D
 integration stack**. Two dies sit face to face with a shared vertical stack of
 routing layers between them. Participants connect cell pins across a 3D grid
 graph while **minimizing total routing delay** under a simple additive delay
@@ -174,7 +174,7 @@ own manifest; each case is normalized against its own tier's baseline.
 | **designs** | `benchmarks_designs/` | 3 | 105×105×6, 344 nets, 888 pins | negotiated router | **Real open-source circuits.** Instances built from real gate-level netlists — the MIT-licensed [EPFL combinational benchmark suite](https://github.com/lsils/benchmarks). Every gate, input and output becomes a cell and every signal a net, so fanout and connectivity are those of a real design; cells are placed by connectivity clustering (reverse Cuthill-McKee) and folded across the two dies. The negotiated router certifies each reference. Bring your own with `m3d.cli import-design`. |
 
 Is the intro tier "too easy / conventional"? Yes, deliberately — it is the
-on-ramp. The **hard** tier is where the monolithic-3D structure bites: the
+on-ramp. The **hard** tier is where the 3D structure bites: the
 delay-graded layer stack is only interesting when the cheap layers are scarce and
 contended, and there the problem stops being a clean maze and becomes a real
 congestion-plus-delay optimization that a naive router cannot even legalize. The

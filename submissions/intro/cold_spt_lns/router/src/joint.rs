@@ -110,7 +110,7 @@ pub(super) fn group_move(
     compact_shortest_tree: bool,
     neutral: u64,
 ) -> Option<(i64, bool)> {
-    if group.len() < 2 || group.len() > 4 {
+    if group.len() < 2 || group.len() > 6 {
         return None;
     }
     let saved: Vec<_> = group
@@ -276,9 +276,10 @@ mod tests {
     #[test]
     fn selection_matches_exhaustive_compatible_combinations() {
         let mut rng = Rng::new(491);
-        for _ in 0..100 {
+        for trial in 0..200 {
+            let count = 2 + trial % 5;
             let mut pools = Vec::new();
-            for _ in 0..4 {
+            for _ in 0..count {
                 let mut pool = Vec::new();
                 for _ in 0..4 {
                     let mut verts = vec![rng.below(12) as u32, rng.below(12) as u32];
@@ -294,12 +295,12 @@ mod tests {
                 pools.push(pool);
             }
             let mut exact = (u64::MAX, usize::MAX);
-            for mask in 0..256 {
-                let indices = [mask % 4, mask / 4 % 4, mask / 16 % 4, mask / 64];
+            for mask in 0..4usize.pow(count as u32) {
+                let indices: Vec<_> = (0..count).map(|i| mask / 4usize.pow(i as u32) % 4).collect();
                 let mut all = vec![11]; // one resource belongs to a fixed outside net
                 let mut cost = 0;
                 let mut size = 0;
-                for i in 0..4 {
+                for i in 0..count {
                     let c = &pools[i][indices[i]];
                     all.extend(c.verts.iter().copied());
                     cost += c.delay;

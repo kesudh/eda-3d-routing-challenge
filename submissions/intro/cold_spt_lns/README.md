@@ -178,3 +178,18 @@ there is no convergence or approximation guarantee. Default 0 preserves the
 original pricing, and a fresh uniform fallback disables flow pricing. A test
 checks branching, internal sinks and reset between nets. Pilots have mixed
 results and do not establish a general quality improvement.
+
+`--joint-group-max 6` extends joint candidate generation and compatible
+selection to six interfering nets. The default remains four. Selection is
+exact over its finite pool, with no claim of global tree optimality. The
+exhaustive selector test covers two through six nets and fixed outside
+resources. Larger groups can take more work. A matched 12k hard01 pilot gave
+9040 for six nets versus9086 for four (43.625s versus42.538s observed), still
+above the retained8866; broader experiments are needed.
+
+A subsequent cold invocation using60k mixed-joint trials with the six-net
+option, followed by1k conflict-search trials, reached8856 in293.355s. Its
+mixed-joint phase ended at8866 and the last improvement came during conflict
+search. This supports the combined configuration, not an isolated claim about
+neighborhood size. The previous8866 configuration used different work and
+settings, so its runtime is not a matched speed comparison.

@@ -892,6 +892,7 @@ fn main() {
             "--post-cbs-trials" => refine_options.post_cbs_trials = a[1].parse().unwrap(),
             "--cbs-nodes" => refine_options.cbs_nodes = a[1].parse().unwrap(),
             "--joint-neutral" => refine_options.joint_neutral = a[1].parse().unwrap(),
+            "--joint-group-max" => refine_options.joint_group_max = a[1].parse().unwrap(),
             "--retain-compact-best" => {
                 refine_options.retain_compact_best = a[1].parse::<u64>().unwrap() != 0
             }

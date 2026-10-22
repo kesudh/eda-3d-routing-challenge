@@ -2665,6 +2665,7 @@ pub struct Options {
     pub post_cbs_trials: u64,
     pub cbs_nodes: usize,
     pub joint_neutral: u64,
+    pub joint_group_max: usize,
     pub penalized_astar: bool,
     pub retain_compact_best: bool,
 }
@@ -2678,6 +2679,7 @@ impl Default for Options {
             post_cbs_trials: 0,
             cbs_nodes: 256,
             joint_neutral: 0,
+            joint_group_max: 4,
             penalized_astar: false,
             retain_compact_best: false,
         }
@@ -2710,6 +2712,7 @@ pub fn refine_cold(
     assert!((2..=64).contains(&options.group_max));
     assert!(options.cbs_nodes > 0);
     assert!(options.joint_neutral <= 2);
+    assert!((2..=6).contains(&options.joint_group_max));
     let start = Instant::now();
     let mut inst = load_inst(instance_path);
     inst.early_stop = true;
@@ -2779,6 +2782,7 @@ pub fn refine_cold(
         options.compact_shortest_tree,
         options.cbs_nodes,
         options.joint_neutral,
+        options.joint_group_max,
         options.penalized_astar,
         options.retain_compact_best,
     );
@@ -2835,6 +2839,7 @@ fn worker(
     compact_shortest_tree: bool,
     cbs_nodes: usize,
     joint_neutral: u64,
+    joint_group_max: usize,
     penalized_astar: bool,
     retain_compact_best: bool,
 ) {
@@ -2961,7 +2966,7 @@ fn worker(
             region_group(&inst, &sol, &owner, &mut ws, seed_net, r, k)
         } else if do_mode == 1 || do_mode == 4 {
             let cap = if do_mode == 4 {
-                4
+                joint_group_max
             } else if mode.starts_with("cbs") {
                 k.min(4)
             } else {

@@ -872,6 +872,8 @@ fn main() {
     let mut legalize_limit = 0;
     let mut use_cost_distance = false;
     let mut refine_each_start = false;
+    let mut race_pilot = 0u64;
+    let mut race_keep = 2usize;
     let mut cost_distance_rooted = false;
     let mut cost_distance_discount = false;
     let mut refine_options = refine::Options::default();
@@ -899,6 +901,9 @@ fn main() {
             "--penalized-astar" => {
                 refine_options.penalized_astar = a[1].parse::<u64>().unwrap() != 0
             }
+            "--penalized-integer-queue" => {
+                refine_options.penalized_integer_queue = a[1].parse::<u64>().unwrap() != 0
+            }
             "--emit-global-pool" => emit_global_pool = a[1].parse::<u64>().unwrap() != 0,
             "--compact-shortest-tree" => {
                 refine_options.compact_shortest_tree = a[1].parse::<u64>().unwrap() != 0
@@ -912,6 +917,8 @@ fn main() {
             "--legalize-conflicts" => legalize_limit = a[1].parse::<usize>().unwrap(),
             "--cost-distance" => use_cost_distance = a[1].parse::<u64>().unwrap() != 0,
             "--refine-each-start" => refine_each_start = a[1].parse::<u64>().unwrap() != 0,
+            "--refine-race-pilot" => race_pilot = a[1].parse().unwrap(),
+            "--refine-race-keep" => race_keep = a[1].parse().unwrap(),
             "--cost-distance-rooted" => cost_distance_rooted = a[1].parse::<u64>().unwrap() != 0,
             "--cost-distance-discount" => {
                 cost_distance_discount = a[1].parse::<u64>().unwrap() != 0
@@ -921,6 +928,11 @@ fn main() {
     }
     assert!(starts > 0 && rounds > 0);
     assert!(construction_weight >= 1);
+    if race_pilot > 0 {
+        assert!(refine_each_start && race_pilot <= refine_trials);
+        assert!(race_keep > 0 && race_keep <= starts);
+        assert!(race_pilot < refine_trials || refine_options.post_cbs_trials == 0);
+    }
     let mut inst = Instance::load(&args[1]);
     inst.construction_weight = construction_weight;
     assert!(fanout_priority <= 2);
@@ -938,6 +950,9 @@ fn main() {
     let mut best: Option<Vec<Route>> = None;
     let mut best_final = None;
     let mut best_final_score = u64::MAX;
+    // Every pilot is a fresh cold construction. Only this invocation's own
+    // completed pilot bytes can become finalists; there is no route input.
+    let mut pilots: Vec<(u64, usize, Vec<u8>)> = Vec::new();
     for start in 0..starts {
         eprintln!("cold start {} of {}", start + 1, starts);
         let candidate = build(
@@ -991,13 +1006,21 @@ fn main() {
                 fs::write(&args[2], serialize_routes(&inst, &routes))
                     .expect("write fresh cold output");
                 let start_seed = seed.wrapping_add((start as u64).wrapping_mul(0x9E3779B97F4A7C15));
+                let mut pilot_options = refine_options.clone();
+                if race_pilot > 0 {
+                    pilot_options.post_cbs_trials = 0;
+                }
                 let final_score = refine_output(
                     &args[1],
                     &args[2],
                     start_seed,
-                    refine_trials,
+                    if race_pilot > 0 {
+                        race_pilot
+                    } else {
+                        refine_trials
+                    },
                     &refine_mode,
-                    &refine_options,
+                    &pilot_options,
                 );
                 eprintln!(
                     "completed cold start {} final delay {}",
@@ -1009,6 +1032,13 @@ fn main() {
                     best_final =
                         Some(fs::read(&args[2]).expect("read this invocation final output"));
                 }
+                if race_pilot > 0 {
+                    pilots.push((
+                        final_score,
+                        start,
+                        fs::read(&args[2]).expect("read own pilot output"),
+                    ));
+                }
                 continue;
             }
             if best
@@ -1016,6 +1046,38 @@ fn main() {
                 .map_or(true, |r| score < r.iter().map(|r| r.delay).sum())
             {
                 best = Some(routes);
+            }
+        }
+    }
+    if race_pilot > 0 && race_pilot < refine_trials {
+        pilots.sort_by_key(|p| (p.0, p.1));
+        pilots.truncate(race_keep);
+        for (pilot_score, start, bytes) in pilots {
+            fs::write(&args[2], bytes).expect("write this invocation's own finalist");
+            let final_seed = seed
+                .wrapping_add((start as u64).wrapping_mul(0x9E3779B97F4A7C15))
+                .wrapping_add(0xA51C39E70D682F43);
+            eprintln!(
+                "racing finalist start {} pilot={} remaining_trials={}",
+                start + 1,
+                pilot_score,
+                refine_trials - race_pilot
+            );
+            let final_score = refine_output(
+                &args[1],
+                &args[2],
+                final_seed,
+                refine_trials - race_pilot,
+                &refine_mode,
+                &refine_options,
+            );
+            assert!(
+                final_score <= pilot_score,
+                "finalist must retain its own pilot incumbent"
+            );
+            if final_score < best_final_score {
+                best_final_score = final_score;
+                best_final = Some(fs::read(&args[2]).expect("read own refined finalist"));
             }
         }
     }

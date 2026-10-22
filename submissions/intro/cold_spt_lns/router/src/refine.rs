@@ -925,7 +925,13 @@ impl DialQueue {
         if max_weight > 2047 {
             return false;
         } // Keep the radix fallback for wide costs.
-        let width = (2 * max_weight + 1).next_power_of_two() as usize;
+        self.reset_range(2 * max_weight, first)
+    }
+    fn reset_range(&mut self, max_reduced_cost: u32, first: u32) -> bool {
+        if max_reduced_cost > 4094 {
+            return false;
+        }
+        let width = (max_reduced_cost + 1).next_power_of_two() as usize;
         if self.buckets.len() != width {
             self.buckets = (0..width).map(|_| Vec::new()).collect();
         } else {
@@ -977,6 +983,8 @@ struct Scratch {
     pstamp: Vec<u32>,
     pheap: BinaryHeap<Reverse<(u64, u64, u32)>>,
     penalized_astar: bool,
+    penalized_integer_queue: bool,
+    pen_integer_calls: u64,
     pen_expanded: u64,
     ncur: u32,
     pcv: Vec<u32>,
@@ -1012,6 +1020,8 @@ impl Scratch {
             pstamp: vec![0; n as usize],
             pheap: BinaryHeap::new(),
             penalized_astar: false,
+            penalized_integer_queue: false,
+            pen_integer_calls: 0,
             pen_expanded: 0,
             ncur: 0,
             pcv: vec![0; n as usize],
@@ -1422,14 +1432,63 @@ impl Scratch {
                 0.0
             }
         };
-        self.pheap
-            .push(Reverse((potential(src).to_bits(), 0u64, src)));
+        // Direct chain prices are quarter-integers with no history or edge
+        // multipliers. Scale their exact priorities by four and use monotone
+        // integer queues. Keep the floating heap for every other cost model.
+        // The simple-path bound also ensures all scaled priorities fit u32.
+        let max_weight = inst.vd.max(*inst.ld.iter().max().unwrap()) as f64;
+        let quarter_price = pres_fac * 4.0;
+        let integer = self.penalized_integer_queue
+            && CHAIN
+            && vcong == 1.0
+            && pres_fac >= 0.0
+            && quarter_price.is_finite()
+            && quarter_price.fract() == 0.0
+            && 4.0
+                * (inst.n as f64 * (max_weight + pres_fac)
+                    + (inst.w as f64 + inst.h as f64 + inst.l as f64) * max_weight)
+                < u32::MAX as f64;
+        let first = potential(src);
+        let dial = integer
+            && self.dial.reset_range(
+                (8.0 * max_weight + quarter_price) as u32,
+                (first * 4.0) as u32,
+            );
+        if integer {
+            self.pen_integer_calls += 1;
+            if dial {
+                self.dial.push((first * 4.0) as u32, src);
+            } else {
+                self.radix.clear();
+                self.radix.push((first * 4.0) as u32, src);
+            }
+        } else {
+            self.pheap.push(Reverse((first.to_bits(), 0u64, src)));
+        }
         let mut remaining = inst.nets[me as usize].sinks.len();
         let mut finish_at = f64::INFINITY;
         let mut nb = [0u32; 6];
         let mut wb = [0u32; 6];
-        while let Some(Reverse((priority, kb, v))) = self.pheap.pop() {
-            if f64::from_bits(priority) > finish_at {
+        loop {
+            let (priority, kb, v) = if integer {
+                let popped = if dial {
+                    self.dial.pop()
+                } else {
+                    self.radix.pop()
+                };
+                let Some((key, v)) = popped else { break };
+                let d = self.pdist[v as usize];
+                if self.pstamp[v as usize] != st || key != ((d + potential(v)) * 4.0) as u32 {
+                    continue;
+                }
+                (key as f64 * 0.25, d.to_bits(), v)
+            } else {
+                let Some(Reverse((priority, kb, v))) = self.pheap.pop() else {
+                    break;
+                };
+                (f64::from_bits(priority), kb, v)
+            };
+            if priority > finish_at {
                 break;
             }
             let d = f64::from_bits(kb);
@@ -1498,8 +1557,18 @@ impl Scratch {
                 if self.pstamp[ui] != st || nd < self.pdist[ui] {
                     self.pstamp[ui] = st;
                     self.pdist[ui] = nd;
-                    self.pheap
-                        .push(Reverse(((nd + potential(u)).to_bits(), nd.to_bits(), u)));
+                    let priority = nd + potential(u);
+                    if integer {
+                        let key = (priority * 4.0) as u32;
+                        if dial {
+                            self.dial.push(key, u)
+                        } else {
+                            self.radix.push(key, u)
+                        }
+                    } else {
+                        self.pheap
+                            .push(Reverse((priority.to_bits(), nd.to_bits(), u)));
+                    }
                 }
             }
         }
@@ -2657,6 +2726,7 @@ struct Best {
 }
 
 /// Refine only a cold solution constructed in this invocation by our controller.
+#[derive(Clone)]
 pub struct Options {
     pub temperature: u64,
     pub slack: u64,
@@ -2667,6 +2737,7 @@ pub struct Options {
     pub joint_neutral: u64,
     pub joint_group_max: usize,
     pub penalized_astar: bool,
+    pub penalized_integer_queue: bool,
     pub retain_compact_best: bool,
 }
 impl Default for Options {
@@ -2681,6 +2752,7 @@ impl Default for Options {
             joint_neutral: 0,
             joint_group_max: 4,
             penalized_astar: false,
+            penalized_integer_queue: false,
             retain_compact_best: false,
         }
     }
@@ -2784,6 +2856,7 @@ pub fn refine_cold(
         options.joint_neutral,
         options.joint_group_max,
         options.penalized_astar,
+        options.penalized_integer_queue,
         options.retain_compact_best,
     );
     let mut best = shared.lock().unwrap();
@@ -2841,6 +2914,7 @@ fn worker(
     joint_neutral: u64,
     joint_group_max: usize,
     penalized_astar: bool,
+    penalized_integer_queue: bool,
     retain_compact_best: bool,
 ) {
     let thr0 = t0;
@@ -2867,6 +2941,7 @@ fn worker(
         seed.wrapping_add((widx as u64).wrapping_mul(0x9E3779B97F4A7C15)),
     );
     ws.penalized_astar = penalized_astar;
+    ws.penalized_integer_queue = penalized_integer_queue;
     let mut trials: u64 = 0;
     let mut eq: u64 = 0;
     let mut rejected: u64 = 0;
@@ -3177,7 +3252,7 @@ fn worker(
         let _ = write_sol(&inst, &sol, &out_path);
     }
     println!(
-        "[{}#{}] DONE trials={} eq={} rej={} imp={} up={} neg={} inapp={} best={} (delta {}) pexp={}",
+        "[{}#{}] DONE trials={} eq={} rej={} imp={} up={} neg={} inapp={} best={} (delta {}) pexp={} pint={}",
         tag,
         widx,
         trials,
@@ -3189,7 +3264,8 @@ fn worker(
         inapp,
         local_best_total,
         local_best_total as i64 - init.total as i64,
-        ws.pen_expanded
+        ws.pen_expanded,
+        ws.pen_integer_calls
     );
 }
 
@@ -3608,6 +3684,53 @@ mod tests {
                     legacy.extract_pen(&inst, &inst.nets[0], price, 1.0),
                     direct.extract_pen_with_owner(&inst, &inst.nets[0], price, 1.0, Some(&owner))
                 );
+                for queue_astar in [false, true] {
+                    // Cover Dial, its wide-cost radix fallback, non-quarter
+                    // floating costs, a u32-overflow bound and non-unit scaling.
+                    for (queue_price, vcong) in [
+                        (price, 1.0),
+                        (0.3, 1.0),
+                        (2048.0, 1.0),
+                        (1e9, 1.0),
+                        (0.5, 0.3),
+                    ] {
+                        let mut heap = Scratch::new(n as u32, 3, seed);
+                        let mut integer = Scratch::new(n as u32, 3, seed);
+                        for ws in [&mut heap, &mut integer] {
+                            ws.direct_chain_prices = Some(entry);
+                            ws.penalized_astar = queue_astar;
+                        }
+                        integer.penalized_integer_queue = true;
+                        heap.pdijkstra(
+                            &inst,
+                            &owner,
+                            &[true, true, true],
+                            0,
+                            0,
+                            queue_price,
+                            vcong,
+                        );
+                        integer.pdijkstra(
+                            &inst,
+                            &owner,
+                            &[true, true, true],
+                            0,
+                            0,
+                            queue_price,
+                            vcong,
+                        );
+                        let uses_integer = vcong == 1.0 && queue_price != 0.3 && queue_price != 1e9;
+                        assert_eq!(integer.pen_integer_calls, uses_integer as u64);
+                        for &sink in &inst.nets[0].sinks {
+                            assert_eq!(heap.pdist[sink as usize], integer.pdist[sink as usize]);
+                        }
+                        assert_eq!(
+                            heap.extract_pen_with_owner(&inst, &inst.nets[0], queue_price, vcong, Some(&owner)),
+                            integer.extract_pen_with_owner(&inst, &inst.nets[0], queue_price, vcong, Some(&owner)),
+                            "queue seed={seed} entry={entry} astar={queue_astar} price={queue_price} vcong={vcong}"
+                        );
+                    }
+                }
                 let mut astar = Scratch::new(n as u32, 3, seed);
                 astar.direct_chain_prices = Some(entry);
                 astar.penalized_astar = true;

@@ -296,7 +296,9 @@ mod tests {
             }
             let mut exact = (u64::MAX, usize::MAX);
             for mask in 0..4usize.pow(count as u32) {
-                let indices: Vec<_> = (0..count).map(|i| mask / 4usize.pow(i as u32) % 4).collect();
+                let indices: Vec<_> = (0..count)
+                    .map(|i| mask / 4usize.pow(i as u32) % 4)
+                    .collect();
                 let mut all = vec![11]; // one resource belongs to a fixed outside net
                 let mut cost = 0;
                 let mut size = 0;

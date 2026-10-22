@@ -193,3 +193,38 @@ mixed-joint phase ended at8866 and the last improvement came during conflict
 search. This supports the combined configuration, not an isolated claim about
 neighborhood size. The previous8866 configuration used different work and
 settings, so its runtime is not a matched speed comparison.
+
+`--penalized-integer-queue 1` uses integer queues for direct congestion prices
+that are exact multiples of one quarter. It scales priorities by four, checks
+a conservative u32 bound, and uses Dial buckets or a radix fallback for wider
+costs. General floating history costs keep the original heap. Costs, sink
+distances and tight-edge extraction stay in their original arithmetic. Tests
+compare extracted trees with the floating heap, including entry prices, A*,
+non-quarter costs, wide costs and overflow fallback. The default is 0.
+
+One matched12k hard01 pair produced identical9086 route bytes and expansion
+counts, with observed complete runtime43.526s versus40.488s for the option.
+That is a single observation under concurrent workloads, not a general speed
+claim. It does not replace timings for other retained runs.
+
+A matched12k designs/router pair also produced identical76143 route bytes:
+372.400s with the floating heap versus341.783s with the option. These are
+observations under concurrent workloads, with original producing times kept.
+
+`--refine-race-pilot P --refine-race-keep K` optionally allocates restart work
+adaptively. It requires `--refine-each-start 1`, K no larger than `--starts N`,
+and P no larger than `--refine-trials R`. Each start constructs fresh geometry
+and receives P pilot trials. The best K successful pilots receive another
+R-P trials with deterministic phase seeds. Post-CBS work is reserved for those
+finalists. All construction, pilots, finalists and output work are timed in
+one producing process. The controller retains its best completed pilot or
+finalist; it imports no routes or learned artifacts. The maximum main-trial
+count is N*P+K*(R-P), plus any explicitly configured post-CBS work.
+
+This is a simple promotion stage inspired by adaptive resource allocation in
+[Hyperband](https://arxiv.org/abs/1603.06560), not an implementation of its full
+schedule or a transfer of its guarantees. Early pilot rankings can miss late
+improvements. A four-start intro03 check with P=R=2000 preserved the uniform
+control's exact1623 route bytes. P=500 and K=2 also reached1623, with5000 main
+trials versus8000 in that control, and replayed byte-identically. Broader
+equal-trial-budget comparisons are still required. Default P=0 disables racing.

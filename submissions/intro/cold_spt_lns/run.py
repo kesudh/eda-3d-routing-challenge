@@ -82,6 +82,7 @@ def main():
     options["refine-race-keep"]=2
     options["refine-forks"]=1
     options["compact-polish-passes"]=0
+    options["cbs-group-max"]=4
     for flag,value in options.items():ap.add_argument("--"+flag,type=int,default=value)
     ap.add_argument("--refine-mode",choices=("portfolio","portfolio-joint","portfolio-joint-entry","portfolio-cbs","cbs","cbs-mixed","mixed","mixed-joint","joint","chain-fast","chain-entry-fast","single"),default="portfolio")
     ap.add_argument("--tree-root-weight",type=int,choices=(0,25,50,75,100))

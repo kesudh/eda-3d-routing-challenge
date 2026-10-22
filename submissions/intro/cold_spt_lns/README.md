@@ -88,12 +88,14 @@ input. Source/output hashes use exact bytes preserved by .gitattributes.
 
 ## Validation
 
-Fifteen Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
+Sixteen Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
 checks, shared-trunk objective accounting, entry pricing, direct-chain pricing
 bounded conflict splitting, exhaustive compatible-candidate selection, and strict
 repair success/rollback on crossing nets. Every adopted output also passes the official
 independent checker. A compact-polish fixture checks equal-delay footprint
 reduction, preservation of another net's tree, and stability on a second pass.
+An independent simple-path oracle checks conflict search for groups of two
+through eight nets, including fixed obstacles, infeasible cases and cost caps.
 
 copy_audit.json describes the published revision's post-generation comparison
 with pinned published Git blobs. It is refreshed when publishing improvements;
@@ -187,6 +189,23 @@ exhaustive selector test covers two through six nets and fixed outside
 resources. Larger groups can take more work. A matched 12k hard01 pilot gave
 9040 for six nets versus9086 for four (43.625s versus42.538s observed), still
 above the retained8866; broader experiments are needed.
+
+`--cbs-group-max N` separately bounds the number of nets in a conflict-search
+neighborhood. It defaults to4 and supports2 through8. The group still obeys
+`--refine-group-max`, and `--cbs-nodes` bounds search expansions. Larger groups
+permit coordinated changes involving more nets, but can require more search
+work. A budget-limited failure is not proof that no improving route exists.
+The larger-group oracle test enumerates all simple paths on small positive-cost
+single-sink grids independently of the production search. Experimental matched
+runs compare four and six nets; no general quality improvement is assumed.
+
+Matched60k mixed-joint plus1k conflict-search pilots had identical trajectories
+before the conflict phase. Four/six-net caps gave8856/8864 on hard01 and
+13515/13493 on hard04, with observed full runtimes293.900/364.139s and
+566.901/710.238s. This is mixed quality evidence under fixed node/trial budgets;
+neither six-net result improves its retained submission route. The four-net
+control also preserved the original8856 route bytes across the queue/cache
+changes. Default4 is retained.
 
 A subsequent cold invocation using60k mixed-joint trials with the six-net
 option, followed by1k conflict-search trials, reached8856 in293.355s. Its

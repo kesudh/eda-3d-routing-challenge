@@ -294,6 +294,173 @@ mod cbs {
             out
         }
         #[test]
+        fn cbs_larger_groups_match_independent_path_oracle() {
+            // On this positive-cost single-sink grid an optimum tree is a path.
+            // Enumerate every simple path independently of Scratch/Dijkstra,
+            // then enumerate disjoint path combinations for two through eight nets.
+            fn paths(inst: &Inst, owner: &[i32], nid: usize) -> Vec<(u32, u64)> {
+                fn visit(
+                    inst: &Inst,
+                    owner: &[i32],
+                    nid: usize,
+                    v: u32,
+                    mask: u32,
+                    cost: u64,
+                    out: &mut Vec<(u32, u64)>,
+                ) {
+                    if v == inst.nets[nid].sinks[0] {
+                        out.push((mask, cost));
+                        return;
+                    }
+                    let (x, y) = (v % 4, v / 4);
+                    for (dx, dy) in [(1i32, 0i32), (-1, 0), (0, 1), (0, -1)] {
+                        let (nx, ny) = (x as i32 + dx, y as i32 + dy);
+                        if !(0..4).contains(&nx) || !(0..4).contains(&ny) {
+                            continue;
+                        }
+                        let u = (ny * 4 + nx) as u32;
+                        if mask & (1 << u) != 0
+                            || owner[u as usize] >= 0
+                            || (inst.pin_owner[u as usize] >= 0
+                                && inst.pin_owner[u as usize] != nid as i32)
+                        {
+                            continue;
+                        }
+                        visit(
+                            inst,
+                            owner,
+                            nid,
+                            u,
+                            mask | (1 << u),
+                            cost + inst.ld[0] as u64,
+                            out,
+                        );
+                    }
+                }
+                let root = inst.nets[nid].driver;
+                let mut out = Vec::new();
+                visit(inst, owner, nid, root, 1 << root, 0, &mut out);
+                out.sort_unstable();
+                out.dedup();
+                out.sort_by_key(|&(mask, cost)| (cost, mask));
+                out
+            }
+            fn choose(pool: &[Vec<(u32, u64)>], at: usize, used: u32, cost: u64, best: &mut u64) {
+                if cost >= *best {
+                    return;
+                }
+                if at == pool.len() {
+                    *best = cost;
+                    return;
+                }
+                for &(mask, extra) in &pool[at] {
+                    if used & mask == 0 {
+                        choose(pool, at + 1, used | mask, cost + extra, best);
+                    }
+                }
+            }
+            let (mut feasible, mut infeasible) = (0, 0);
+            for count in 2..=8 {
+                for seed in 0..=8u64 {
+                    let mut p: Vec<u32> = (0..16).collect();
+                    if seed > 0 {
+                        let mut rng = Rng::new(seed * 31 + count as u64);
+                        for i in (1..p.len()).rev() {
+                            let j = rng.below((i + 1) as u64) as usize;
+                            p.swap(i, j);
+                        }
+                    }
+                    let nets: Vec<_> = (0..count)
+                        .map(|i| Net {
+                            driver: p[2 * i],
+                            sinks: vec![p[2 * i + 1]],
+                        })
+                        .collect();
+                    let mut pin_owner = vec![-1; 16];
+                    for (i, net) in nets.iter().enumerate() {
+                        pin_owner[net.driver as usize] = i as i32;
+                        pin_owner[net.sinks[0] as usize] = i as i32;
+                    }
+                    let inst = Inst {
+                        early_stop: true,
+                        retain_negotiated: false,
+                        use_radix: true,
+                        use_dial: true,
+                        use_astar: true,
+                        budget_bound: false,
+                        free_dist: Vec::new(),
+                        check_state: false,
+                        name: "cbs-path-oracle".into(),
+                        w: 4,
+                        h: 4,
+                        l: 1,
+                        wh: 16,
+                        n: 16,
+                        ld: vec![1 + seed as u32 % 3],
+                        vd: 2,
+                        nets,
+                        pin_owner,
+                    };
+                    let mut owner = vec![-1; 16];
+                    if seed % 2 == 1 {
+                        if let Some(v) = (0..16).find(|&v| inst.pin_owner[v] < 0) {
+                            owner[v] = i32::MAX;
+                        }
+                    }
+                    let expected_owner = owner.clone();
+                    let pools: Vec<_> = (0..count).map(|i| paths(&inst, &owner, i)).collect();
+                    let mut oracle = u64::MAX;
+                    choose(&pools, 0, 0, 0, &mut oracle);
+                    let expected = if oracle == u64::MAX {
+                        infeasible += 1;
+                        None
+                    } else {
+                        feasible += 1;
+                        Some(oracle)
+                    };
+                    let group: Vec<_> = (0..count).collect();
+                    let mut ws = Scratch::new(16, count, seed);
+                    let found = search(
+                        &inst,
+                        &mut owner,
+                        &mut ws,
+                        &group,
+                        expected.unwrap_or(1000),
+                        100_000,
+                        Instant::now() + Duration::from_secs(30),
+                    );
+                    assert_eq!(
+                        found
+                            .as_ref()
+                            .map(|rs| rs.iter().map(|r| r.delay).sum::<u64>()),
+                        expected,
+                        "group={count} seed={seed}"
+                    );
+                    assert_eq!(owner, expected_owner);
+                    if let Some(routes) = found {
+                        let mut used = 0u32;
+                        for route in routes {
+                            let mask = route.verts.iter().fold(0u32, |m, &v| m | (1 << v));
+                            assert_eq!(used & mask, 0);
+                            used |= mask;
+                        }
+                        assert!(search(
+                            &inst,
+                            &mut owner,
+                            &mut ws,
+                            &group,
+                            oracle - 1,
+                            100_000,
+                            Instant::now() + Duration::from_secs(30)
+                        )
+                        .is_none());
+                        assert_eq!(owner, expected_owner);
+                    }
+                }
+            }
+            assert!(feasible > 0 && infeasible > 0);
+        }
+        #[test]
         fn cbs_matches_exhaustive_trees() {
             let mut feasible = 0;
             let mut infeasible = 0;
@@ -2812,6 +2979,7 @@ pub struct Options {
     pub compact_shortest_tree: bool,
     pub post_cbs_trials: u64,
     pub cbs_nodes: usize,
+    pub cbs_group_max: usize,
     pub joint_neutral: u64,
     pub joint_group_max: usize,
     pub penalized_astar: bool,
@@ -2829,6 +2997,7 @@ impl Default for Options {
             compact_shortest_tree: false,
             post_cbs_trials: 0,
             cbs_nodes: 256,
+            cbs_group_max: 4,
             joint_neutral: 0,
             joint_group_max: 4,
             penalized_astar: false,
@@ -2865,6 +3034,7 @@ pub fn refine_cold(
     );
     assert!((2..=64).contains(&options.group_max));
     assert!(options.cbs_nodes > 0);
+    assert!((2..=8).contains(&options.cbs_group_max));
     assert!(options.joint_neutral <= 2);
     assert!(options.compact_polish_passes <= 64);
     assert!((2..=6).contains(&options.joint_group_max));
@@ -2944,6 +3114,7 @@ pub fn refine_cold(
         0.0,
         options.compact_shortest_tree,
         options.cbs_nodes,
+        options.cbs_group_max,
         options.joint_neutral,
         options.joint_group_max,
         options.penalized_astar,
@@ -3006,6 +3177,7 @@ fn worker(
     detour_frac: f64,
     compact_shortest_tree: bool,
     cbs_nodes: usize,
+    cbs_group_max: usize,
     joint_neutral: u64,
     joint_group_max: usize,
     penalized_astar: bool,
@@ -3140,7 +3312,7 @@ fn worker(
             let cap = if do_mode == 4 {
                 joint_group_max
             } else if mode.starts_with("cbs") {
-                k.min(4)
+                k.min(cbs_group_max)
             } else {
                 k
             };

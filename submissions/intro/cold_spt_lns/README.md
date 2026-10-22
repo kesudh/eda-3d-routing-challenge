@@ -220,6 +220,7 @@ finalists. All construction, pilots, finalists and output work are timed in
 one producing process. The controller retains its best completed pilot or
 finalist; it imports no routes or learned artifacts. The maximum main-trial
 count is N*P+K*(R-P), plus any explicitly configured post-CBS work.
+When post-CBS work is enabled, P must be strictly smaller than R.
 
 This is a simple promotion stage inspired by adaptive resource allocation in
 [Hyperband](https://arxiv.org/abs/1603.06560), not an implementation of its full
@@ -228,3 +229,6 @@ improvements. A four-start intro03 check with P=R=2000 preserved the uniform
 control's exact1623 route bytes. P=500 and K=2 also reached1623, with5000 main
 trials versus8000 in that control, and replayed byte-identically. Broader
 equal-trial-budget comparisons are still required. Default P=0 disables racing.
+
+Those intro03 pilots trail the currently retained1611 route; their role is to
+check the allocation and replay path, not to establish a quality improvement.

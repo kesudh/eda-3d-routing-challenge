@@ -897,6 +897,7 @@ fn main() {
     let mut cost_distance_discount = false;
     let mut refine_options = refine::Options::default();
     let mut emit_global_pool = false;
+    let mut final_stable_polish_passes = 0usize;
     for a in args[3..].chunks(2) {
         assert_eq!(a.len(), 2);
         match a[0].as_str() {
@@ -940,6 +941,7 @@ fn main() {
             "--compact-polish-passes" => {
                 refine_options.compact_polish_passes = a[1].parse().unwrap()
             }
+            "--final-stable-polish-passes" => final_stable_polish_passes = a[1].parse().unwrap(),
             "--construction-weight" => construction_weight = a[1].parse().unwrap(),
             "--tree-root-weight" => tree_root_weight = Some(a[1].parse::<u64>().unwrap()),
             "--negotiation-rounds" => negotiation_rounds = a[1].parse::<usize>().unwrap(),
@@ -961,6 +963,7 @@ fn main() {
     }
     assert!(starts > 0 && rounds > 0);
     assert!(refine_forks > 0);
+    assert!(final_stable_polish_passes <= 64);
     let walk_count = starts
         .checked_mul(refine_forks)
         .expect("refinement walk count overflow");
@@ -1132,7 +1135,12 @@ fn main() {
     }
     if let Some(bytes) = best_final {
         fs::write(&args[2], bytes).expect("write best internally generated final output");
-        println!("total_delay={best_final_score}");
+        let final_score = if final_stable_polish_passes > 0 {
+            refine::stable_polish_output(&args[1], &args[2], final_stable_polish_passes)
+        } else {
+            best_final_score
+        };
+        println!("total_delay={final_score}");
         if emit_global_pool {
             refine::write_pool(&args[1], &args[2], &format!("{}.pool.json", args[2]), seed);
         }
@@ -1154,6 +1162,11 @@ fn main() {
             &refine_mode,
             &refine_options,
         );
+    }
+    if final_stable_polish_passes > 0 {
+        let final_score =
+            refine::stable_polish_output(&args[1], &args[2], final_stable_polish_passes);
+        println!("total_delay={final_score}");
     }
     if emit_global_pool {
         refine::write_pool(&args[1], &args[2], &format!("{}.pool.json", args[2]), seed);

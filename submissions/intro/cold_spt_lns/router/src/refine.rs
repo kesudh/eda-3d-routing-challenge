@@ -1817,6 +1817,62 @@ impl Scratch {
         Some((verts, edges, delay))
     }
 
+    // Match a full (distance, vertex)-ordered Dijkstra that keeps the first
+    // predecessor on equal distance. Positive weights let us recover that
+    // predecessor as min(distance[predecessor], predecessor) in the tight DAG.
+    fn extract_stable(&self, inst: &Inst, net: &Net) -> Option<(Vec<u32>, Vec<(u32, u32)>, u64)> {
+        self.extract_stable_order(inst, net, false)
+    }
+    fn extract_stable_order(
+        &self,
+        inst: &Inst,
+        net: &Net,
+        reverse_vertices: bool,
+    ) -> Option<(Vec<u32>, Vec<(u32, u32)>, u64)> {
+        let mut edges = Vec::new();
+        let mut delay = 0;
+        let mut nb = [0u32; 6];
+        let mut wb = [0u32; 6];
+        for &sink in &net.sinks {
+            if self.stamp[sink as usize] != self.cur {
+                return None;
+            }
+            delay += self.dist[sink as usize] as u64;
+            let mut v = sink;
+            while v != net.driver {
+                let count = inst.neigh(v, &mut nb, &mut wb);
+                let parent = (0..count)
+                    .filter_map(|i| {
+                        let u = nb[i];
+                        if self.stamp[u as usize] == self.cur
+                            && self.dist[u as usize].checked_add(wb[i])
+                                == Some(self.dist[v as usize])
+                        {
+                            Some((
+                                self.dist[u as usize],
+                                if reverse_vertices { u32::MAX - u } else { u },
+                                u,
+                            ))
+                        } else {
+                            None
+                        }
+                    })
+                    .min()?
+                    .2;
+                edges.push(canon(parent, v));
+                v = parent;
+            }
+        }
+        edges.sort_unstable();
+        edges.dedup();
+        let mut vertices = vec![net.driver];
+        vertices.extend(edges.iter().flat_map(|&(a, b)| [a, b]));
+        vertices.sort_unstable();
+        vertices.dedup();
+        assert_eq!(edges.len() + 1, vertices.len());
+        Some((vertices, edges, delay))
+    }
+
     /// Penalized (negotiated) Dijkstra with f64 costs. Vertices occupied by
     /// nets in `ing` (the negotiation group) are soft â€” penalized instead of
     /// hard-blocked. Foreign vertices and foreign pins stay hard obstacles.
@@ -3057,6 +3113,119 @@ fn strict_polish(inst: &Inst, sol: &mut Solution, seed: u64) {
     );
 }
 
+fn stable_polish(inst: &Inst, sol: &mut Solution, limit: usize) {
+    stable_polish_order(inst, sol, limit, false, false);
+}
+fn stable_polish_order(
+    inst: &Inst,
+    sol: &mut Solution,
+    limit: usize,
+    reverse_vertices: bool,
+    reverse_nets: bool,
+) {
+    let mut owner = vec![-1; inst.n as usize];
+    for nid in 0..inst.nets.len() {
+        commit(&mut owner, nid, &sol.verts[nid]);
+    }
+    let mut ws = Scratch::new(inst.n, inst.nets.len(), 0);
+    let before = sol.total;
+    let mut passes = 0;
+    for _ in 0..limit {
+        passes += 1;
+        let mut changed = false;
+        let previous = sol.total;
+        for index in 0..inst.nets.len() {
+            let nid = if reverse_nets {
+                inst.nets.len() - 1 - index
+            } else {
+                index
+            };
+            uncommit(&mut owner, &sol.verts[nid]);
+            ws.dijkstra(
+                inst,
+                &owner,
+                inst.nets[nid].driver,
+                nid as i32,
+                false,
+                u32::MAX,
+            );
+            if let Some((vertices, edges, delay)) =
+                ws.extract_stable_order(inst, &inst.nets[nid], reverse_vertices)
+            {
+                // Equal-delay/equal-footprint moves can release resources for
+                // a later net. Bound the number of sweeps rather than stopping
+                // after a pass with no immediate delay gain.
+                if (delay, vertices.len()) <= (sol.delay[nid], sol.verts[nid].len()) {
+                    assert!(vertices.iter().all(|&v| owner[v as usize] < 0));
+                    changed |= edges != sol.edges[nid];
+                    sol.total = sol.total - sol.delay[nid] + delay;
+                    sol.vcount = sol.vcount - sol.verts[nid].len() as u64 + vertices.len() as u64;
+                    sol.delay[nid] = delay;
+                    sol.verts[nid] = vertices;
+                    sol.edges[nid] = edges;
+                }
+            }
+            commit(&mut owner, nid, &sol.verts[nid]);
+        }
+        assert!(sol.total <= previous);
+        if inst.check_state {
+            assert_consistent_state(inst, sol, &owner);
+        }
+        // Stable extraction has no random/history state. An unchanged entire
+        // geometry is a fixed point for this order, including neutral moves.
+        if !changed {
+            break;
+        }
+    }
+    println!(
+        "STABLE_POLISH passes={} before={} after={} gain={}",
+        passes,
+        before,
+        sol.total,
+        before - sol.total
+    );
+}
+
+pub fn stable_polish_output(instance: &str, own_output: &str, passes: usize) -> u64 {
+    assert!((1..=64).contains(&passes));
+    let mut inst = load_inst(instance);
+    inst.early_stop = true;
+    inst.use_radix = true;
+    inst.use_dial = true;
+    inst.use_astar = true;
+    inst.free_dist = free_space_table(inst.w, inst.h, inst.l, &inst.ld, inst.vd);
+    let original = load_solution(&inst, own_output).expect("own completed output must be legal");
+    let mut best: Option<Solution> = None;
+    for (reverse_vertices, reverse_nets) in
+        [(false, false), (true, false), (false, true), (true, true)]
+    {
+        let mut candidate = original.clone();
+        stable_polish_order(
+            &inst,
+            &mut candidate,
+            passes,
+            reverse_vertices,
+            reverse_nets,
+        );
+        if best.as_ref().map_or(true, |b| {
+            (candidate.total, candidate.vcount) < (b.total, b.vcount)
+        }) {
+            best = Some(candidate);
+        }
+    }
+    let best = best.unwrap();
+    assert!(best.total <= original.total);
+    write_sol(&inst, &best, own_output).expect("write own stable-polished output");
+    println!(
+        "STABLE_FINISH profiles=4 passes={} before={} after={} gain={}",
+        passes,
+        original.total,
+        best.total,
+        original.total - best.total
+    );
+    best.total
+}
+
 fn compact_polish(inst: &Inst, sol: &mut Solution, seed: u64, limit: usize) {
     let mut owner = vec![-1; inst.n as usize];
     for nid in 0..inst.nets.len() {
@@ -3829,6 +3998,193 @@ fn worker(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn stable_extraction_matches_first_discovery_dijkstra() {
+        let (mut feasible, mut infeasible) = (0, 0);
+        for seed in 0..128 {
+            let mut rng = Rng::new(seed);
+            let mut inst = Inst {
+                early_stop: false,
+                retain_negotiated: false,
+                use_radix: false,
+                use_dial: false,
+                use_astar: false,
+                budget_bound: false,
+                free_dist: Vec::new(),
+                check_state: false,
+                name: "stable-oracle".into(),
+                w: 4,
+                h: 4,
+                l: 2,
+                wh: 16,
+                n: 32,
+                ld: vec![1 + rng.below(5) as u32, 1 + rng.below(5) as u32],
+                vd: 1 + rng.below(4) as u32,
+                nets: vec![
+                    Net {
+                        driver: 0,
+                        sinks: vec![3, 15, 31],
+                    },
+                    Net {
+                        driver: 12,
+                        sinks: vec![28],
+                    },
+                ],
+                pin_owner: vec![-1; 32],
+            };
+            for (nid, net) in inst.nets.iter().enumerate() {
+                for &v in std::iter::once(&net.driver).chain(net.sinks.iter()) {
+                    inst.pin_owner[v as usize] = nid as i32;
+                }
+            }
+            inst.free_dist = free_space_table(inst.w, inst.h, inst.l, &inst.ld, inst.vd);
+            let mut owner = vec![-1; 32];
+            for v in 0..32 {
+                if seed > 1 && inst.pin_owner[v] < 0 && rng.below(5) == 0 {
+                    owner[v] = 1;
+                }
+            }
+            if seed == 0 {
+                for v in [1, 4, 16] {
+                    owner[v] = 1;
+                }
+            }
+            // Independent reference: ordinary heap Dijkstra stores the first
+            // predecessor and does not replace it on an equal-distance visit.
+            let mut distance = vec![INF; 32];
+            let mut parent = vec![0u32; 32];
+            distance[0] = 0;
+            let mut queue = BinaryHeap::from([Reverse((0u32, 0u32))]);
+            let mut nb = [0; 6];
+            let mut wb = [0; 6];
+            while let Some(Reverse((d, u))) = queue.pop() {
+                if distance[u as usize] != d {
+                    continue;
+                }
+                let count = inst.neigh(u, &mut nb, &mut wb);
+                for i in 0..count {
+                    let v = nb[i] as usize;
+                    if owner[v] >= 0 || (inst.pin_owner[v] >= 0 && inst.pin_owner[v] != 0) {
+                        continue;
+                    }
+                    let nd = d + wb[i];
+                    if nd < distance[v] {
+                        distance[v] = nd;
+                        parent[v] = u;
+                        queue.push(Reverse((nd, v as u32)));
+                    }
+                }
+            }
+            let expected = if inst.nets[0]
+                .sinks
+                .iter()
+                .any(|&s| distance[s as usize] == INF)
+            {
+                infeasible += 1;
+                None
+            } else {
+                feasible += 1;
+                let mut edges = Vec::new();
+                for &sink in &inst.nets[0].sinks {
+                    let mut v = sink;
+                    while v != 0 {
+                        let u = parent[v as usize];
+                        edges.push(canon(u, v));
+                        v = u;
+                    }
+                }
+                edges.sort_unstable();
+                edges.dedup();
+                let mut vertices = vec![0];
+                vertices.extend(edges.iter().flat_map(|&(u, v)| [u, v]));
+                vertices.sort_unstable();
+                vertices.dedup();
+                Some((
+                    vertices,
+                    edges,
+                    inst.nets[0]
+                        .sinks
+                        .iter()
+                        .map(|&s| distance[s as usize] as u64)
+                        .sum::<u64>(),
+                ))
+            };
+            for fast in [false, true] {
+                inst.early_stop = fast;
+                inst.use_astar = fast;
+                inst.use_radix = fast;
+                inst.use_dial = fast;
+                let mut ws = Scratch::new(32, 2, 999);
+                ws.dijkstra(&inst, &owner, 0, 0, false, u32::MAX);
+                assert_eq!(
+                    ws.extract_stable(&inst, &inst.nets[0]),
+                    expected,
+                    "seed={seed} fast={fast}"
+                );
+            }
+        }
+        assert!(feasible > 0 && infeasible > 0);
+    }
+
+    #[test]
+    fn stable_polish_preserves_ownership_and_improves_branching_fixture() {
+        let mut inst = Inst {
+            early_stop: true,
+            retain_negotiated: false,
+            use_radix: true,
+            use_dial: true,
+            use_astar: true,
+            budget_bound: false,
+            free_dist: Vec::new(),
+            check_state: true,
+            name: "stable-polish".into(),
+            w: 3,
+            h: 3,
+            l: 1,
+            wh: 9,
+            n: 9,
+            ld: vec![1],
+            vd: 2,
+            nets: vec![
+                Net {
+                    driver: 0,
+                    sinks: vec![2, 8],
+                },
+                Net {
+                    driver: 6,
+                    sinks: vec![3],
+                },
+            ],
+            pin_owner: vec![0, -1, 0, 1, -1, -1, 1, -1, 0],
+        };
+        inst.free_dist = free_space_table(inst.w, inst.h, inst.l, &inst.ld, inst.vd);
+        let mut sol = Solution {
+            verts: vec![vec![0, 1, 2, 4, 5, 8], vec![3, 6]],
+            edges: vec![vec![(0, 1), (1, 4), (4, 5), (2, 5), (5, 8)], vec![(3, 6)]],
+            delay: vec![8, 1],
+            total: 9,
+            vcount: 8,
+        };
+        let original = sol.edges.clone();
+        let original_solution = sol.clone();
+        stable_polish(&inst, &mut sol, 0);
+        assert_eq!(sol.edges, original);
+        stable_polish(&inst, &mut sol, 2);
+        assert_eq!(sol.total, 7);
+        for reverse_vertices in [false, true] {
+            for reverse_nets in [false, true] {
+                let mut candidate = original_solution.clone();
+                stable_polish_order(&inst, &mut candidate, 2, reverse_vertices, reverse_nets);
+                assert_eq!(candidate.total, 7);
+                assert_eq!(candidate.edges[1], vec![(3, 6)]);
+            }
+        }
+        assert_eq!(sol.delay, vec![6, 1]);
+        assert_eq!(sol.edges[1], vec![(3, 6)]);
+        stable_polish(&inst, &mut sol, 2);
+        assert_eq!(sol.total, 7);
+    }
+
     #[test]
     fn compact_polish_reduces_neutral_footprint_and_keeps_other_tree() {
         let mut inst = Inst {

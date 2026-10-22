@@ -90,7 +90,7 @@ input. Source/output hashes use exact bytes preserved by .gitattributes.
 
 ## Validation
 
-Eighteen Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
+Twenty Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
 checks, shared-trunk objective accounting, entry pricing, direct-chain pricing
 bounded conflict splitting, exhaustive compatible-candidate selection, and strict
 repair success/rollback on crossing nets. Every adopted output also passes the official
@@ -336,3 +336,26 @@ equal-trial-budget comparisons are still required. Default P=0 disables racing.
 
 Those intro03 pilots trail the currently retained1611 route; their role is to
 check the allocation and replay path, not to establish a quality improvement.
+
+`--final-stable-polish-passes N` optionally finishes this invocation's best
+completed route with four deterministic shortest-path schedules. The schedules
+combine forward/reverse net order with minimum/maximum vertex predecessor
+tie-breaking. Each starts independently from the same internally generated
+incumbent. A net replacement must not increase (sum of sink delays, vertex
+count) lexicographically; equal-cost moves can release resources for later
+nets. Other nets and foreign pins remain hard obstacles. Each schedule stops
+after N sweeps or an unchanged complete geometry, and the best result is kept.
+The default is0; enabled N is capped at64 per schedule. This stage runs once
+after global restart selection, including the unrefined construction path.
+All work and the final output write are inside the producing runtime. It has
+no public warm-start input and requires no added dependencies.
+
+An independent heap-Dijkstra reference test covers128 randomized multilayer
+instances, and a branching fixture checks ownership and all four schedules.
+Fresh raw hard01 checks preserve the default9086 route bytes, reach9080 with
+two finishing sweeps, and replay byte-identically. A fresh unrefined intro03
+check improves1697 to1681 and updates the optional pool's incumbent cost; a
+restart-racing check confirms that finishing runs once after all finalists.
+These are integration checks, not wins over the retained submission cases.
+Separate experiments polishing saved own routes are research only: any
+submitted replacement must come from a fresh, fully timed raw-input run.

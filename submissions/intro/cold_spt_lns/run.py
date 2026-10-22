@@ -85,6 +85,7 @@ def main():
     options["cbs-group-max"]=4
     options["post-cbs-bypass-trials"]=0
     options["cbs-conflict-priority"]=0
+    options["final-stable-polish-passes"]=0
     for flag,value in options.items():ap.add_argument("--"+flag,type=int,default=value)
     ap.add_argument("--refine-mode",choices=("portfolio","portfolio-joint","portfolio-joint-entry","portfolio-cbs","cbs","cbs-mixed","mixed","mixed-joint","joint","chain-fast","chain-entry-fast","single"),default="portfolio")
     ap.add_argument("--tree-root-weight",type=int,choices=(0,25,50,75,100))

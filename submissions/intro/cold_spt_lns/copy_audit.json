@@ -72,14 +72,14 @@
     "scale/case_05": "e0f45f92b87f94ab35b06d6f136e4d5a511e0e3c162b453f7741380223a17704",
     "scale/case_06": "be936ddb2c666e1e5abcd9edbec64735da92d5ca8bcacdc85e1e0c7aaaf020c9",
     "scale/case_07": "6ff0598a0149f66a23b0854a05b8ab6529a2ff466ad030a391f238fcd49a38e8",
-    "scale/case_08": "7a18559d21799be8185ff9eb2f707bba76f3fa8b7841df0a81445e7e2512e9c1",
+    "scale/case_08": "f411835a77f75099696f007f3ce031ffaa26d0ff0180348c9dc83b1ae863db18",
     "stress/case_01": "19a0e8bbb2cccee7de2c70c1d3be1a0bd3f97e0cff6767ba9273066e14608a8e",
     "congested/case_01": "90ebb43cbd0371b211aa6211663ff5c455cac84bd11027175047b94ecb9a22ab",
     "congested/case_02": "2a6517239cbbe79b1d910cb229e44f2913a5e48c11d533f3fb6481b9a3705dd1",
     "congested/case_03": "c957714f85d1686b3af784704ab82383c0cfbb97505e604ea51f741d5f0fa66e",
     "congested/case_04": "64210889024782116baa649077d0f08376d49c10ee3863bce84d67b09c746b35",
     "designs/ctrl": "9f112c39ed68eb6cb03c8b076c9783ca5588abc191d80069cc4671b356fbb79d",
-    "designs/int2float": "11457c8db27b5788ed454db64d2f5e8296cbff3edb8e8d15fdb7d8f3c908364b",
-    "designs/router": "12576ee166360638b3cd4f4c0b6db83f71cbdce7db7e6ffd7814310bade954b3"
+    "designs/int2float": "0a0d0b02da87766e40c5b7d5d17eaf4a24527e5662001d6c0f2b0cfa8b0e0962",
+    "designs/router": "bbebb341f9e1044d780262a777e038b940dc4a226259188aad8c37b40e9a1410"
   }
 }

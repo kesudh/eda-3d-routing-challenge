@@ -69,7 +69,7 @@ do not edit it by hand.
 | 3 | cuda-have-been-shorter | YJ Kim | 1.1391 | 8/8 | 532016 | missing |  | — |
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.1277 | 8/8 | 537468 | 62411.00 | ✓ | — |
 | 5 | warm_lns_refinement † | kesudh | 1.1274 | 8/8 | 537576 | 7543.00 | ✓ | — |
-| 6 | cold_spt_lns | kesudh | 1.1216 | 8/8 | 540536 | 25690.20 |  | — |
+| 6 | cold_spt_lns | kesudh | 1.1217 | 8/8 | 540450 | 26041.27 |  | — |
 | 7 | spt_lns | James (IrwinJam) | 1.1188 | 8/8 | 541966 | missing |  | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.1010 | 8/8 | 550828 | 3094.50 | ✓ | — |
 | 9 | anvesh | anvesh | 1.0821 | 8/8 | 559460 | missing |  | — |
@@ -123,7 +123,7 @@ do not edit it by hand.
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.4354 | 3/3 | 209175 | 47267.61 | ✓ | — |
 | 5 | spt_lns | James (IrwinJam) | 1.4347 | 3/3 | 209415 | missing |  | — |
 | 6 | warm_lns_refinement † | kesudh | 1.4331 | 3/3 | 209509 | 3615.00 | ✓ | — |
-| 7 | cold_spt_lns | kesudh | 1.3562 | 3/3 | 222025 | 18840.96 |  | — |
+| 7 | cold_spt_lns | kesudh | 1.3635 | 3/3 | 220849 | 17883.32 |  | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.3276 | 3/3 | 226581 | 1309.30 | ✓ | — |
 | 9 | lns_negotiated | adityuhkapoor | 1.2533 | 3/3 | 240751 | missing |  | — |
 | 10 | anvesh | anvesh | 1.2520 | 3/3 | 240501 | missing |  | — |

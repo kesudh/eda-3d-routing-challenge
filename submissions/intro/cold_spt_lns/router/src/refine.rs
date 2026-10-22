@@ -14,6 +14,8 @@ use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
+#[path = "joint.rs"]
+mod joint;
 mod cbs {
     //! Static vertex-disjoint, multi-sink adaptation of conflict-based search.
     //! Each low-level SPT exactly minimizes the sum of driver-to-sink delays.
@@ -2619,7 +2621,13 @@ pub fn refine_cold(
     trials: u64,
     mode: &str,
 ) {
-    assert!(trials > 0 && matches!(mode, "chain-fast" | "mixed" | "single"));
+    assert!(
+        trials > 0
+            && matches!(
+                mode,
+                "chain-fast" | "mixed" | "single" | "joint" | "mixed-joint"
+            )
+    );
     let start = Instant::now();
     let mut inst = load_inst(instance_path);
     inst.early_stop = true;
@@ -2828,13 +2836,15 @@ fn worker(
             }
         }
         let u: f64 = (ws.rng.next() >> 11) as f64 / ((1u64 << 53) as f64);
-        let do_mode: u8 = if mode == "chain"
+        let do_mode: u8 = if mode == "joint" || (mode == "mixed-joint" && u < 0.35) {
+            4
+        } else if mode == "chain"
             || mode == "chain-entry"
             || mode == "chain-fast"
             || mode == "chain-entry-fast"
         {
             3
-        } else if mode == "mixed" {
+        } else if mode == "mixed" || mode == "mixed-joint" {
             if u < 0.75 {
                 0
             } else if u < 0.90 {
@@ -2853,11 +2863,12 @@ fn worker(
         let mut group: Vec<usize> = if do_mode == 0 {
             let r = 1 + ws.rng.below(rmax as u64) as u32;
             region_group(&inst, &sol, &owner, &mut ws, seed_net, r, k)
-        } else if do_mode == 1 {
-            let mut g = blocker_group(&inst, &sol, &owner, &mut ws, seed_net, k);
+        } else if do_mode == 1 || do_mode == 4 {
+            let cap = if do_mode == 4 { 4 } else { k };
+            let mut g = blocker_group(&inst, &sol, &owner, &mut ws, seed_net, cap);
             if g.len() < 2 {
                 let r = 1 + ws.rng.below(rmax as u64) as u32;
-                g = region_group(&inst, &sol, &owner, &mut ws, seed_net, r, k);
+                g = region_group(&inst, &sol, &owner, &mut ws, seed_net, r, cap);
             }
             g
         } else {
@@ -2899,7 +2910,9 @@ fn worker(
         } else {
             let use_neg =
                 neg_frac > 0.0 && ((ws.rng.next() >> 11) as f64 / ((1u64 << 53) as f64)) < neg_frac;
-            let res = if mode.starts_with("cbs") && (mode != "cbs-mixed" || ws.rng.below(4) != 0) {
+            let res = if do_mode == 4 {
+                joint::group_move(&inst, &mut sol, &mut owner, &mut ws, &group)
+            } else if mode.starts_with("cbs") && (mode != "cbs-mixed" || ws.rng.below(4) != 0) {
                 cbs::group_move(
                     &inst,
                     &mut sol,

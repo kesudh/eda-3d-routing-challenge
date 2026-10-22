@@ -48,14 +48,16 @@ def main():
     ap.add_argument("--out-root",type=Path);ap.add_argument("--reproduce",action="store_true")
     ap.add_argument("--check-only",action="store_true");ap.add_argument("--only-improvements",action="store_true")
     ap.add_argument("--cargo",default="cargo");ap.add_argument("--hardware",default=platform.processor() or platform.machine())
-    options={"seed":20261022,"starts":1,"rounds":300,"sweeps":0,"moves":0,"construction-weight":2,"refine-trials":4000}
+    options={"seed":20261022,"starts":1,"rounds":300,"sweeps":0,"moves":0,"construction-weight":2,"refine-trials":4000,"negotiation-rounds":0,"fanout-priority":0,"slow-congestion":0}
     for flag,value in options.items():ap.add_argument("--"+flag,type=int,default=value)
-    ap.add_argument("--refine-mode",choices=("portfolio","mixed","chain-fast","single"),default="portfolio")
+    ap.add_argument("--refine-mode",choices=("portfolio","portfolio-joint","mixed","mixed-joint","joint","chain-fast","single"),default="portfolio")
+    ap.add_argument("--tree-root-weight",type=int,choices=(0,25,50,75,100))
     a=ap.parse_args()
     if a.check_only and a.reproduce:ap.error("choose --check-only or --reproduce")
     generating=not(a.check_only or a.reproduce);current=snapshot() if generating else None;built=set()
     settings=[]
     for flag in list(options)+["refine-mode"]:settings+=["--"+flag,str(getattr(a,flag.replace("-","_")))]
+    if a.tree_root_weight is not None:settings += ["--tree-root-weight",str(a.tree_root_weight)]
     for tier in a.tier or TIERS:
         suite=ROOT/("benchmarks" if tier=="intro" else "benchmarks_"+tier)
         cases=json.loads((suite/"suite.json").read_text())["cases"]

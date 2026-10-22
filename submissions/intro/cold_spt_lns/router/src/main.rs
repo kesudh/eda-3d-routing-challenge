@@ -15,6 +15,8 @@ struct Net {
 }
 struct Instance {
     construction_weight: u64,
+    fanout_priority: u64,
+    slow_congestion: bool,
     name: String,
     w: usize,
     h: usize,
@@ -116,6 +118,8 @@ impl Instance {
         }
         Self {
             construction_weight: 1,
+            fanout_priority: 0,
+            slow_congestion: false,
             name: v["name"].as_str().unwrap().into(),
             w,
             h,
@@ -162,6 +166,18 @@ impl Instance {
             .min()
             .unwrap_or(0)
     }
+    // Resource demand is paid once by a tree, while delay is paid by every
+    // sink. Normalize congestion prices to favor delay-sensitive fanouts.
+    fn congestion_price(&self, nid: usize, price: u64) -> u64 {
+        let fanout = self.nets[nid].sinks.len().max(1) as u64;
+        let divisor = match self.fanout_priority {
+            0 => 1024,
+            1 => (fanout * 1024 * 1024).isqrt(),
+            2 => fanout * 1024,
+            _ => panic!("invalid fanout priority"),
+        };
+        price * 1024 / divisor
+    }
 }
 fn mix(mut x: u64) -> u64 {
     x = x.wrapping_add(0x9e3779b97f4a7c15);
@@ -189,6 +205,10 @@ struct Route {
     delay: u64,
 }
 struct Search {
+    tree_stamp: Vec<u64>,
+    tree_price: Vec<u64>,
+    tree_delay: Vec<u64>,
+    tree_epoch: u64,
     dist: Vec<u64>,
     prev: Vec<usize>,
     stamp: Vec<u64>,
@@ -202,6 +222,10 @@ struct Search {
 impl Search {
     fn new(size: usize) -> Self {
         Self {
+            tree_stamp: vec![0; size],
+            tree_price: vec![0; size],
+            tree_delay: vec![0; size],
+            tree_epoch: 0,
             dist: vec![0; size],
             prev: vec![0; size],
             stamp: vec![0; size],
@@ -219,6 +243,105 @@ impl Search {
             self.h_value[u] = inst.lower_bound(u, goals);
         }
         self.h_value[u]
+    }
+    // Attach sinks to the existing tree. Root-price weighting interpolates
+    // between compact Steiner-like growth (0) and root-distance growth (100).
+    // Each new path enters the old tree exactly once, so cycles cannot form.
+    fn route_tree(
+        &mut self,
+        inst: &Instance,
+        nid: usize,
+        count: &[u32],
+        history: &[u64],
+        present: u64,
+        salt: u64,
+        root_weight: u64,
+    ) -> Option<Route> {
+        let net = &inst.nets[nid];
+        let root = net.driver;
+        self.tree_epoch += 1;
+        let tree_epoch = self.tree_epoch;
+        self.tree_stamp[root] = tree_epoch;
+        self.tree_price[root] = 0;
+        self.tree_delay[root] = 0;
+        let mut vertices = vec![root];
+        let mut edges = Vec::new();
+        let mut sinks = net.sinks.clone();
+        sinks.sort_by_key(|&s| (Reverse(inst.lower_bound(root, &[s])), mix(s as u64 ^ salt)));
+        for sink in sinks {
+            if self.tree_stamp[sink] == tree_epoch {
+                continue;
+            }
+            self.epoch += 1;
+            let epoch = self.epoch;
+            self.queue.clear();
+            for &u in &vertices {
+                let d = self.tree_price[u] * root_weight / 100;
+                self.stamp[u] = epoch;
+                self.dist[u] = d;
+                self.prev[u] = u;
+                let f = d + inst.lower_bound(u, &[sink]) * 1024 * inst.construction_weight;
+                self.queue
+                    .push(Reverse((f, u64::MAX - d, mix(u as u64 ^ salt), u, d)));
+            }
+            let mut reached = false;
+            while let Some(Reverse((_, _, _, u, d))) = self.queue.pop() {
+                if self.stamp[u] != epoch || self.dist[u] != d || self.done[u] == epoch {
+                    continue;
+                }
+                self.done[u] = epoch;
+                if u == sink {
+                    reached = true;
+                    break;
+                }
+                for &(v, w) in &inst.neighbors[u] {
+                    if self.tree_stamp[v] == tree_epoch
+                        || (inst.pins[v] >= 0 && inst.pins[v] != nid as i32)
+                    {
+                        continue;
+                    }
+                    let nd = d
+                        + w * 1024
+                        + inst.congestion_price(nid, history[v] + present * count[v] as u64);
+                    if self.done[v] != epoch && (self.stamp[v] != epoch || nd < self.dist[v]) {
+                        self.stamp[v] = epoch;
+                        self.dist[v] = nd;
+                        self.prev[v] = u;
+                        let f = nd + inst.lower_bound(v, &[sink]) * 1024 * inst.construction_weight;
+                        self.queue
+                            .push(Reverse((f, u64::MAX - nd, mix(v as u64 ^ salt), v, nd)));
+                    }
+                }
+            }
+            if !reached {
+                return None;
+            }
+            let mut path = Vec::new();
+            let mut u = sink;
+            while self.tree_stamp[u] != tree_epoch {
+                path.push(u);
+                u = self.prev[u];
+            }
+            for v in path.into_iter().rev() {
+                let w = inst.weight(u, v);
+                self.tree_stamp[v] = tree_epoch;
+                self.tree_price[v] = self.tree_price[u]
+                    + w * 1024
+                    + inst.congestion_price(nid, history[v] + present * count[v] as u64);
+                self.tree_delay[v] = self.tree_delay[u] + w;
+                edges.push((u.min(v), u.max(v)));
+                vertices.push(v);
+                u = v;
+            }
+        }
+        let delay = net.sinks.iter().map(|&s| self.tree_delay[s]).sum();
+        edges.sort_unstable();
+        vertices.sort_unstable();
+        Some(Route {
+            vertices,
+            edges,
+            delay,
+        })
     }
     // Root-distance SPT: minimizing every driver's sink distance also minimizes
     // their sum for one net with the other nets fixed. Positive costs give a tree.
@@ -283,7 +406,7 @@ impl Search {
                 let extra = if strict {
                     0
                 } else {
-                    history[v] + present * count[v] as u64
+                    inst.congestion_price(nid, history[v] + present * count[v] as u64)
                 };
                 let step = if strict { w } else { w * 1024 + extra };
                 let nd = d + step;
@@ -341,22 +464,46 @@ fn occupy(count: &mut [u32], r: &Route, add: bool) {
         }
     }
 }
-fn build(inst: &Instance, search: &mut Search, rng: &mut Rng, limit: usize) -> Option<Vec<Route>> {
+fn build(
+    inst: &Instance,
+    search: &mut Search,
+    rng: &mut Rng,
+    limit: usize,
+    tree_root_weight: Option<u64>,
+    negotiation_rounds: usize,
+) -> Option<Vec<Route>> {
     let k = inst.nets.len();
     let mut count = vec![0; inst.size];
     let mut history = vec![0; inst.size];
     let mut routes: Vec<Option<Route>> = vec![None; k];
     let mut order: Vec<_> = (0..k).collect();
     rng.shuffle(&mut order);
-    let mut present = 2048u64;
-    for round in 0..limit {
+    let initial_present = if inst.slow_congestion { 154 } else { 2048 };
+    let history_increment = if inst.slow_congestion { 154 } else { 4096 };
+    let mut present = initial_present;
+    let mut best: Option<Vec<Route>> = None;
+    let mut best_total = u64::MAX;
+    let mut force_all = false;
+    let mut remaining = negotiation_rounds;
+    for round in 0..limit + negotiation_rounds {
+        if best.is_none() && round >= limit {
+            break;
+        }
+        if best.is_some() {
+            if remaining == 0 {
+                break;
+            }
+            remaining -= 1;
+        }
         let affected: Vec<bool> = routes
             .iter()
             .map(|r| {
-                r.as_ref()
-                    .map_or(true, |r| r.vertices.iter().any(|&v| count[v] > 1))
+                force_all
+                    || r.as_ref()
+                        .map_or(true, |r| r.vertices.iter().any(|&v| count[v] > 1))
             })
             .collect();
+        force_all = false;
         rng.shuffle(&mut order);
         for &i in &order {
             if !affected[i] {
@@ -365,7 +512,12 @@ fn build(inst: &Instance, search: &mut Search, rng: &mut Rng, limit: usize) -> O
             if let Some(ref r) = routes[i] {
                 occupy(&mut count, r, false);
             }
-            let r = search.route(inst, i, &count, &history, present, false, rng.next())?;
+            let salt = rng.next();
+            let r = if let Some(weight) = tree_root_weight {
+                search.route_tree(inst, i, &count, &history, present, salt, weight)?
+            } else {
+                search.route(inst, i, &count, &history, present, false, salt)?
+            };
             occupy(&mut count, &r, true);
             routes[i] = Some(r);
         }
@@ -373,21 +525,43 @@ fn build(inst: &Instance, search: &mut Search, rng: &mut Rng, limit: usize) -> O
         for v in 0..inst.size {
             if count[v] > 1 {
                 over += 1;
-                history[v] += 4096 * (count[v] - 1) as u64;
+                history[v] += history_increment * (count[v] - 1) as u64;
             }
         }
         if over == 0 {
-            eprintln!("construction converged in {} rounds", round + 1);
-            return Some(routes.into_iter().map(Option::unwrap).collect());
+            let total = routes.iter().map(|r| r.as_ref().unwrap().delay).sum();
+            if best.is_none() {
+                eprintln!("construction converged in {} rounds", round + 1);
+            }
+            if total < best_total {
+                best_total = total;
+                best = Some(routes.iter().map(|r| r.as_ref().unwrap().clone()).collect());
+                eprintln!("construction best delay={} round={}", total, round + 1);
+            }
+            if negotiation_rounds == 0 {
+                return best;
+            }
+            // Release historical congestion scars and reconsider every net.
+            // Retain the best complete legal layout before allowing overlaps.
+            force_all = true;
+            for price in &mut history {
+                *price /= 2;
+            }
+            present = initial_present;
+            continue;
         }
         if round % 20 == 19 {
             eprintln!("construction round {}: {} conflicts", round + 1, over);
         }
         // Keep present cost comparable to accumulated history. An enormous
         // present cost freezes oscillating pairs before history can divert them.
-        present = (present * 13 / 10).min(32768);
+        present = if inst.slow_congestion {
+            (present * 103 / 100).min(9216)
+        } else {
+            (present * 13 / 10).min(32768)
+        };
     }
-    None
+    best
 }
 fn improve(
     inst: &Instance,
@@ -489,6 +663,10 @@ fn main() {
         (20261022u64, 2usize, 200usize, 6usize, 128usize);
     let (mut refine_trials, mut refine_mode, mut construction_weight) =
         (0u64, String::from("chain-fast"), 1u64);
+    let mut tree_root_weight = None;
+    let mut negotiation_rounds = 0;
+    let mut fanout_priority = 0;
+    let mut slow_congestion = false;
     for a in args[3..].chunks(2) {
         assert_eq!(a.len(), 2);
         match a[0].as_str() {
@@ -500,6 +678,10 @@ fn main() {
             "--refine-trials" => refine_trials = a[1].parse().unwrap(),
             "--refine-mode" => refine_mode = a[1].clone(),
             "--construction-weight" => construction_weight = a[1].parse().unwrap(),
+            "--tree-root-weight" => tree_root_weight = Some(a[1].parse::<u64>().unwrap()),
+            "--negotiation-rounds" => negotiation_rounds = a[1].parse::<usize>().unwrap(),
+            "--fanout-priority" => fanout_priority = a[1].parse::<u64>().unwrap(),
+            "--slow-congestion" => slow_congestion = a[1].parse::<u64>().unwrap() != 0,
             _ => panic!("unknown argument {}", a[0]),
         }
     }
@@ -507,12 +689,22 @@ fn main() {
     assert!(construction_weight >= 1);
     let mut inst = Instance::load(&args[1]);
     inst.construction_weight = construction_weight;
+    assert!(fanout_priority <= 2);
+    inst.fanout_priority = fanout_priority;
+    inst.slow_congestion = slow_congestion;
     let mut search = Search::new(inst.size);
     let mut rng = Rng(seed);
     let mut best: Option<Vec<Route>> = None;
     for start in 0..starts {
         eprintln!("cold start {} of {}", start + 1, starts);
-        if let Some(mut routes) = build(&inst, &mut search, &mut rng, rounds) {
+        if let Some(mut routes) = build(
+            &inst,
+            &mut search,
+            &mut rng,
+            rounds,
+            tree_root_weight,
+            negotiation_rounds,
+        ) {
             if sweeps > 0 || moves > 0 {
                 improve(&inst, &mut search, &mut routes, &mut rng, sweeps, moves);
             }
@@ -541,10 +733,15 @@ fn main() {
         drop(search);
         drop(routes);
         drop(inst);
-        if refine_mode == "portfolio" {
+        if refine_mode == "portfolio" || refine_mode == "portfolio-joint" {
             let first = refine_trials / 2;
             if first > 0 {
-                refine::refine_cold(&args[1], &args[2], &args[2], seed, first, "mixed");
+                let mode = if refine_mode == "portfolio-joint" {
+                    "mixed-joint"
+                } else {
+                    "mixed"
+                };
+                refine::refine_cold(&args[1], &args[2], &args[2], seed, first, mode);
             }
             refine::refine_cold(
                 &args[1],
@@ -576,6 +773,8 @@ mod tests {
         for _ in 0..120 {
             let mut inst = Instance {
                 construction_weight: 1,
+                fanout_priority: 0,
+                slow_congestion: false,
                 name: "differential".into(),
                 w: 4,
                 h: 4,
@@ -623,6 +822,13 @@ mod tests {
                 })
                 .collect();
             let history: Vec<u64> = (0..48).map(|_| rng.next() % 8000).collect();
+            inst.fanout_priority = rng.next() % 3;
+            let divisor = match inst.fanout_priority {
+                0 => 1024,
+                1 => (3.0f64.sqrt() * 1024.0).floor() as u64,
+                _ => 3 * 1024,
+            };
+            let priced = |v: usize| (history[v] + count[v] as u64 * 2048) * 1024 / divisor;
             for strict in [true, false] {
                 let mut d = vec![u64::MAX; 48];
                 let mut prev = vec![0; 48];
@@ -636,12 +842,7 @@ mod tests {
                         if strict && count[v] > 0 {
                             continue;
                         }
-                        let nd = du
-                            + if strict {
-                                w
-                            } else {
-                                w * 1024 + history[v] + count[v] as u64 * 2048
-                            };
+                        let nd = du + if strict { w } else { w * 1024 + priced(v) };
                         if nd < d[v] {
                             d[v] = nd;
                             prev[v] = u;
@@ -671,7 +872,7 @@ mod tests {
                                 + if strict {
                                     inst.weight(u, v)
                                 } else {
-                                    inst.weight(u, v) * 1024 + history[v] + count[v] as u64 * 2048
+                                    inst.weight(u, v) * 1024 + priced(v)
                                 };
                             stack.push(v);
                         }
@@ -690,6 +891,8 @@ mod tests {
     fn single_net_matches_exhaustive_tree_objective() {
         let mut inst = Instance {
             construction_weight: 1,
+            fanout_priority: 0,
+            slow_congestion: false,
             name: "tiny".into(),
             w: 3,
             h: 2,
@@ -756,6 +959,56 @@ mod tests {
                     .unwrap();
                 assert_eq!(route.delay, optimum);
                 assert_eq!(route.vertices.len(), route.edges.len() + 1);
+            }
+            if let Some(b) = block {
+                inst.pins[b] = 1;
+            }
+            for root_weight in [0, 50, 100] {
+                for salt in 0..20 {
+                    let route = Search::new(6)
+                        .route_tree(&inst, 0, &count, &vec![0; 6], 0, salt, root_weight)
+                        .unwrap();
+                    assert_eq!(route.vertices.len(), route.edges.len() + 1);
+                    assert!(block.map_or(true, |b| !route.vertices.contains(&b)));
+                    let mut adj = vec![vec![]; 6];
+                    for &(u, v) in &route.edges {
+                        adj[u].push(v);
+                        adj[v].push(u);
+                    }
+                    let mut distances = vec![u64::MAX; 6];
+                    distances[0] = 0;
+                    let mut stack = vec![0];
+                    while let Some(u) = stack.pop() {
+                        for &v in &adj[u] {
+                            if distances[v] == u64::MAX {
+                                distances[v] = distances[u] + inst.weight(u, v);
+                                stack.push(v);
+                            }
+                        }
+                    }
+                    assert!(route.vertices.iter().all(|&v| distances[v] != u64::MAX));
+                    assert_eq!(route.delay, distances[2] + distances[5]);
+                    if root_weight == 100 {
+                        assert_eq!(route.delay, optimum);
+                    }
+                }
+            }
+            if let Some(b) = block {
+                inst.pins[b] = -1;
+            }
+            // Extra negotiation must preserve a complete legal incumbent even
+            // when subsequent attempts use temporary resource overlaps.
+            for root_weight in [None, Some(0), Some(50)] {
+                let original =
+                    build(&inst, &mut Search::new(6), &mut Rng(7), 20, root_weight, 0).unwrap();
+                let improved =
+                    build(&inst, &mut Search::new(6), &mut Rng(7), 20, root_weight, 32).unwrap();
+                assert!(improved[0].delay <= original[0].delay);
+                assert_eq!(improved[0].vertices.len(), improved[0].edges.len() + 1);
+                assert!(inst.nets[0]
+                    .sinks
+                    .iter()
+                    .all(|s| improved[0].vertices.contains(s)));
             }
         }
     }

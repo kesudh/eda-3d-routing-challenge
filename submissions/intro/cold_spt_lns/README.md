@@ -1,7 +1,7 @@
 # cold_spt_lns
 
-Independent cold-start routing by [kesudh](https://github.com/kesudh). The target
-is all 45 cases across intro, hard, scale, stress, congested and designs. Green
+Independent cold-start routing by [kesudh](https://github.com/kesudh). The entry covers
+all 45 cases across intro, hard, scale, stress, congested and designs. Green
 CI establishes submission compliance; winning requires leading the independent
 field under the maintainers' judging rules.
 
@@ -12,11 +12,15 @@ geometry. There is no published-solution input, trained artifact or embedded
 route data. The constructor overwrites the output path before refinement reads
 it, so refinement only receives geometry made in that same invocation.
 
-The current pipeline uses weighted multi-goal A* with PathFinder-style
-present/history congestion prices to construct a legal tree set. Exact per-net
+The current source supports exact or weighted multi-goal A* with negotiated
+present/history congestion prices, fanout-aware price normalization, optional
+compact tree growth and continued global renegotiation after a legal layout. Exact per-net
 SPT descent, fixed-count group LNS, negotiated repair and displacement chains
 then improve that set. Portfolio mode runs mixed search followed by chain search
-inside the same process. All phases are timed.
+inside the same process. Joint-search variants generate alternate trees from
+the current invocation and use branch and bound to choose a vertex-disjoint
+combination for a small net group. That selection is exact only over its finite
+candidate pool. All phases are timed.
 
 The refinement implementation is adapted from kesudh's own earlier Rust engine.
 Search code is reused; no previous entry's route geometry is an input. Finite
@@ -80,9 +84,9 @@ input. Source/output hashes use exact bytes preserved by .gitattributes.
 
 ## Validation
 
-Seven Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
+Eight Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
 checks, shared-trunk objective accounting, entry pricing, direct-chain pricing
-and bounded conflict splitting. Every adopted output also passes the official
+bounded conflict splitting and exhaustive compatible-candidate selection. Every adopted output also passes the official
 independent checker.
 
 copy_audit.json describes the published revision's post-generation comparison
@@ -92,3 +96,15 @@ are read by this audit after generation, never by the solver.
 
 Maintainers control verification.json, reproduction status and final winners.
 This submission does not edit that file or infer a win from green CI.
+
+## Research and algorithm credit
+
+The implementation uses general routing concepts described by
+[PathFinder](https://janders.eecg.utoronto.ca/1387_2015/readings/pathfinder.pdf)
+and [FastRoute](https://doi.org/10.1155/2012/608362). Fanout-aware congestion
+pricing and finite-pool joint selection were also informed by the publicly
+disclosed [Luna router](https://github.com/IrwinJam/m3d-router/blob/81e4729b7c17c40987a8f57436fa94b9cb1ece96/router.py).
+These additions are independently written here. No opponent source code or route
+geometry was copied. Algorithmic similarity is not used as evidence of geometry
+independence: the publication audit compares canonical route hashes against the
+pinned main and open-PR Git blobs, and rejects matching non-exempt candidates.

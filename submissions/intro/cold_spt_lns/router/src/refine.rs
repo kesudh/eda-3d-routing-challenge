@@ -192,6 +192,111 @@ mod cbs {
         None
     }
 
+    // ICBS helpful bypass adapted to static multi-sink vertex resources.
+    // Same cost, fewer conflicts, and unchanged PARENT constraints are required.
+    // Node limits still bound work; exhaustion is not an infeasibility proof.
+    fn search_bypass(
+        inst: &Inst,
+        owner: &mut [i32],
+        ws: &mut Scratch,
+        group: &[usize],
+        cap: u64,
+        max_nodes: usize,
+        deadline: Instant,
+        bypasses: &mut usize,
+    ) -> Option<Vec<Arc<Route>>> {
+        let mut routes = Vec::new();
+        let mut cost = 0;
+        for &nid in group {
+            if Instant::now() >= deadline {
+                return None;
+            }
+            let route = low_level(inst, owner, ws, nid, &[], cap)?;
+            cost += route.delay;
+            if cost > cap {
+                return None;
+            }
+            routes.push(route);
+        }
+        let (nconflict, _) = conflicts(&routes);
+        let mut nodes = vec![Some(Node {
+            routes,
+            bans: vec![Vec::new(); group.len()],
+            cost,
+        })];
+        let mut queue = BinaryHeap::from([Reverse((cost, nconflict, 0usize))]);
+        let mut seen = std::collections::HashSet::<Vec<(usize, u32)>>::new();
+        seen.insert(Vec::new());
+        let mut expanded = 0;
+        while let Some(Reverse((_, _, id))) = queue.pop() {
+            if expanded >= max_nodes || Instant::now() >= deadline {
+                break;
+            }
+            expanded += 1;
+            let node = nodes[id].take().unwrap();
+            let (parent_conflicts, conflict) = conflicts(&node.routes);
+            let Some((a, b, v)) = conflict else {
+                return Some(node.routes);
+            };
+            let mut children = Vec::new();
+            let mut adopted_bypass = false;
+            for gi in [a, b] {
+                let mut bans = node.bans.clone();
+                match bans[gi].binary_search(&v) {
+                    Ok(_) => unreachable!("constrained vertex in route"),
+                    Err(p) => bans[gi].insert(p, v),
+                }
+                let key: Vec<_> = bans
+                    .iter()
+                    .enumerate()
+                    .flat_map(|(i, vs)| vs.iter().map(move |&v| (i, v)))
+                    .collect();
+                if seen.contains(&key) {
+                    continue;
+                }
+                let others = node.cost - node.routes[gi].delay;
+                let Some(route) = low_level(inst, owner, ws, group[gi], &bans[gi], cap - others)
+                else {
+                    seen.insert(key);
+                    continue;
+                };
+                let cost = others + route.delay;
+                assert!(cost >= node.cost);
+                let mut routes = node.routes.clone();
+                routes[gi] = route;
+                let (nconflict, _) = conflicts(&routes);
+                if cost == node.cost && nconflict < parent_conflicts {
+                    // Adopt the equal-cost representative under the PARENT'S
+                    // constraints. The added child ban is deliberately discarded.
+                    // Its key must NOT be marked seen unless actually enqueued.
+                    let next = nodes.len();
+                    nodes.push(Some(Node {
+                        routes,
+                        bans: node.bans.clone(),
+                        cost,
+                    }));
+                    queue.push(Reverse((cost, nconflict, next)));
+                    *bypasses += 1;
+                    adopted_bypass = true;
+                    break;
+                }
+                children.push((key, Node { routes, bans, cost }, nconflict));
+            }
+            if !adopted_bypass {
+                for (key, child, nconflict) in children {
+                    if !seen.insert(key) {
+                        continue;
+                    }
+                    let next = nodes.len();
+                    let cost = child.cost;
+                    nodes.push(Some(child));
+                    queue.push(Reverse((cost, nconflict, next)));
+                }
+            }
+        }
+        None
+    }
+
     pub(super) fn group_move(
         inst: &Inst,
         sol: &mut Solution,
@@ -199,6 +304,7 @@ mod cbs {
         ws: &mut Scratch,
         group: &[usize],
         max_nodes: usize,
+        bypass: bool,
         deadline: Instant,
     ) -> Option<(i64, bool)> {
         if group.len() < 2 {
@@ -211,7 +317,22 @@ mod cbs {
         for &n in group {
             uncommit(owner, &sol.verts[n]);
         }
-        let result = search(inst, owner, ws, group, old - 1, max_nodes, deadline);
+        let mut bypasses = 0;
+        let result = if bypass {
+            search_bypass(
+                inst,
+                owner,
+                ws,
+                group,
+                old - 1,
+                max_nodes,
+                deadline,
+                &mut bypasses,
+            )
+        } else {
+            search(inst, owner, ws, group, old - 1, max_nodes, deadline)
+        };
+        ws.cbs_bypasses += bypasses as u64;
         let Some(routes) = result else {
             for &n in group {
                 commit(owner, n, &sol.verts[n]);
@@ -295,6 +416,13 @@ mod cbs {
         }
         #[test]
         fn cbs_larger_groups_match_independent_path_oracle() {
+            compare_larger_groups_with_path_oracle(false);
+        }
+        #[test]
+        fn cbs_bypass_matches_independent_path_oracle() {
+            assert!(compare_larger_groups_with_path_oracle(true) > 0);
+        }
+        fn compare_larger_groups_with_path_oracle(bypass: bool) -> usize {
             // On this positive-cost single-sink grid an optimum tree is a path.
             // Enumerate every simple path independently of Scratch/Dijkstra,
             // then enumerate disjoint path combinations for two through eight nets.
@@ -360,6 +488,7 @@ mod cbs {
                 }
             }
             let (mut feasible, mut infeasible) = (0, 0);
+            let mut bypasses = 0;
             for count in 2..=8 {
                 for seed in 0..=8u64 {
                     let mut p: Vec<u32> = (0..16).collect();
@@ -420,15 +549,28 @@ mod cbs {
                     };
                     let group: Vec<_> = (0..count).collect();
                     let mut ws = Scratch::new(16, count, seed);
-                    let found = search(
-                        &inst,
-                        &mut owner,
-                        &mut ws,
-                        &group,
-                        expected.unwrap_or(1000),
-                        100_000,
-                        Instant::now() + Duration::from_secs(30),
-                    );
+                    let found = if bypass {
+                        search_bypass(
+                            &inst,
+                            &mut owner,
+                            &mut ws,
+                            &group,
+                            expected.unwrap_or(1000),
+                            100_000,
+                            Instant::now() + Duration::from_secs(30),
+                            &mut bypasses,
+                        )
+                    } else {
+                        search(
+                            &inst,
+                            &mut owner,
+                            &mut ws,
+                            &group,
+                            expected.unwrap_or(1000),
+                            100_000,
+                            Instant::now() + Duration::from_secs(30),
+                        )
+                    };
                     assert_eq!(
                         found
                             .as_ref()
@@ -444,21 +586,35 @@ mod cbs {
                             assert_eq!(used & mask, 0);
                             used |= mask;
                         }
-                        assert!(search(
-                            &inst,
-                            &mut owner,
-                            &mut ws,
-                            &group,
-                            oracle - 1,
-                            100_000,
-                            Instant::now() + Duration::from_secs(30)
-                        )
-                        .is_none());
+                        let below = if bypass {
+                            search_bypass(
+                                &inst,
+                                &mut owner,
+                                &mut ws,
+                                &group,
+                                oracle - 1,
+                                100_000,
+                                Instant::now() + Duration::from_secs(30),
+                                &mut bypasses,
+                            )
+                        } else {
+                            search(
+                                &inst,
+                                &mut owner,
+                                &mut ws,
+                                &group,
+                                oracle - 1,
+                                100_000,
+                                Instant::now() + Duration::from_secs(30),
+                            )
+                        };
+                        assert!(below.is_none());
                         assert_eq!(owner, expected_owner);
                     }
                 }
             }
             assert!(feasible > 0 && infeasible > 0);
+            bypasses
         }
         #[test]
         fn cbs_matches_exhaustive_trees() {
@@ -547,6 +703,22 @@ mod cbs {
                     best,
                     "seed {seed}"
                 );
+                let mut bypasses = 0;
+                let bypassed = search_bypass(
+                    &inst,
+                    &mut owner,
+                    &mut ws,
+                    &[0, 1],
+                    1000,
+                    100_000,
+                    Instant::now() + Duration::from_secs(5),
+                    &mut bypasses,
+                );
+                assert_eq!(
+                    bypassed.map(|rs| rs.iter().map(|r| r.delay).sum::<u64>()),
+                    best,
+                    "branched bypass seed {seed}"
+                );
                 assert!(owner.iter().all(|&o| o == -1));
                 if let Some(best) = best {
                     assert!(search(
@@ -559,6 +731,18 @@ mod cbs {
                         Instant::now() + Duration::from_secs(5)
                     )
                     .is_none());
+                    assert!(search_bypass(
+                        &inst,
+                        &mut owner,
+                        &mut ws,
+                        &[0, 1],
+                        best - 1,
+                        100_000,
+                        Instant::now() + Duration::from_secs(5),
+                        &mut bypasses,
+                    )
+                    .is_none());
+                    assert!(owner.iter().all(|&o| o == -1));
                 }
             }
             assert!(feasible > 0 && infeasible > 0);
@@ -1152,6 +1336,7 @@ struct Scratch {
     pheuristic: Vec<f64>,
     penalized_heuristic_cache: bool,
     pen_h_evaluations: u64,
+    cbs_bypasses: u64,
     penalized_astar: bool,
     penalized_integer_queue: bool,
     pen_integer_calls: u64,
@@ -1192,6 +1377,7 @@ impl Scratch {
             pheuristic: vec![0.0; n as usize],
             penalized_heuristic_cache: false,
             pen_h_evaluations: 0,
+            cbs_bypasses: 0,
             penalized_astar: false,
             penalized_integer_queue: false,
             pen_integer_calls: 0,
@@ -2978,6 +3164,8 @@ pub struct Options {
     pub group_max: usize,
     pub compact_shortest_tree: bool,
     pub post_cbs_trials: u64,
+    pub post_cbs_bypass_trials: u64,
+    pub cbs_bypass: bool,
     pub cbs_nodes: usize,
     pub cbs_group_max: usize,
     pub joint_neutral: u64,
@@ -2996,6 +3184,8 @@ impl Default for Options {
             group_max: 16,
             compact_shortest_tree: false,
             post_cbs_trials: 0,
+            post_cbs_bypass_trials: 0,
+            cbs_bypass: false,
             cbs_nodes: 256,
             cbs_group_max: 4,
             joint_neutral: 0,
@@ -3115,6 +3305,7 @@ pub fn refine_cold(
         options.compact_shortest_tree,
         options.cbs_nodes,
         options.cbs_group_max,
+        options.cbs_bypass,
         options.joint_neutral,
         options.joint_group_max,
         options.penalized_astar,
@@ -3178,6 +3369,7 @@ fn worker(
     compact_shortest_tree: bool,
     cbs_nodes: usize,
     cbs_group_max: usize,
+    cbs_bypass: bool,
     joint_neutral: u64,
     joint_group_max: usize,
     penalized_astar: bool,
@@ -3373,7 +3565,7 @@ fn worker(
                 )
             } else if mode.starts_with("cbs") && (mode != "cbs-mixed" || ws.rng.below(4) != 0) {
                 cbs::group_move(
-                    &inst, &mut sol, &mut owner, &mut ws, &group, cbs_nodes, deadline,
+                    &inst, &mut sol, &mut owner, &mut ws, &group, cbs_nodes, cbs_bypass, deadline,
                 )
             } else if use_neg {
                 neg_trials += 1;
@@ -3521,7 +3713,7 @@ fn worker(
         let _ = write_sol(&inst, &sol, &out_path);
     }
     println!(
-        "[{}#{}] DONE trials={} eq={} rej={} imp={} up={} neg={} inapp={} best={} (delta {}) pexp={} pint={} hcalc={}",
+        "[{}#{}] DONE trials={} eq={} rej={} imp={} up={} neg={} inapp={} best={} (delta {}) pexp={} pint={} hcalc={} cbp={}",
         tag,
         widx,
         trials,
@@ -3535,7 +3727,8 @@ fn worker(
         local_best_total as i64 - init.total as i64,
         ws.pen_expanded,
         ws.pen_integer_calls,
-        ws.pen_h_evaluations
+        ws.pen_h_evaluations,
+        ws.cbs_bypasses
     );
 }
 

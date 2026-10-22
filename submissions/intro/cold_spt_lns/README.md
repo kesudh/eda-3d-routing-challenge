@@ -4,6 +4,8 @@ Independent cold-start routing by [kesudh](https://github.com/kesudh). The entry
 all 45 cases across intro, hard, scale, stress, congested and designs. Green
 CI establishes submission compliance; winning requires leading the independent
 field under the maintainers' judging rules.
+The field comparison also checks the strongest complete timed public entry,
+including derivatives, so raw scoreboard leadership is assessed separately.
 
 ## Algorithm and independence
 
@@ -88,7 +90,7 @@ input. Source/output hashes use exact bytes preserved by .gitattributes.
 
 ## Validation
 
-Sixteen Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
+Seventeen Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
 checks, shared-trunk objective accounting, entry pricing, direct-chain pricing
 bounded conflict splitting, exhaustive compatible-candidate selection, and strict
 repair success/rollback on crossing nets. Every adopted output also passes the official
@@ -96,6 +98,8 @@ independent checker. A compact-polish fixture checks equal-delay footprint
 reduction, preservation of another net's tree, and stability on a second pass.
 An independent simple-path oracle checks conflict search for groups of two
 through eight nets, including fixed obstacles, infeasible cases and cost caps.
+Both stock and bypass search are checked, including exhaustive branching trees
+on tiny grids; the bypass oracle requires that helpful bypasses actually occur.
 
 copy_audit.json describes the published revision's post-generation comparison
 with pinned published Git blobs. It is refreshed when publishing improvements;
@@ -206,6 +210,32 @@ before the conflict phase. Four/six-net caps gave8856/8864 on hard01 and
 neither six-net result improves its retained submission route. The four-net
 control also preserved the original8856 route bytes across the queue/cache
 changes. Default4 is retained.
+
+`--post-cbs-bypass-trials N` optionally adds N conflict-search trials after the
+main search and the existing stock post-CBS phase. It defaults to0. The extra
+phase uses helpful bypasses informed by [ICBS](https://www.ijcai.org/Proceedings/15/Papers/110.pdf):
+an equal-cost alternative must reduce shared-vertex conflicts while satisfying
+the parent's constraints. Its temporary child ban is discarded, and a discarded
+child is not marked as searched. This is a static multi-sink adaptation; no
+MAPF performance bound is inherited. Each expansion still counts against
+`--cbs-nodes`. Exhausting that limit does not prove infeasibility.
+
+The extra phase retains the completed stock incumbent, so its reported delay
+cannot rise for the otherwise identical invocation. All extra work is timed.
+Restart racing disables it on pilots and reserves it for finalists. It requires
+positive main refinement trials and, when racing, a pilot shorter than the final
+budget. Its added trial count is N per refined start, or N per promoted finalist.
+This does not establish an advantage over spending the same work on stock CBS.
+Matched total-trial controls and fresh raw-only producing runs are required to
+assess that question; different phase boundaries also change cooling/polishing.
+
+A raw hard01 pilot preserved the default9086 bytes. Adding1k stock trials reached
+9046;2k stock trials reached9024;1k stock plus1k bypass reached9018 and replayed
+byte-identically. Both extended configurations used14k total trials. This
+supports that combined small configuration, not an isolated bypass effect or a
+general speed guarantee. A larger eight-pilot comparison reached8832 with2k
+stock trials per finalist and8828 with1k stock plus1k bypass; the latter ties
+the retained8828 delay and has not improved that submission case.
 
 A subsequent cold invocation using60k mixed-joint trials with the six-net
 option, followed by1k conflict-search trials, reached8856 in293.355s. Its

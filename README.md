@@ -74,7 +74,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 5 | pathfinder_lns | Tazeem Mahashin | 1.3884 | 9/9 | 144991 | missing |  | — |
 | 6 | warm_lns_refinement † | kesudh | 1.3874 | 9/9 | 145095 | missing |  | — |
 | 7 | reubalink | reubalink | 1.3622 | 9/9 | 147825 | missing |  | — |
-| 8 | cold_spt_lns | kesudh | 1.3382 | 9/9 | 150809 | 14061.75 | ✓ | — |
+| 8 | cold_spt_lns | kesudh | 1.3404 | 9/9 | 150485 | 13462.25 | ✓ | — |
 | 9 | iamparv7043 | Parv (iamparv7043) | 1.3019 | 9/9 | 155125 | 7333.40 | ✓ | — |
 | 10 | erikqu_root_aware_portfolio | erikqu | 1.2745 | 9/9 | 158455 | missing |  | — |
 | 11 | synapse-surge | Sameer-Deepak | 1.2569 | 9/9 | 161183 | missing |  | — |
@@ -134,7 +134,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 4 | spt_lns | James (IrwinJam) | 1.3156 | 4/4 | 489177 | missing |  | — |
 | 5 | pathfinder_lns | Tazeem Mahashin | 1.3111 | 4/4 | 490499 | 61369.30 | ✓ | — |
 | 6 | warm_lns_refinement † | kesudh | 1.3085 | 4/4 | 491467 | 3621.00 | ✓ | — |
-| 7 | cold_spt_lns | kesudh | 1.2446 | 4/4 | 519917 | 26853.34 |  | — |
+| 7 | cold_spt_lns | kesudh | 1.2577 | 4/4 | 516043 | 31081.85 |  | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.1252 | 4/4 | 591707 | 4593.60 |  | — |
 | 9 | lns_negotiated | adityuhkapoor | 1.0981 | 4/4 | 590513 | missing |  | — |
 | 10 | shivaahir158 | Shiva Ahir (PhD Candidate, Stony Brook University) | 1.0549 | 4/4 | 608243 | 8756.73 |  | — |
@@ -152,8 +152,8 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.4354 | 3/3 | 209175 | 47267.61 | ✓ | — |
 | 5 | spt_lns | James (IrwinJam) | 1.4347 | 3/3 | 209415 | missing |  | — |
 | 6 | warm_lns_refinement † | kesudh | 1.4331 | 3/3 | 209509 | 3615.00 | ✓ | — |
-| 7 | iamparv7043 | Parv (iamparv7043) | 1.3276 | 3/3 | 226581 | 1309.30 | ✓ | — |
-| 8 | cold_spt_lns | kesudh | 1.3153 | 3/3 | 229881 | 11735.01 |  | — |
+| 7 | cold_spt_lns | kesudh | 1.3478 | 3/3 | 223131 | 15828.27 |  | — |
+| 8 | iamparv7043 | Parv (iamparv7043) | 1.3276 | 3/3 | 226581 | 1309.30 | ✓ | — |
 | 9 | lns_negotiated | adityuhkapoor | 1.2533 | 3/3 | 240751 | missing |  | — |
 | 10 | anvesh | anvesh | 1.2520 | 3/3 | 240501 | missing |  | — |
 | 11 | negotiated_delay | Mantej Singh Gill | 1.1947 | 3/3 | 252901 | 636.11 | ✓ | — |

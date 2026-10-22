@@ -834,6 +834,7 @@ fn refine_output(
     } else {
         refine::refine_cold(instance, output, output, seed, trials, mode, options)
     };
+    let mut best = before;
     if options.post_cbs_trials > 0 {
         let after = refine::refine_cold(
             instance,
@@ -848,10 +849,27 @@ fn refine_output(
             after <= before,
             "post-conflict search must retain its own incumbent"
         );
-        after
-    } else {
-        before
+        best = after;
     }
+    if options.post_cbs_bypass_trials > 0 {
+        let mut bypass_options = options.clone();
+        bypass_options.cbs_bypass = true;
+        let after = refine::refine_cold(
+            instance,
+            output,
+            output,
+            seed.wrapping_add(3),
+            options.post_cbs_bypass_trials,
+            "cbs-mixed",
+            &bypass_options,
+        );
+        assert!(
+            after <= best,
+            "bypass pass must retain the completed stock incumbent"
+        );
+        best = after;
+    }
+    best
 }
 
 fn main() {
@@ -893,6 +911,9 @@ fn main() {
             "--refine-slack" => refine_options.slack = a[1].parse().unwrap(),
             "--refine-group-max" => refine_options.group_max = a[1].parse().unwrap(),
             "--post-cbs-trials" => refine_options.post_cbs_trials = a[1].parse().unwrap(),
+            "--post-cbs-bypass-trials" => {
+                refine_options.post_cbs_bypass_trials = a[1].parse().unwrap()
+            }
             "--cbs-nodes" => refine_options.cbs_nodes = a[1].parse().unwrap(),
             "--cbs-group-max" => refine_options.cbs_group_max = a[1].parse().unwrap(),
             "--joint-neutral" => refine_options.joint_neutral = a[1].parse().unwrap(),
@@ -942,10 +963,15 @@ fn main() {
         .expect("refinement walk count overflow");
     assert!(refine_forks == 1 || (refine_each_start && refine_trials > 0));
     assert!(construction_weight >= 1);
+    assert!(refine_options.post_cbs_bypass_trials == 0 || refine_trials > 0);
     if race_pilot > 0 {
         assert!(refine_each_start && race_pilot <= refine_trials);
         assert!(race_keep > 0 && race_keep <= walk_count);
-        assert!(race_pilot < refine_trials || refine_options.post_cbs_trials == 0);
+        assert!(
+            race_pilot < refine_trials
+                || (refine_options.post_cbs_trials == 0
+                    && refine_options.post_cbs_bypass_trials == 0)
+        );
     }
     let mut inst = Instance::load(&args[1]);
     inst.construction_weight = construction_weight;
@@ -1026,6 +1052,7 @@ fn main() {
                     let mut pilot_options = refine_options.clone();
                     if race_pilot > 0 {
                         pilot_options.post_cbs_trials = 0;
+                        pilot_options.post_cbs_bypass_trials = 0;
                     }
                     let final_score = refine_output(
                         &args[1],

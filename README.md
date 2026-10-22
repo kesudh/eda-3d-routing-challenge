@@ -51,7 +51,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.1514 | 20/20 | 341746 | 46476.76 | ✓ | — |
 | 5 | warm_lns_refinement † | kesudh | 1.1509 | 20/20 | 342006 | missing |  | — |
 | 6 | spt_lns | James (IrwinJam) | 1.1444 | 20/20 | 345066 | missing |  | — |
-| 7 | cold_spt_lns | kesudh | 1.1413 | 20/20 | 346292 | 15956.97 | ✓ | — |
+| 7 | cold_spt_lns | kesudh | 1.1415 | 20/20 | 346264 | 17222.93 | ✓ | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.1254 | 20/20 | 353836 | 2213.60 | ✓ | — |
 | 9 | anvesh | anvesh | 1.1069 | 20/20 | 360172 | missing |  | — |
 | 10 | synapse-surge | Sameer-Deepak | 1.1004 | 20/20 | 368374 | missing |  | — |
@@ -74,8 +74,8 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 5 | pathfinder_lns | Tazeem Mahashin | 1.3884 | 9/9 | 144991 | missing |  | — |
 | 6 | warm_lns_refinement † | kesudh | 1.3874 | 9/9 | 145095 | missing |  | — |
 | 7 | reubalink | reubalink | 1.3622 | 9/9 | 147825 | missing |  | — |
-| 8 | cold_spt_lns | kesudh | 1.3173 | 9/9 | 153739 | 6568.52 | ✓ | — |
-| 9 | iamparv7043 | Parv (iamparv7043) | 1.3019 | 9/9 | 155125 | 7333.40 |  | — |
+| 8 | cold_spt_lns | kesudh | 1.3292 | 9/9 | 152149 | 8748.90 | ✓ | — |
+| 9 | iamparv7043 | Parv (iamparv7043) | 1.3019 | 9/9 | 155125 | 7333.40 | ✓ | — |
 | 10 | erikqu_root_aware_portfolio | erikqu | 1.2745 | 9/9 | 158455 | missing |  | — |
 | 11 | synapse-surge | Sameer-Deepak | 1.2569 | 9/9 | 161183 | missing |  | — |
 | 12 | lns_negotiated | adityuhkapoor | 1.2267 | 9/9 | 165367 | missing |  | — |
@@ -119,7 +119,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 5 | warm_lns_refinement † | kesudh | 1.0911 | 1/1 | 1049332 | 2070.00 | ✓ | — |
 | 6 | spt_lns | James (IrwinJam) | 1.0779 | 1/1 | 1062208 | missing |  | — |
 | 7 | lns_negotiated | adityuhkapoor | 1.0669 | 1/1 | 1073124 | missing |  | — |
-| 8 | cold_spt_lns | kesudh | 1.0416 | 1/1 | 1099190 | 3078.53 |  | — |
+| 8 | cold_spt_lns | kesudh | 1.0582 | 1/1 | 1081886 | 12463.74 |  | — |
 | 9 | synapse-surge | Sameer-Deepak | 1.0008 | 1/1 | 1143964 | missing |  | — |
 
 † derivative entry (refines another entry's routes): coordinated_refinement builds on leonid-popryho (Leonid Popryho); warm_lns_refinement builds on pathfinder_lns (Taz33m).
@@ -153,7 +153,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 5 | spt_lns | James (IrwinJam) | 1.4347 | 3/3 | 209415 | missing |  | — |
 | 6 | warm_lns_refinement † | kesudh | 1.4331 | 3/3 | 209509 | 3615.00 | ✓ | — |
 | 7 | iamparv7043 | Parv (iamparv7043) | 1.3276 | 3/3 | 226581 | 1309.30 | ✓ | — |
-| 8 | cold_spt_lns | kesudh | 1.3126 | 3/3 | 230205 | 2206.38 |  | — |
+| 8 | cold_spt_lns | kesudh | 1.3153 | 3/3 | 229881 | 11735.01 |  | — |
 | 9 | lns_negotiated | adityuhkapoor | 1.2533 | 3/3 | 240751 | missing |  | — |
 | 10 | anvesh | anvesh | 1.2520 | 3/3 | 240501 | missing |  | — |
 | 11 | negotiated_delay | Mantej Singh Gill | 1.1947 | 3/3 | 252901 | 636.11 | ✓ | — |

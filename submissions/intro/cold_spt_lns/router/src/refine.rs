@@ -982,6 +982,9 @@ struct Scratch {
     pdist: Vec<f64>,
     pstamp: Vec<u32>,
     pheap: BinaryHeap<Reverse<(u64, u64, u32)>>,
+    pheuristic: Vec<f64>,
+    penalized_heuristic_cache: bool,
+    pen_h_evaluations: u64,
     penalized_astar: bool,
     penalized_integer_queue: bool,
     pen_integer_calls: u64,
@@ -1019,6 +1022,9 @@ impl Scratch {
             pdist: vec![0.0; n as usize],
             pstamp: vec![0; n as usize],
             pheap: BinaryHeap::new(),
+            pheuristic: vec![0.0; n as usize],
+            penalized_heuristic_cache: false,
+            pen_h_evaluations: 0,
             penalized_astar: false,
             penalized_integer_queue: false,
             pen_integer_calls: 0,
@@ -1425,8 +1431,10 @@ impl Scratch {
             Vec::new()
         };
         let planar = *inst.ld.iter().min().unwrap();
-        let potential = |v| {
+        let mut h_evaluations = 0u64;
+        let mut potential = |v| {
             if astar {
+                h_evaluations += 1;
                 goal_bound(inst, &goals, v, planar) as f64
             } else {
                 0.0
@@ -1449,6 +1457,10 @@ impl Scratch {
                     + (inst.w as f64 + inst.h as f64 + inst.l as f64) * max_weight)
                 < u32::MAX as f64;
         let first = potential(src);
+        let cache = self.penalized_heuristic_cache && astar;
+        if cache {
+            self.pheuristic[src as usize] = first;
+        }
         let dial = integer
             && self.dial.reset_range(
                 (8.0 * max_weight + quarter_price) as u32,
@@ -1478,7 +1490,15 @@ impl Scratch {
                 };
                 let Some((key, v)) = popped else { break };
                 let d = self.pdist[v as usize];
-                if self.pstamp[v as usize] != st || key != ((d + potential(v)) * 4.0) as u32 {
+                if self.pstamp[v as usize] != st {
+                    continue;
+                }
+                let h = if cache {
+                    self.pheuristic[v as usize]
+                } else {
+                    potential(v)
+                };
+                if key != ((d + h) * 4.0) as u32 {
                     continue;
                 }
                 (key as f64 * 0.25, d.to_bits(), v)
@@ -1555,9 +1575,20 @@ impl Scratch {
                 let nd = d + (wb[i] as f64) * (1.0 + he + pres_fac * pe) + vcong * vcost;
                 let ui = u as usize;
                 if self.pstamp[ui] != st || nd < self.pdist[ui] {
+                    // Goals stay fixed for this call. The distance stamp also
+                    // certifies the cache, assigned before a vertex is stamped.
+                    let h = if cache && self.pstamp[ui] == st {
+                        self.pheuristic[ui]
+                    } else {
+                        let value = potential(u);
+                        if cache {
+                            self.pheuristic[ui] = value;
+                        }
+                        value
+                    };
                     self.pstamp[ui] = st;
                     self.pdist[ui] = nd;
-                    let priority = nd + potential(u);
+                    let priority = nd + h;
                     if integer {
                         let key = (priority * 4.0) as u32;
                         if dial {
@@ -1572,6 +1603,7 @@ impl Scratch {
                 }
             }
         }
+        self.pen_h_evaluations += h_evaluations;
     }
 
     /// Tree extraction for the penalized search, mirroring `extract` but with
@@ -2584,6 +2616,52 @@ fn strict_polish(inst: &Inst, sol: &mut Solution, seed: u64) {
     );
 }
 
+fn compact_polish(inst: &Inst, sol: &mut Solution, seed: u64, limit: usize) {
+    let mut owner = vec![-1; inst.n as usize];
+    for nid in 0..inst.nets.len() {
+        commit(&mut owner, nid, &sol.verts[nid]);
+    }
+    let mut ws = Scratch::new(inst.n, inst.nets.len(), seed);
+    let before = (sol.total, sol.vcount);
+    let mut passes = 0;
+    for pass in 0..limit {
+        passes += 1;
+        let previous = (sol.total, sol.vcount);
+        for nid in 0..inst.nets.len() {
+            uncommit(&mut owner, &sol.verts[nid]);
+            let budgets = physical_sink_delays(inst, nid, &sol.edges[nid]);
+            ws.dijkstra_bounded(inst, &owner, nid, &budgets, false);
+            let mut candidate = ws.extract(inst, &inst.nets[nid]);
+            for farthest in [false, true] {
+                let salt = seed ^ ((pass as u64) << 32) ^ nid as u64;
+                if let Some(compact) = ws.extract_compact(inst, &inst.nets[nid], salt, farthest) {
+                    if candidate
+                        .as_ref()
+                        .map_or(true, |c| (compact.2, compact.0.len()) < (c.2, c.0.len()))
+                    {
+                        candidate = Some(compact);
+                    }
+                }
+            }
+            if let Some((vertices, edges, delay)) = candidate {
+                if (delay, vertices.len()) < (sol.delay[nid], sol.verts[nid].len()) {
+                    sol.total = sol.total - sol.delay[nid] + delay;
+                    sol.vcount = sol.vcount - sol.verts[nid].len() as u64 + vertices.len() as u64;
+                    sol.delay[nid] = delay;
+                    sol.verts[nid] = vertices;
+                    sol.edges[nid] = edges;
+                }
+            }
+            commit(&mut owner, nid, &sol.verts[nid]);
+        }
+        assert!((sol.total, sol.vcount) <= previous);
+        if (sol.total, sol.vcount) == previous {
+            break;
+        }
+    }
+    println!("COMPACT_POLISH passes={} delay_before={} delay_after={} vertices_before={} vertices_after={}",passes,before.0,sol.total,before.1,sol.vcount);
+}
+
 fn pair_sweep(inst: &Inst, sol: &mut Solution, seed: u64, attempts: u64, secs: f64) {
     let started = Instant::now();
     let before = sol.total;
@@ -2738,6 +2816,8 @@ pub struct Options {
     pub joint_group_max: usize,
     pub penalized_astar: bool,
     pub penalized_integer_queue: bool,
+    pub penalized_heuristic_cache: bool,
+    pub compact_polish_passes: usize,
     pub retain_compact_best: bool,
 }
 impl Default for Options {
@@ -2754,6 +2834,8 @@ impl Default for Options {
             penalized_astar: false,
             penalized_integer_queue: false,
             retain_compact_best: false,
+            penalized_heuristic_cache: false,
+            compact_polish_passes: 0,
         }
     }
 }
@@ -2784,6 +2866,7 @@ pub fn refine_cold(
     assert!((2..=64).contains(&options.group_max));
     assert!(options.cbs_nodes > 0);
     assert!(options.joint_neutral <= 2);
+    assert!(options.compact_polish_passes <= 64);
     assert!((2..=6).contains(&options.joint_group_max));
     let start = Instant::now();
     let mut inst = load_inst(instance_path);
@@ -2797,6 +2880,14 @@ pub fn refine_cold(
     let mut init =
         load_solution(&inst, cold_path).expect("internally generated cold solution must be legal");
     strict_polish(&inst, &mut init, seed);
+    if options.compact_polish_passes > 0 {
+        compact_polish(
+            &inst,
+            &mut init,
+            seed ^ 0xC0194B72,
+            options.compact_polish_passes,
+        );
+    }
     let mut scr = Scratch::new(inst.n, inst.nets.len(), seed ^ 0xABCD);
     let owner = vec![-1; inst.n as usize];
     let mut ideal = Vec::new();
@@ -2858,10 +2949,14 @@ pub fn refine_cold(
         options.penalized_astar,
         options.penalized_integer_queue,
         options.retain_compact_best,
+        options.penalized_heuristic_cache,
     );
     let mut best = shared.lock().unwrap();
     if let Some(ref mut sol) = best.sol {
         strict_polish(&inst, sol, seed);
+        if options.compact_polish_passes > 0 {
+            compact_polish(&inst, sol, seed ^ 0xC0194B73, options.compact_polish_passes);
+        }
         write_sol(&inst, sol, output_path).unwrap();
         eprintln!(
             "REFINEMENT_FINAL delay={} trials={} seconds={:.6}",
@@ -2916,6 +3011,7 @@ fn worker(
     penalized_astar: bool,
     penalized_integer_queue: bool,
     retain_compact_best: bool,
+    penalized_heuristic_cache: bool,
 ) {
     let thr0 = t0;
     let mut sol = init.clone();
@@ -2942,6 +3038,7 @@ fn worker(
     );
     ws.penalized_astar = penalized_astar;
     ws.penalized_integer_queue = penalized_integer_queue;
+    ws.penalized_heuristic_cache = penalized_heuristic_cache;
     let mut trials: u64 = 0;
     let mut eq: u64 = 0;
     let mut rejected: u64 = 0;
@@ -3252,7 +3349,7 @@ fn worker(
         let _ = write_sol(&inst, &sol, &out_path);
     }
     println!(
-        "[{}#{}] DONE trials={} eq={} rej={} imp={} up={} neg={} inapp={} best={} (delta {}) pexp={} pint={}",
+        "[{}#{}] DONE trials={} eq={} rej={} imp={} up={} neg={} inapp={} best={} (delta {}) pexp={} pint={} hcalc={}",
         tag,
         widx,
         trials,
@@ -3265,13 +3362,84 @@ fn worker(
         local_best_total,
         local_best_total as i64 - init.total as i64,
         ws.pen_expanded,
-        ws.pen_integer_calls
+        ws.pen_integer_calls,
+        ws.pen_h_evaluations
     );
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn compact_polish_reduces_neutral_footprint_and_keeps_other_tree() {
+        let mut inst = Inst {
+            early_stop: true,
+            retain_negotiated: false,
+            use_radix: true,
+            use_dial: true,
+            use_astar: true,
+            budget_bound: true,
+            free_dist: Vec::new(),
+            check_state: true,
+            name: "compact-polish".into(),
+            w: 5,
+            h: 5,
+            l: 2,
+            wh: 25,
+            n: 50,
+            ld: vec![1, 1],
+            vd: 2,
+            nets: vec![
+                Net {
+                    driver: 0,
+                    sinks: vec![4, 9],
+                },
+                Net {
+                    driver: 20,
+                    sinks: vec![24],
+                },
+            ],
+            pin_owner: vec![-1; 50],
+        };
+        for (i, net) in inst.nets.iter().enumerate() {
+            for &p in std::iter::once(&net.driver).chain(net.sinks.iter()) {
+                inst.pin_owner[p as usize] = i as i32;
+            }
+        }
+        inst.free_dist = free_space_table(inst.w, inst.h, inst.l, &inst.ld, inst.vd);
+        let outside = vec![(20, 21), (21, 22), (22, 23), (23, 24)];
+        let mut sol = Solution {
+            verts: vec![(0..10).collect(), (20..25).collect()],
+            edges: vec![
+                vec![
+                    (0, 1),
+                    (1, 2),
+                    (2, 3),
+                    (3, 4),
+                    (0, 5),
+                    (5, 6),
+                    (6, 7),
+                    (7, 8),
+                    (8, 9),
+                ],
+                outside.clone(),
+            ],
+            delay: vec![9, 4],
+            total: 13,
+            vcount: 15,
+        };
+        compact_polish(&inst, &mut sol, 7, 4);
+        assert_eq!((sol.total, sol.vcount), (13, 11));
+        assert_eq!(sol.edges[1], outside);
+        let stable = sol.edges.clone();
+        compact_polish(&inst, &mut sol, 91, 4);
+        assert_eq!(sol.edges, stable);
+        let mut owner = vec![-1; 50];
+        for nid in 0..2 {
+            commit(&mut owner, nid, &sol.verts[nid]);
+        }
+        assert_consistent_state(&inst, &sol, &owner);
+    }
     // Differential tests include unreachable sinks, foreign pins, blocked
     // vertices, multi-sink sharing, unequal layer weights and congestion prices.
     #[test]
@@ -3574,6 +3742,7 @@ mod tests {
             full.pdijkstra(&inst, &owner, &[true, true, false], 0, 0, price, 0.7);
             inst.early_stop = true;
             fast.penalized_astar = true;
+            fast.penalized_heuristic_cache = true;
             fast.pdijkstra(&inst, &owner, &[true, true, false], 0, 0, price, 0.7);
             for &sink in &inst.nets[0].sinks {
                 assert_eq!(
@@ -3701,6 +3870,7 @@ mod tests {
                             ws.penalized_astar = queue_astar;
                         }
                         integer.penalized_integer_queue = true;
+                        integer.penalized_heuristic_cache = true;
                         heap.pdijkstra(
                             &inst,
                             &owner,

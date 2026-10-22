@@ -88,11 +88,12 @@ input. Source/output hashes use exact bytes preserved by .gitattributes.
 
 ## Validation
 
-Fourteen Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
+Fifteen Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
 checks, shared-trunk objective accounting, entry pricing, direct-chain pricing
 bounded conflict splitting, exhaustive compatible-candidate selection, and strict
 repair success/rollback on crossing nets. Every adopted output also passes the official
-independent checker.
+independent checker. A compact-polish fixture checks equal-delay footprint
+reduction, preservation of another net's tree, and stability on a second pass.
 
 copy_audit.json describes the published revision's post-generation comparison
 with pinned published Git blobs. It is refreshed when publishing improvements;
@@ -211,16 +212,46 @@ A matched12k designs/router pair also produced identical76143 route bytes:
 372.400s with the floating heap versus341.783s with the option. These are
 observations under concurrent workloads, with original producing times kept.
 
+`--penalized-heuristic-cache 1` caches a vertex's A* potential during one priced
+search, using the same search stamps as its distance. Goals and prices are fixed
+throughout that search. The default is 0. Differential tests cover the cached
+search alongside the integer queues. A matched hard01 pair preserved exact9086
+route bytes and expansion counts while reducing potential evaluations from
+61,665,743 to41,515,426. Observed full runtimes were32.057s and30.768s under
+concurrent workloads; this is not a general speed guarantee.
+
+`--compact-polish-passes N` optionally runs bounded deterministic sweeps before
+and after each refinement phase. With other nets fixed, it compares the current
+tree with exact physical shortest-path candidates, including shared-branch DAG
+extraction. A replacement must improve (sum of sink delays, number of vertices)
+lexicographically. Each sweep restores ownership before the next net, and all
+work is inside the producing runtime. N defaults to0 and is capped at64 per
+boundary. Later search trajectories can still differ: matched pilots improved
+designs/ctrl from53268 to53050 but worsened hard01 from9086 to9168. It is an
+experimental option, not a uniform quality guarantee. Different configurations
+may independently produce stronger candidates for the submitted portfolio.
+
 `--refine-race-pilot P --refine-race-keep K` optionally allocates restart work
-adaptively. It requires `--refine-each-start 1`, K no larger than `--starts N`,
+adaptively. It requires `--refine-each-start 1`, K no larger than the number of
+refinement walks (`--starts N` times `--refine-forks F`),
 and P no larger than `--refine-trials R`. Each start constructs fresh geometry
 and receives P pilot trials. The best K successful pilots receive another
 R-P trials with deterministic phase seeds. Post-CBS work is reserved for those
 finalists. All construction, pilots, finalists and output work are timed in
 one producing process. The controller retains its best completed pilot or
 finalist; it imports no routes or learned artifacts. The maximum main-trial
-count is N*P+K*(R-P), plus any explicitly configured post-CBS work.
+count is N*F*P+K*(R-P), plus any explicitly configured post-CBS work.
 When post-CBS work is enabled, P must be strictly smaller than R.
+
+`--refine-forks F` defaults to1. With per-start refinement enabled, each cold
+construction is serialized once and F independently seeded walks reset to those
+same fresh bytes. It never reads an external route. This amortizes construction
+work while exploring several refinement trajectories; it provides less initial
+geometry diversity than N*F fresh constructions. Without pilot promotion the
+main-trial count is N*F*R. With promotion all N*F pilots compete together. All
+work is measured inside one invocation. The default preserves the previous seed
+mapping. A raw-instance integration check compares default bytes with the prior
+source, verifies incumbent retention across forks, and replays promoted walks.
 
 This is a simple promotion stage inspired by adaptive resource allocation in
 [Hyperband](https://arxiv.org/abs/1603.06560), not an implementation of its full

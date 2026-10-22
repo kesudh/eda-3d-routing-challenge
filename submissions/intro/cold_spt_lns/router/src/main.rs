@@ -872,6 +872,7 @@ fn main() {
     let mut legalize_limit = 0;
     let mut use_cost_distance = false;
     let mut refine_each_start = false;
+    let mut refine_forks = 1usize;
     let mut race_pilot = 0u64;
     let mut race_keep = 2usize;
     let mut cost_distance_rooted = false;
@@ -904,9 +905,15 @@ fn main() {
             "--penalized-integer-queue" => {
                 refine_options.penalized_integer_queue = a[1].parse::<u64>().unwrap() != 0
             }
+            "--penalized-heuristic-cache" => {
+                refine_options.penalized_heuristic_cache = a[1].parse::<u64>().unwrap() != 0
+            }
             "--emit-global-pool" => emit_global_pool = a[1].parse::<u64>().unwrap() != 0,
             "--compact-shortest-tree" => {
                 refine_options.compact_shortest_tree = a[1].parse::<u64>().unwrap() != 0
+            }
+            "--compact-polish-passes" => {
+                refine_options.compact_polish_passes = a[1].parse().unwrap()
             }
             "--construction-weight" => construction_weight = a[1].parse().unwrap(),
             "--tree-root-weight" => tree_root_weight = Some(a[1].parse::<u64>().unwrap()),
@@ -917,6 +924,7 @@ fn main() {
             "--legalize-conflicts" => legalize_limit = a[1].parse::<usize>().unwrap(),
             "--cost-distance" => use_cost_distance = a[1].parse::<u64>().unwrap() != 0,
             "--refine-each-start" => refine_each_start = a[1].parse::<u64>().unwrap() != 0,
+            "--refine-forks" => refine_forks = a[1].parse().unwrap(),
             "--refine-race-pilot" => race_pilot = a[1].parse().unwrap(),
             "--refine-race-keep" => race_keep = a[1].parse().unwrap(),
             "--cost-distance-rooted" => cost_distance_rooted = a[1].parse::<u64>().unwrap() != 0,
@@ -927,10 +935,15 @@ fn main() {
         }
     }
     assert!(starts > 0 && rounds > 0);
+    assert!(refine_forks > 0);
+    let walk_count = starts
+        .checked_mul(refine_forks)
+        .expect("refinement walk count overflow");
+    assert!(refine_forks == 1 || (refine_each_start && refine_trials > 0));
     assert!(construction_weight >= 1);
     if race_pilot > 0 {
         assert!(refine_each_start && race_pilot <= refine_trials);
-        assert!(race_keep > 0 && race_keep <= starts);
+        assert!(race_keep > 0 && race_keep <= walk_count);
         assert!(race_pilot < refine_trials || refine_options.post_cbs_trials == 0);
     }
     let mut inst = Instance::load(&args[1]);
@@ -950,7 +963,7 @@ fn main() {
     let mut best: Option<Vec<Route>> = None;
     let mut best_final = None;
     let mut best_final_score = u64::MAX;
-    // Every pilot is a fresh cold construction. Only this invocation's own
+    // Walks can share this invocation's fresh cold construction. Only its own
     // completed pilot bytes can become finalists; there is no route input.
     let mut pilots: Vec<(u64, usize, Vec<u8>)> = Vec::new();
     for start in 0..starts {
@@ -1001,43 +1014,48 @@ fn main() {
             let score: u64 = routes.iter().map(|r| r.delay).sum();
             eprintln!("start {} delay {}", start + 1, score);
             if refine_each_start && refine_trials > 0 {
-                // Every basin starts with newly generated geometry; all its
-                // refinement work remains inside this one timed invocation.
-                fs::write(&args[2], serialize_routes(&inst, &routes))
-                    .expect("write fresh cold output");
-                let start_seed = seed.wrapping_add((start as u64).wrapping_mul(0x9E3779B97F4A7C15));
-                let mut pilot_options = refine_options.clone();
-                if race_pilot > 0 {
-                    pilot_options.post_cbs_trials = 0;
-                }
-                let final_score = refine_output(
-                    &args[1],
-                    &args[2],
-                    start_seed,
+                // Every fork resets to the same freshly generated cold bytes.
+                // All construction and walks remain inside this timed process.
+                let cold_bytes = serialize_routes(&inst, &routes);
+                for fork in 0..refine_forks {
+                    fs::write(&args[2], &cold_bytes).expect("write fresh cold output");
+                    let walk = start * refine_forks + fork;
+                    let start_seed =
+                        seed.wrapping_add((walk as u64).wrapping_mul(0x9E3779B97F4A7C15));
+                    let mut pilot_options = refine_options.clone();
                     if race_pilot > 0 {
-                        race_pilot
-                    } else {
-                        refine_trials
-                    },
-                    &refine_mode,
-                    &pilot_options,
-                );
-                eprintln!(
-                    "completed cold start {} final delay {}",
-                    start + 1,
-                    final_score
-                );
-                if final_score < best_final_score {
-                    best_final_score = final_score;
-                    best_final =
-                        Some(fs::read(&args[2]).expect("read this invocation final output"));
-                }
-                if race_pilot > 0 {
-                    pilots.push((
-                        final_score,
-                        start,
-                        fs::read(&args[2]).expect("read own pilot output"),
-                    ));
+                        pilot_options.post_cbs_trials = 0;
+                    }
+                    let final_score = refine_output(
+                        &args[1],
+                        &args[2],
+                        start_seed,
+                        if race_pilot > 0 {
+                            race_pilot
+                        } else {
+                            refine_trials
+                        },
+                        &refine_mode,
+                        &pilot_options,
+                    );
+                    eprintln!(
+                        "completed cold start {} fork {} final delay {}",
+                        start + 1,
+                        fork + 1,
+                        final_score
+                    );
+                    if final_score < best_final_score {
+                        best_final_score = final_score;
+                        best_final =
+                            Some(fs::read(&args[2]).expect("read this invocation final output"));
+                    }
+                    if race_pilot > 0 {
+                        pilots.push((
+                            final_score,
+                            walk,
+                            fs::read(&args[2]).expect("read own pilot output"),
+                        ));
+                    }
                 }
                 continue;
             }

@@ -22,7 +22,7 @@ do not edit it by hand.
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.1514 | 20/20 | 341746 | 46476.76 | ✓ | — |
 | 5 | warm_lns_refinement † | kesudh | 1.1509 | 20/20 | 342006 | missing |  | — |
 | 6 | spt_lns | James (IrwinJam) | 1.1444 | 20/20 | 345066 | missing |  | — |
-| 7 | cold_spt_lns | kesudh | 1.1388 | 20/20 | 347150 | 5780.95 | ✓ | — |
+| 7 | cold_spt_lns | kesudh | 1.1396 | 20/20 | 346572 | 10212.61 | ✓ | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.1254 | 20/20 | 353836 | 2213.60 | ✓ | — |
 | 9 | anvesh | anvesh | 1.1069 | 20/20 | 360172 | missing |  | — |
 | 10 | synapse-surge | Sameer-Deepak | 1.1004 | 20/20 | 368374 | missing |  | — |
@@ -70,7 +70,7 @@ do not edit it by hand.
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.1277 | 8/8 | 537468 | 62411.00 | ✓ | — |
 | 5 | warm_lns_refinement † | kesudh | 1.1274 | 8/8 | 537576 | 7543.00 | ✓ | — |
 | 6 | spt_lns | James (IrwinJam) | 1.1188 | 8/8 | 541966 | missing |  | — |
-| 7 | cold_spt_lns | kesudh | 1.1126 | 8/8 | 546230 | 8623.46 |  | — |
+| 7 | cold_spt_lns | kesudh | 1.1178 | 8/8 | 542060 | 10206.57 |  | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.1010 | 8/8 | 550828 | 3094.50 | ✓ | — |
 | 9 | anvesh | anvesh | 1.0821 | 8/8 | 559460 | missing |  | — |
 | 10 | lns_negotiated | adityuhkapoor | 1.0682 | 8/8 | 567094 | missing |  | — |
@@ -90,8 +90,8 @@ do not edit it by hand.
 | 5 | warm_lns_refinement † | kesudh | 1.0911 | 1/1 | 1049332 | 2070.00 | ✓ | — |
 | 6 | spt_lns | James (IrwinJam) | 1.0779 | 1/1 | 1062208 | missing |  | — |
 | 7 | lns_negotiated | adityuhkapoor | 1.0669 | 1/1 | 1073124 | missing |  | — |
-| 8 | synapse-surge | Sameer-Deepak | 1.0008 | 1/1 | 1143964 | missing |  | — |
-| 9 | cold_spt_lns | kesudh | 0.9499 | 1/1 | 1205322 | 1393.34 | ✓ | — |
+| 8 | cold_spt_lns | kesudh | 1.0416 | 1/1 | 1099190 | 3078.53 |  | — |
+| 9 | synapse-surge | Sameer-Deepak | 1.0008 | 1/1 | 1143964 | missing |  | — |
 
 † derivative entry (refines another entry's routes): coordinated_refinement builds on leonid-popryho (Leonid Popryho); warm_lns_refinement builds on pathfinder_lns (Taz33m).
 

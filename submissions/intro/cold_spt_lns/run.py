@@ -13,21 +13,43 @@ def digest(p):
     return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def instance_digest(p):
     return hashlib.sha256(Path(p).read_bytes().replace(b"\r\n",b"\n")).hexdigest()
-def write_json(p,data):
-    p=Path(p);tmp=p.with_suffix(p.suffix+".tmp")
-    tmp.write_text(json.dumps(data,indent=2)+"\n",encoding="utf-8");tmp.replace(p)
+def atomic_bytes(p,data,immutable=False):
+    p=Path(p)
+    with tempfile.NamedTemporaryFile(dir=p.parent,prefix='.'+p.name+'.',suffix='.tmp',delete=False) as fh:
+        tmp=Path(fh.name);fh.write(data)
+    try:
+        for attempt in range(20):
+            try:
+                if immutable:
+                    try:os.link(tmp,p)
+                    except FileExistsError:assert p.read_bytes()==data,'immutable source changed'
+                else:tmp.replace(p)
+                break
+            except PermissionError as error:
+                if os.name!='nt' or getattr(error,'winerror',None) not in (5,32,33) or attempt==19:raise
+                time.sleep(0.01)
+    finally:
+        for attempt in range(20):
+            try:tmp.unlink(missing_ok=True);break
+            except PermissionError as error:
+                if os.name!='nt' or getattr(error,'winerror',None) not in (5,32,33) or attempt==19:raise
+                time.sleep(0.01)
+
+def write_json(p,data,immutable=False):
+    atomic_bytes(p,(json.dumps(data,indent=2)+"\n").encode('utf-8'),immutable)
 def version_id(hashes):
     return hashlib.sha256("".join(f"{k}:{hashes[k]}\n" for k in sorted(hashes)).encode()).hexdigest()
 def snapshot():
     files=[HERE/"run.py",HERE/"router/Cargo.toml",HERE/"router/Cargo.lock"]+sorted((HERE/"router/src").rglob("*.rs"))
-    hashes={p.relative_to(HERE).as_posix():digest(p) for p in files}
+    contents={p.relative_to(HERE).as_posix():p.read_bytes() for p in files}
+    hashes={name:hashlib.sha256(raw).hexdigest() for name,raw in contents.items()}
     version=version_id(hashes);base=HERE/"reproducers"/version
-    for p in files:
-        q=base/p.relative_to(HERE);q.parent.mkdir(parents=True,exist_ok=True)
-        if q.exists():assert digest(q)==digest(p),"immutable source changed"
-        else:shutil.copyfile(p,q)
+    for name,raw in contents.items():
+        q=base/name;q.parent.mkdir(parents=True,exist_ok=True)
+        if q.exists():assert q.read_bytes()==raw,"immutable source changed"
+        else:atomic_bytes(q,raw,immutable=True)
     if not (base/"source.json").exists():
-        write_json(base/"source.json",{"format":"cold-spt-source-v1","version":version,"files":hashes})
+        write_json(base/"source.json",{"format":"cold-spt-source-v1","version":version,"files":hashes},immutable=True)
     return version,hashes
 def validate_source(version,hashes):
     assert version_id(hashes)==version
@@ -52,7 +74,7 @@ def main():
     options["joint-neutral"]=0
     options["penalized-astar"]=0
     for flag,value in options.items():ap.add_argument("--"+flag,type=int,default=value)
-    ap.add_argument("--refine-mode",choices=("portfolio","portfolio-joint","portfolio-cbs","cbs","cbs-mixed","mixed","mixed-joint","joint","chain-fast","single"),default="portfolio")
+    ap.add_argument("--refine-mode",choices=("portfolio","portfolio-joint","portfolio-joint-entry","portfolio-cbs","cbs","cbs-mixed","mixed","mixed-joint","joint","chain-fast","chain-entry-fast","single"),default="portfolio")
     ap.add_argument("--tree-root-weight",type=int,choices=(0,25,50,75,100))
     a=ap.parse_args()
     if a.check_only and a.reproduce:ap.error("choose --check-only or --reproduce")

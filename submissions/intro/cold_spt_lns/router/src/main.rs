@@ -736,12 +736,16 @@ fn refine_output(
     options: &refine::Options,
 ) -> u64 {
     assert!(trials > 0);
-    let before = if mode == "portfolio" || mode == "portfolio-joint" || mode == "portfolio-cbs" {
+    let before = if mode == "portfolio"
+        || mode == "portfolio-joint"
+        || mode == "portfolio-cbs"
+        || mode == "portfolio-joint-entry"
+    {
         let first = trials / 2;
         if first > 0 {
             let stage = if mode == "portfolio-cbs" {
                 "cbs-mixed"
-            } else if mode == "portfolio-joint" {
+            } else if mode == "portfolio-joint" || mode == "portfolio-joint-entry" {
                 "mixed-joint"
             } else {
                 "mixed"
@@ -754,7 +758,11 @@ fn refine_output(
             output,
             seed.wrapping_add(1),
             trials - first,
-            "chain-fast",
+            if mode == "portfolio-joint-entry" {
+                "chain-entry-fast"
+            } else {
+                "chain-fast"
+            },
             options,
         )
     } else {

@@ -2695,7 +2695,14 @@ pub fn refine_cold(
         trials > 0
             && matches!(
                 mode,
-                "chain-fast" | "mixed" | "single" | "joint" | "mixed-joint" | "cbs" | "cbs-mixed"
+                "chain-fast"
+                    | "chain-entry-fast"
+                    | "mixed"
+                    | "single"
+                    | "joint"
+                    | "mixed-joint"
+                    | "cbs"
+                    | "cbs-mixed"
             )
     );
     assert!((2..=64).contains(&options.group_max));

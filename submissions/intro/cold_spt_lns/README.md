@@ -69,6 +69,10 @@ the actual producing source and runner. Its source.json hashes every file. The
 version identifier is SHA-256 of sorted relative-path:file-sha256 lines, each
 terminated by LF. Per-case solver_args provide the complete command.
 
+The current generator captures each source file's bytes once and installs
+completed immutable files atomically with separate temporary files per writer.
+Eight concurrent capture/validation processes passed without manifest races.
+
 runtime.json measures one complete solver process: launch, input parsing, cold
 construction, every internal refinement stage, output serialization, file close
 and process exit. Compilation, pre-run instance copying and post-run official
@@ -84,7 +88,7 @@ input. Source/output hashes use exact bytes preserved by .gitattributes.
 
 ## Validation
 
-Thirteen Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
+Fourteen Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
 checks, shared-trunk objective accounting, entry pricing, direct-chain pricing
 bounded conflict splitting, exhaustive compatible-candidate selection, and strict
 repair success/rollback on crossing nets. Every adopted output also passes the official
@@ -158,3 +162,19 @@ or replacement timings for retained routes.
 alternatives generated from the current invocation's own incumbent. The output
 route is still independently checked. No external pool selector is part of this
 producer, and offline research selection results are not eligible submissions.
+
+`--retain-compact-best 1` retains a smaller tree when physical delay ties the
+best seen delay. This lets the next phase and final polishing use the compact
+geometry. It does not count footprint changes as delay improvements. The
+default is 0 for compatibility with archived runs.
+
+Experimental `--flow-pricing 1` divides a resource's congestion price by the
+number of sink paths using it in this invocation's previous tree. Mode 2 uses
+the square root of that count. An unused resource has count one, internal sinks
+contribute to the count, and each net resets the counts before rerouting. This
+replaces the global fanout divisor for root-SPT construction only. It is a
+heuristic for the difference between per-tree resource use and per-sink delay;
+there is no convergence or approximation guarantee. Default 0 preserves the
+original pricing, and a fresh uniform fallback disables flow pricing. A test
+checks branching, internal sinks and reset between nets. Pilots have mixed
+results and do not establish a general quality improvement.

@@ -153,7 +153,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 5 | spt_lns | James (IrwinJam) | 1.4347 | 3/3 | 209415 | missing |  | — |
 | 6 | warm_lns_refinement † | kesudh | 1.4331 | 3/3 | 209509 | 3615.00 | ✓ | — |
 | 7 | iamparv7043 | Parv (iamparv7043) | 1.3276 | 3/3 | 226581 | 1309.30 | ✓ | — |
-| 8 | cold_spt_lns | kesudh | 1.2787 | 3/3 | 236275 | 1326.15 |  | — |
+| 8 | cold_spt_lns | kesudh | 1.2962 | 3/3 | 233067 | 1513.78 |  | — |
 | 9 | lns_negotiated | adityuhkapoor | 1.2533 | 3/3 | 240751 | missing |  | — |
 | 10 | anvesh | anvesh | 1.2520 | 3/3 | 240501 | missing |  | — |
 | 11 | negotiated_delay | Mantej Singh Gill | 1.1947 | 3/3 | 252901 | 636.11 | ✓ | — |

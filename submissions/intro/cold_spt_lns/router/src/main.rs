@@ -15,6 +15,7 @@ struct Net {
     sinks: Vec<usize>,
 }
 struct Instance {
+    flow_pricing: u64,
     construction_weight: u64,
     fanout_priority: u64,
     slow_congestion: bool,
@@ -122,6 +123,7 @@ impl Instance {
             }
         }
         Self {
+            flow_pricing: 0,
             construction_weight: 1,
             fanout_priority: 0,
             slow_congestion: false,
@@ -214,6 +216,9 @@ struct Route {
     delay: u64,
 }
 struct Search {
+    flow: Vec<u64>,
+    flow_stamp: Vec<u64>,
+    flow_epoch: u64,
     tree_stamp: Vec<u64>,
     tree_price: Vec<u64>,
     tree_delay: Vec<u64>,
@@ -231,6 +236,9 @@ struct Search {
 impl Search {
     fn new(size: usize) -> Self {
         Self {
+            flow: vec![0; size],
+            flow_stamp: vec![0; size],
+            flow_epoch: 0,
             tree_stamp: vec![0; size],
             tree_price: vec![0; size],
             tree_delay: vec![0; size],
@@ -244,6 +252,56 @@ impl Search {
             h_epoch: 0,
             epoch: 0,
             queue: BinaryHeap::new(),
+        }
+    }
+    // Reweight only the previous tree generated within this cold invocation.
+    // A shared resource is occupied once even when many sink paths use it.
+    fn prepare_flow(&mut self, net: &Net, old: Option<&Route>) {
+        self.flow_epoch += 1;
+        let Some(old) = old else { return };
+        let mut adjacency: HashMap<usize, Vec<usize>> = HashMap::new();
+        for &(a, b) in &old.edges {
+            adjacency.entry(a).or_default().push(b);
+            adjacency.entry(b).or_default().push(a);
+        }
+        let mut parent = HashMap::new();
+        parent.insert(net.driver, net.driver);
+        let mut order = vec![net.driver];
+        let mut cursor = 0;
+        while cursor < order.len() {
+            let u = order[cursor];
+            cursor += 1;
+            self.flow_stamp[u] = self.flow_epoch;
+            self.flow[u] = 0;
+            if let Some(neighbors) = adjacency.get(&u) {
+                for &v in neighbors {
+                    if let std::collections::hash_map::Entry::Vacant(e) = parent.entry(v) {
+                        e.insert(u);
+                        order.push(v);
+                    }
+                }
+            }
+        }
+        for &sink in &net.sinks {
+            assert_eq!(self.flow_stamp[sink], self.flow_epoch);
+            self.flow[sink] += 1;
+        }
+        for &u in order.iter().rev() {
+            if u != net.driver {
+                self.flow[parent[&u]] += self.flow[u];
+            }
+        }
+    }
+    fn flow_price(&self, mode: u64, v: usize, price: u64) -> u64 {
+        let flow = if self.flow_stamp[v] == self.flow_epoch {
+            self.flow[v].max(1)
+        } else {
+            1
+        };
+        match mode {
+            1 => price / flow,
+            2 => price * 1024 / (flow * 1024 * 1024).isqrt(),
+            _ => panic!("invalid flow pricing"),
         }
     }
     fn heuristic(&mut self, inst: &Instance, u: usize, goals: &[usize]) -> u64 {
@@ -415,7 +473,12 @@ impl Search {
                 let extra = if strict {
                     0
                 } else {
-                    inst.congestion_price(nid, history[v] + present * count[v] as u64)
+                    let price = history[v] + present * count[v] as u64;
+                    if inst.flow_pricing > 0 {
+                        self.flow_price(inst.flow_pricing, v, price)
+                    } else {
+                        inst.congestion_price(nid, price)
+                    }
                 };
                 let step = if strict { w } else { w * 1024 + extra };
                 let nd = d + step;
@@ -561,6 +624,9 @@ fn build(
         for &i in &order {
             if !affected[i] {
                 continue;
+            }
+            if inst.flow_pricing > 0 {
+                search.prepare_flow(&inst.nets[i], routes[i].as_ref());
             }
             if let Some(ref r) = routes[i] {
                 occupy(&mut count, r, false);
@@ -801,6 +867,7 @@ fn main() {
     let mut tree_root_weight = None;
     let mut negotiation_rounds = 0;
     let mut fanout_priority = 0;
+    let mut flow_pricing = 0;
     let mut slow_congestion = false;
     let mut legalize_limit = 0;
     let mut use_cost_distance = false;
@@ -825,6 +892,9 @@ fn main() {
             "--post-cbs-trials" => refine_options.post_cbs_trials = a[1].parse().unwrap(),
             "--cbs-nodes" => refine_options.cbs_nodes = a[1].parse().unwrap(),
             "--joint-neutral" => refine_options.joint_neutral = a[1].parse().unwrap(),
+            "--retain-compact-best" => {
+                refine_options.retain_compact_best = a[1].parse::<u64>().unwrap() != 0
+            }
             "--penalized-astar" => {
                 refine_options.penalized_astar = a[1].parse::<u64>().unwrap() != 0
             }
@@ -836,6 +906,7 @@ fn main() {
             "--tree-root-weight" => tree_root_weight = Some(a[1].parse::<u64>().unwrap()),
             "--negotiation-rounds" => negotiation_rounds = a[1].parse::<usize>().unwrap(),
             "--fanout-priority" => fanout_priority = a[1].parse::<u64>().unwrap(),
+            "--flow-pricing" => flow_pricing = a[1].parse::<u64>().unwrap(),
             "--slow-congestion" => slow_congestion = a[1].parse::<u64>().unwrap() != 0,
             "--legalize-conflicts" => legalize_limit = a[1].parse::<usize>().unwrap(),
             "--cost-distance" => use_cost_distance = a[1].parse::<u64>().unwrap() != 0,
@@ -853,6 +924,9 @@ fn main() {
     inst.construction_weight = construction_weight;
     assert!(fanout_priority <= 2);
     inst.fanout_priority = fanout_priority;
+    assert!(flow_pricing <= 2);
+    assert!(flow_pricing == 0 || (!use_cost_distance && tree_root_weight.is_none()));
+    inst.flow_pricing = flow_pricing;
     inst.slow_congestion = slow_congestion;
     inst.legalize_conflicts = legalize_limit;
     inst.cost_distance = use_cost_distance;
@@ -874,7 +948,10 @@ fn main() {
             negotiation_rounds,
         );
         let candidate = if candidate.is_none()
-            && (inst.slow_congestion || inst.cost_distance || inst.fanout_priority != 0)
+            && (inst.slow_congestion
+                || inst.cost_distance
+                || inst.fanout_priority != 0
+                || inst.flow_pricing != 0)
         {
             eprintln!("construction experimental attempt exhausted; fresh uniform SPT fallback");
             let settings = (
@@ -882,17 +959,20 @@ fn main() {
                 inst.fanout_priority,
                 inst.construction_weight,
                 inst.cost_distance,
+                inst.flow_pricing,
             );
             inst.slow_congestion = false;
             inst.fanout_priority = 0;
             inst.construction_weight = 2;
             inst.cost_distance = false;
+            inst.flow_pricing = 0;
             let fallback = build(&inst, &mut search, &mut rng, 1000, None, negotiation_rounds);
             (
                 inst.slow_congestion,
                 inst.fanout_priority,
                 inst.construction_weight,
                 inst.cost_distance,
+                inst.flow_pricing,
             ) = settings;
             fallback
         } else {
@@ -972,9 +1052,39 @@ fn main() {
 mod tests {
     use super::*;
     #[test]
+    fn shared_resource_flow_counts_internal_sinks_and_resets_between_nets() {
+        let mut search = Search::new(8);
+        let net = Net {
+            id: 0,
+            driver: 0,
+            sinks: vec![1, 3, 5],
+        };
+        let old = Route {
+            vertices: vec![0, 1, 2, 3, 4, 5],
+            edges: vec![(0, 1), (1, 2), (2, 3), (1, 4), (4, 5)],
+            delay: 7,
+        };
+        search.prepare_flow(&net, Some(&old));
+        assert_eq!(&search.flow[..6], &[3, 3, 1, 1, 1, 1]);
+        assert_eq!(search.flow_price(1, 1, 1200), 400);
+        assert_eq!(search.flow_price(1, 3, 1200), 1200);
+        assert_eq!(search.flow_price(1, 7, 1200), 1200);
+        assert_eq!(search.flow_price(2, 1, 1200), 693);
+        search.prepare_flow(
+            &Net {
+                id: 1,
+                driver: 6,
+                sinks: vec![7],
+            },
+            None,
+        );
+        assert_eq!(search.flow_price(1, 1, 1200), 1200);
+    }
+    #[test]
     fn strict_repair_resolves_crossings_or_restores_the_incumbent() {
         for layers in [1, 2] {
             let mut inst = Instance {
+                flow_pricing: 0,
                 construction_weight: 1,
                 fanout_priority: 0,
                 slow_congestion: false,
@@ -1075,6 +1185,7 @@ mod tests {
         let mut rng = Rng(20261022);
         for _ in 0..120 {
             let mut inst = Instance {
+                flow_pricing: 0,
                 construction_weight: 1,
                 fanout_priority: 0,
                 slow_congestion: false,
@@ -1197,6 +1308,7 @@ mod tests {
     #[test]
     fn single_net_matches_exhaustive_tree_objective() {
         let mut inst = Instance {
+            flow_pricing: 0,
             construction_weight: 1,
             fanout_priority: 0,
             slow_congestion: false,

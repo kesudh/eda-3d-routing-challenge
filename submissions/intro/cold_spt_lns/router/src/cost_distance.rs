@@ -279,6 +279,7 @@ mod tests {
         let mut rng = Rng(77241);
         for _ in 0..60 {
             let mut inst = Instance {
+                flow_pricing: 0,
                 construction_weight: 1,
                 fanout_priority: 0,
                 slow_congestion: false,

@@ -73,6 +73,8 @@ def main():
     options={"seed":20261022,"starts":1,"rounds":300,"sweeps":0,"moves":0,"construction-weight":2,"refine-trials":4000,"negotiation-rounds":0,"fanout-priority":0,"slow-congestion":0,"legalize-conflicts":0,"cost-distance":0,"refine-each-start":0,"cost-distance-rooted":0,"cost-distance-discount":0,"refine-temperature":32,"refine-slack":128,"refine-group-max":16,"compact-shortest-tree":0,"post-cbs-trials":0,"cbs-nodes":256,"emit-global-pool":0}
     options["joint-neutral"]=0
     options["penalized-astar"]=0
+    options["retain-compact-best"]=0
+    options["flow-pricing"]=0
     for flag,value in options.items():ap.add_argument("--"+flag,type=int,default=value)
     ap.add_argument("--refine-mode",choices=("portfolio","portfolio-joint","portfolio-joint-entry","portfolio-cbs","cbs","cbs-mixed","mixed","mixed-joint","joint","chain-fast","chain-entry-fast","single"),default="portfolio")
     ap.add_argument("--tree-root-weight",type=int,choices=(0,25,50,75,100))

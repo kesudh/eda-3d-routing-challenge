@@ -2666,6 +2666,7 @@ pub struct Options {
     pub cbs_nodes: usize,
     pub joint_neutral: u64,
     pub penalized_astar: bool,
+    pub retain_compact_best: bool,
 }
 impl Default for Options {
     fn default() -> Self {
@@ -2678,6 +2679,7 @@ impl Default for Options {
             cbs_nodes: 256,
             joint_neutral: 0,
             penalized_astar: false,
+            retain_compact_best: false,
         }
     }
 }
@@ -2778,6 +2780,7 @@ pub fn refine_cold(
         options.cbs_nodes,
         options.joint_neutral,
         options.penalized_astar,
+        options.retain_compact_best,
     );
     let mut best = shared.lock().unwrap();
     if let Some(ref mut sol) = best.sol {
@@ -2833,6 +2836,7 @@ fn worker(
     cbs_nodes: usize,
     joint_neutral: u64,
     penalized_astar: bool,
+    retain_compact_best: bool,
 ) {
     let thr0 = t0;
     let mut sol = init.clone();
@@ -3056,21 +3060,40 @@ fn worker(
         if let Some(slack) = walk_slack {
             assert!(sol.total <= local_best_total + slack);
         }
-        if sol.total < local_best_total {
+        if sol.total < local_best_total
+            || (retain_compact_best
+                && sol.total == local_best_total
+                && sol.vcount < local_best.vcount)
+        {
+            let delay_improved = sol.total < local_best_total;
             local_best = sol.clone();
             local_best_total = sol.total;
-            imp += 1;
+            if delay_improved {
+                imp += 1;
+            }
             let mut best = shared.lock().unwrap();
-            if local_best_total < best.total {
+            if local_best_total < best.total
+                || (retain_compact_best
+                    && local_best_total == best.total
+                    && best
+                        .sol
+                        .as_ref()
+                        .is_some_and(|s| local_best.vcount < s.vcount))
+            {
                 best.total = local_best_total;
                 best.sol = Some(local_best.clone());
                 best.gen += 1;
                 let g = best.gen;
                 // Final-only output: intermediate snapshots stay in memory.
                 println!(
-                    "[{}#{}] NEW BEST {} (gen {}, delta vs init {}) trials={} t={:.0}s",
+                    "[{}#{}] {} {} (gen {}, delta vs init {}) trials={} t={:.0}s",
                     tag,
                     widx,
+                    if delay_improved {
+                        "NEW BEST"
+                    } else {
+                        "COMPACT BEST"
+                    },
                     local_best_total,
                     g,
                     local_best_total as i64 - init.total as i64,
@@ -3129,7 +3152,11 @@ fn worker(
             assert_consistent_state(&inst, &sol, &owner);
         }
         let mut best = shared.lock().unwrap();
-        if sol.total < best.total {
+        if sol.total < best.total
+            || (retain_compact_best
+                && sol.total == best.total
+                && best.sol.as_ref().is_some_and(|s| sol.vcount < s.vcount))
+        {
             println!(
                 "FINAL_WALK before_best={} after={} gain={}",
                 best.total,

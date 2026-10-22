@@ -4,6 +4,7 @@ use serde_json::{json, Value};
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap};
 use std::fs;
+mod cost_distance;
 #[allow(dead_code)]
 mod refine;
 
@@ -17,6 +18,10 @@ struct Instance {
     construction_weight: u64,
     fanout_priority: u64,
     slow_congestion: bool,
+    legalize_conflicts: usize,
+    cost_distance: bool,
+    cost_distance_rooted: bool,
+    cost_distance_discount: bool,
     name: String,
     w: usize,
     h: usize,
@@ -120,6 +125,10 @@ impl Instance {
             construction_weight: 1,
             fanout_priority: 0,
             slow_congestion: false,
+            legalize_conflicts: 0,
+            cost_distance: false,
+            cost_distance_rooted: false,
+            cost_distance_discount: false,
             name: v["name"].as_str().unwrap().into(),
             w,
             h,
@@ -464,6 +473,50 @@ fn occupy(count: &mut [u32], r: &Route, add: bool) {
         }
     }
 }
+// Remove all conflicting trees, then reconnect them against fixed legal nets.
+// A failed attempt restores the exact incumbent occupancy and geometry.
+fn legalize_conflicts(
+    inst: &Instance,
+    search: &mut Search,
+    routes: &mut [Option<Route>],
+    count: &mut [u32],
+    rng: &mut Rng,
+) -> bool {
+    let mut ids: Vec<_> = routes
+        .iter()
+        .enumerate()
+        .filter_map(|(i, r)| {
+            r.as_ref()
+                .filter(|r| r.vertices.iter().any(|&v| count[v] > 1))
+                .map(|_| i)
+        })
+        .collect();
+    for &i in &ids {
+        occupy(count, routes[i].as_ref().unwrap(), false);
+    }
+    rng.shuffle(&mut ids);
+    let history = vec![0; inst.size];
+    let mut placed = Vec::new();
+    for &i in &ids {
+        if let Some(route) = search.route(inst, i, count, &history, 0, true, rng.next()) {
+            occupy(count, &route, true);
+            placed.push((i, route));
+        } else {
+            for (_, route) in &placed {
+                occupy(count, route, false);
+            }
+            for &j in &ids {
+                occupy(count, routes[j].as_ref().unwrap(), true);
+            }
+            return false;
+        }
+    }
+    for (i, route) in placed {
+        routes[i] = Some(route);
+    }
+    assert!(count.iter().all(|&n| n <= 1));
+    true
+}
 fn build(
     inst: &Instance,
     search: &mut Search,
@@ -513,7 +566,9 @@ fn build(
                 occupy(&mut count, r, false);
             }
             let salt = rng.next();
-            let r = if let Some(weight) = tree_root_weight {
+            let r = if inst.cost_distance {
+                cost_distance::route(inst, search, i, &count, &history, present, salt)?
+            } else if let Some(weight) = tree_root_weight {
                 search.route_tree(inst, i, &count, &history, present, salt, weight)?
             } else {
                 search.route(inst, i, &count, &history, present, false, salt)?
@@ -527,6 +582,14 @@ fn build(
                 over += 1;
                 history[v] += history_increment * (count[v] - 1) as u64;
             }
+        }
+        if over > 0
+            && over <= inst.legalize_conflicts
+            && round % 10 == 9
+            && legalize_conflicts(inst, search, &mut routes, &mut count, rng)
+        {
+            eprintln!("construction strict repair resolved {} conflicts", over);
+            over = 0;
         }
         if over == 0 {
             let total = routes.iter().map(|r| r.as_ref().unwrap().delay).sum();
@@ -653,6 +716,52 @@ fn improve(
     }
     assert!(count.iter().all(|&c| c <= 1));
 }
+fn serialize_routes(inst: &Instance, routes: &[Route]) -> Vec<u8> {
+    let output: Vec<_> = routes.iter().enumerate().map(|(i,r)| json!({
+        "net": inst.nets[i].id,
+        "edges": r.edges.iter().map(|&(a,b)| [inst.coord(a),inst.coord(b)]).collect::<Vec<_>>()
+    })).collect();
+    serde_json::to_vec(
+        &json!({"format":"m3d-submission","version":1,"instance":inst.name,"routes":output}),
+    )
+    .unwrap()
+}
+
+fn refine_output(
+    instance: &str,
+    output: &str,
+    seed: u64,
+    trials: u64,
+    mode: &str,
+    options: &refine::Options,
+) -> u64 {
+    assert!(trials > 0);
+    if mode == "portfolio" || mode == "portfolio-joint" || mode == "portfolio-cbs" {
+        let first = trials / 2;
+        if first > 0 {
+            let stage = if mode == "portfolio-cbs" {
+                "cbs-mixed"
+            } else if mode == "portfolio-joint" {
+                "mixed-joint"
+            } else {
+                "mixed"
+            };
+            refine::refine_cold(instance, output, output, seed, first, stage, options);
+        }
+        refine::refine_cold(
+            instance,
+            output,
+            output,
+            seed.wrapping_add(1),
+            trials - first,
+            "chain-fast",
+            options,
+        )
+    } else {
+        refine::refine_cold(instance, output, output, seed, trials, mode, options)
+    }
+}
+
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() < 3 {
@@ -667,6 +776,12 @@ fn main() {
     let mut negotiation_rounds = 0;
     let mut fanout_priority = 0;
     let mut slow_congestion = false;
+    let mut legalize_limit = 0;
+    let mut use_cost_distance = false;
+    let mut refine_each_start = false;
+    let mut cost_distance_rooted = false;
+    let mut cost_distance_discount = false;
+    let mut refine_options = refine::Options::default();
     for a in args[3..].chunks(2) {
         assert_eq!(a.len(), 2);
         match a[0].as_str() {
@@ -677,11 +792,21 @@ fn main() {
             "--moves" => moves = a[1].parse().unwrap(),
             "--refine-trials" => refine_trials = a[1].parse().unwrap(),
             "--refine-mode" => refine_mode = a[1].clone(),
+            "--refine-temperature" => refine_options.temperature = a[1].parse().unwrap(),
+            "--refine-slack" => refine_options.slack = a[1].parse().unwrap(),
+            "--refine-group-max" => refine_options.group_max = a[1].parse().unwrap(),
             "--construction-weight" => construction_weight = a[1].parse().unwrap(),
             "--tree-root-weight" => tree_root_weight = Some(a[1].parse::<u64>().unwrap()),
             "--negotiation-rounds" => negotiation_rounds = a[1].parse::<usize>().unwrap(),
             "--fanout-priority" => fanout_priority = a[1].parse::<u64>().unwrap(),
             "--slow-congestion" => slow_congestion = a[1].parse::<u64>().unwrap() != 0,
+            "--legalize-conflicts" => legalize_limit = a[1].parse::<usize>().unwrap(),
+            "--cost-distance" => use_cost_distance = a[1].parse::<u64>().unwrap() != 0,
+            "--refine-each-start" => refine_each_start = a[1].parse::<u64>().unwrap() != 0,
+            "--cost-distance-rooted" => cost_distance_rooted = a[1].parse::<u64>().unwrap() != 0,
+            "--cost-distance-discount" => {
+                cost_distance_discount = a[1].parse::<u64>().unwrap() != 0
+            }
             _ => panic!("unknown argument {}", a[0]),
         }
     }
@@ -692,24 +817,80 @@ fn main() {
     assert!(fanout_priority <= 2);
     inst.fanout_priority = fanout_priority;
     inst.slow_congestion = slow_congestion;
+    inst.legalize_conflicts = legalize_limit;
+    inst.cost_distance = use_cost_distance;
+    inst.cost_distance_rooted = cost_distance_rooted;
+    inst.cost_distance_discount = cost_distance_discount;
     let mut search = Search::new(inst.size);
     let mut rng = Rng(seed);
     let mut best: Option<Vec<Route>> = None;
+    let mut best_final = None;
+    let mut best_final_score = u64::MAX;
     for start in 0..starts {
         eprintln!("cold start {} of {}", start + 1, starts);
-        if let Some(mut routes) = build(
+        let candidate = build(
             &inst,
             &mut search,
             &mut rng,
             rounds,
             tree_root_weight,
             negotiation_rounds,
-        ) {
+        );
+        let candidate = if candidate.is_none() && (inst.slow_congestion || inst.cost_distance) {
+            eprintln!("construction experimental attempt exhausted; fresh uniform SPT fallback");
+            let settings = (
+                inst.slow_congestion,
+                inst.fanout_priority,
+                inst.construction_weight,
+                inst.cost_distance,
+            );
+            inst.slow_congestion = false;
+            inst.fanout_priority = 0;
+            inst.construction_weight = 2;
+            inst.cost_distance = false;
+            let fallback = build(&inst, &mut search, &mut rng, 1000, None, negotiation_rounds);
+            (
+                inst.slow_congestion,
+                inst.fanout_priority,
+                inst.construction_weight,
+                inst.cost_distance,
+            ) = settings;
+            fallback
+        } else {
+            candidate
+        };
+        if let Some(mut routes) = candidate {
             if sweeps > 0 || moves > 0 {
                 improve(&inst, &mut search, &mut routes, &mut rng, sweeps, moves);
             }
             let score: u64 = routes.iter().map(|r| r.delay).sum();
             eprintln!("start {} delay {}", start + 1, score);
+            if refine_each_start && refine_trials > 0 {
+                // Every basin starts with newly generated geometry; all its
+                // refinement work remains inside this one timed invocation.
+                fs::write(&args[2], serialize_routes(&inst, &routes))
+                    .expect("write fresh cold output");
+                let start_seed = seed.wrapping_add((start as u64).wrapping_mul(0x9E3779B97F4A7C15));
+                let final_score = refine_output(
+                    &args[1],
+                    &args[2],
+                    start_seed,
+                    refine_trials,
+                    &refine_mode,
+                    &refine_options,
+                );
+                eprintln!(
+                    "completed cold start {} final delay {}",
+                    start + 1,
+                    final_score
+                );
+                if final_score < best_final_score {
+                    best_final_score = final_score;
+                    best_final =
+                        Some(fs::read(&args[2]).expect("read this invocation final output"));
+                }
+                continue;
+            }
             if best
                 .as_ref()
                 .map_or(true, |r| score < r.iter().map(|r| r.delay).sum())
@@ -718,55 +899,132 @@ fn main() {
             }
         }
     }
+    if let Some(bytes) = best_final {
+        fs::write(&args[2], bytes).expect("write best internally generated final output");
+        println!("total_delay={best_final_score}");
+        return;
+    }
     let routes = best.expect("no legal cold construction; no output written");
     let total: u64 = routes.iter().map(|r| r.delay).sum();
-    let output:Vec<_>=routes.iter().enumerate().map(|(i,r)|json!({"net":inst.nets[i].id,"edges":r.edges.iter().map(|&(a,b)|[inst.coord(a),inst.coord(b)]).collect::<Vec<_>>()})).collect();
-    let bytes = serde_json::to_vec(
-        &json!({"format":"m3d-submission","version":1,"instance":inst.name,"routes":output}),
-    )
-    .unwrap();
-    fs::write(&args[2], bytes).expect("write output");
+    fs::write(&args[2], serialize_routes(&inst, &routes)).expect("write output");
     println!("total_delay={total}");
     if refine_trials > 0 {
-        // The file has just been overwritten with this invocation's cold route.
-        // Refinement cannot read a previously published or user-supplied route.
         drop(search);
         drop(routes);
         drop(inst);
-        if refine_mode == "portfolio" || refine_mode == "portfolio-joint" {
-            let first = refine_trials / 2;
-            if first > 0 {
-                let mode = if refine_mode == "portfolio-joint" {
-                    "mixed-joint"
-                } else {
-                    "mixed"
-                };
-                refine::refine_cold(&args[1], &args[2], &args[2], seed, first, mode);
-            }
-            refine::refine_cold(
-                &args[1],
-                &args[2],
-                &args[2],
-                seed.wrapping_add(1),
-                refine_trials - first,
-                "chain-fast",
-            );
-        } else {
-            refine::refine_cold(
-                &args[1],
-                &args[2],
-                &args[2],
-                seed,
-                refine_trials,
-                &refine_mode,
-            );
-        }
+        refine_output(
+            &args[1],
+            &args[2],
+            seed,
+            refine_trials,
+            &refine_mode,
+            &refine_options,
+        );
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn strict_repair_resolves_crossings_or_restores_the_incumbent() {
+        for layers in [1, 2] {
+            let mut inst = Instance {
+                construction_weight: 1,
+                fanout_priority: 0,
+                slow_congestion: false,
+                legalize_conflicts: 128,
+                cost_distance: false,
+                cost_distance_rooted: false,
+                cost_distance_discount: false,
+                name: "crossings".into(),
+                w: 3,
+                h: 2,
+                wh: 6,
+                size: 6 * layers,
+                ld: vec![1; layers],
+                via: 2,
+                nets: vec![
+                    Net {
+                        id: 0,
+                        driver: 0,
+                        sinks: vec![5],
+                    },
+                    Net {
+                        id: 1,
+                        driver: 2,
+                        sinks: vec![3],
+                    },
+                ],
+                pins: vec![-1; 6 * layers],
+                neighbors: vec![vec![]; 6 * layers],
+                free_distance: Vec::new(),
+            };
+            for (i, net) in inst.nets.iter().enumerate() {
+                inst.pins[net.driver] = i as i32;
+                for &s in &net.sinks {
+                    inst.pins[s] = i as i32;
+                }
+            }
+            for u in 0..inst.size {
+                for v in 0..inst.size {
+                    let a = inst.coord(u);
+                    let b = inst.coord(v);
+                    if a[0].abs_diff(b[0]) + a[1].abs_diff(b[1]) + a[2].abs_diff(b[2]) == 1 {
+                        let weight = inst.weight(u, v);
+                        inst.neighbors[u].push((v, weight));
+                    }
+                }
+            }
+            for seed in 0..20 {
+                let mut routes = vec![
+                    Some(Route {
+                        vertices: vec![0, 1, 4, 5],
+                        edges: vec![(0, 1), (1, 4), (4, 5)],
+                        delay: 3,
+                    }),
+                    Some(Route {
+                        vertices: vec![1, 2, 3, 4],
+                        edges: vec![(1, 2), (1, 4), (3, 4)],
+                        delay: 3,
+                    }),
+                ];
+                let original = routes.clone();
+                let mut count = vec![0; inst.size];
+                for r in &routes {
+                    occupy(&mut count, r.as_ref().unwrap(), true);
+                }
+                let before = count.clone();
+                let repaired = legalize_conflicts(
+                    &inst,
+                    &mut Search::new(inst.size),
+                    &mut routes,
+                    &mut count,
+                    &mut Rng(seed),
+                );
+                assert_eq!(repaired, layers == 2);
+                let mut rebuilt = vec![0; inst.size];
+                for (nid, route) in routes.iter().enumerate() {
+                    let route = route.as_ref().unwrap();
+                    occupy(&mut rebuilt, route, true);
+                    assert_eq!(route.edges.len() + 1, route.vertices.len());
+                    assert!(route
+                        .vertices
+                        .iter()
+                        .all(|&v| inst.pins[v] < 0 || inst.pins[v] == nid as i32));
+                    if !repaired {
+                        assert_eq!(route.edges, original[nid].as_ref().unwrap().edges);
+                    }
+                }
+                assert_eq!(count, rebuilt);
+                if repaired {
+                    assert!(count.iter().all(|&n| n <= 1));
+                } else {
+                    assert_eq!(count, before);
+                }
+            }
+        }
+    }
     #[test]
     fn moving_goal_astar_matches_full_dijkstra() {
         let mut rng = Rng(20261022);
@@ -775,6 +1033,10 @@ mod tests {
                 construction_weight: 1,
                 fanout_priority: 0,
                 slow_congestion: false,
+                legalize_conflicts: 0,
+                cost_distance: false,
+                cost_distance_rooted: false,
+                cost_distance_discount: false,
                 name: "differential".into(),
                 w: 4,
                 h: 4,
@@ -893,6 +1155,10 @@ mod tests {
             construction_weight: 1,
             fanout_priority: 0,
             slow_congestion: false,
+            legalize_conflicts: 0,
+            cost_distance: false,
+            cost_distance_rooted: false,
+            cost_distance_discount: false,
             name: "tiny".into(),
             w: 3,
             h: 2,
@@ -963,11 +1229,32 @@ mod tests {
             if let Some(b) = block {
                 inst.pins[b] = 1;
             }
-            for root_weight in [0, 50, 100] {
+            for variant in [Some(0), Some(50), Some(100), None] {
                 for salt in 0..20 {
-                    let route = Search::new(6)
-                        .route_tree(&inst, 0, &count, &vec![0; 6], 0, salt, root_weight)
-                        .unwrap();
+                    let route = if let Some(root_weight) = variant {
+                        Search::new(6).route_tree(
+                            &inst,
+                            0,
+                            &count,
+                            &vec![0; 6],
+                            0,
+                            salt,
+                            root_weight,
+                        )
+                    } else {
+                        inst.cost_distance_rooted = salt % 2 == 0;
+                        inst.cost_distance_discount = salt % 3 == 0;
+                        cost_distance::route(
+                            &inst,
+                            &mut Search::new(6),
+                            0,
+                            &count,
+                            &vec![0; 6],
+                            0,
+                            salt,
+                        )
+                    }
+                    .unwrap();
                     assert_eq!(route.vertices.len(), route.edges.len() + 1);
                     assert!(block.map_or(true, |b| !route.vertices.contains(&b)));
                     let mut adj = vec![vec![]; 6];
@@ -988,7 +1275,7 @@ mod tests {
                     }
                     assert!(route.vertices.iter().all(|&v| distances[v] != u64::MAX));
                     assert_eq!(route.delay, distances[2] + distances[5]);
-                    if root_weight == 100 {
+                    if variant == Some(100) {
                         assert_eq!(route.delay, optimum);
                     }
                 }

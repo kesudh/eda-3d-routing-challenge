@@ -84,9 +84,10 @@ input. Source/output hashes use exact bytes preserved by .gitattributes.
 
 ## Validation
 
-Eight Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
+Ten Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
 checks, shared-trunk objective accounting, entry pricing, direct-chain pricing
-bounded conflict splitting and exhaustive compatible-candidate selection. Every adopted output also passes the official
+bounded conflict splitting, exhaustive compatible-candidate selection, and strict
+repair success/rollback on crossing nets. Every adopted output also passes the official
 independent checker.
 
 copy_audit.json describes the published revision's post-generation comparison
@@ -108,3 +109,18 @@ These additions are independently written here. No opponent source code or route
 geometry was copied. Algorithmic similarity is not used as evidence of geometry
 independence: the publication audit compares canonical route hashes against the
 pinned main and open-PR Git blobs, and rejects matching non-exempt candidates.
+
+An experimental `--cost-distance 1` constructor merges weighted sink components
+using congestion cost plus sink-multiplicity-weighted path delay, then extracts a
+physical root-distance tree from the embedded union. It is informed by
+[Held and Perner (2025)](https://arxiv.org/html/2503.04419v1). The vertex-resource
+adaptation is tested independently and claims no inherited approximation bound.
+A full-Dijkstra differential test covers its weighted nearest-component search.
+
+`--refine-each-start 1 --starts N` runs a complete internal refinement for each
+fresh construction and selects the best final bytes. The producing runtime
+includes every start and every refinement stage. `--refine-temperature`,
+`--refine-slack` and `--refine-group-max` expose deterministic exploration
+settings. `--refine-mode portfolio-cbs` uses bounded conflict-based search
+followed by displacement chains; the conflict search has a fixed node budget
+and makes no global optimality claim when that budget is exhausted.

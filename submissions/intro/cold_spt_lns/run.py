@@ -48,9 +48,9 @@ def main():
     ap.add_argument("--out-root",type=Path);ap.add_argument("--reproduce",action="store_true")
     ap.add_argument("--check-only",action="store_true");ap.add_argument("--only-improvements",action="store_true")
     ap.add_argument("--cargo",default="cargo");ap.add_argument("--hardware",default=platform.processor() or platform.machine())
-    options={"seed":20261022,"starts":1,"rounds":300,"sweeps":0,"moves":0,"construction-weight":2,"refine-trials":4000,"negotiation-rounds":0,"fanout-priority":0,"slow-congestion":0}
+    options={"seed":20261022,"starts":1,"rounds":300,"sweeps":0,"moves":0,"construction-weight":2,"refine-trials":4000,"negotiation-rounds":0,"fanout-priority":0,"slow-congestion":0,"legalize-conflicts":0,"cost-distance":0,"refine-each-start":0,"cost-distance-rooted":0,"cost-distance-discount":0,"refine-temperature":32,"refine-slack":128,"refine-group-max":16}
     for flag,value in options.items():ap.add_argument("--"+flag,type=int,default=value)
-    ap.add_argument("--refine-mode",choices=("portfolio","portfolio-joint","mixed","mixed-joint","joint","chain-fast","single"),default="portfolio")
+    ap.add_argument("--refine-mode",choices=("portfolio","portfolio-joint","portfolio-cbs","cbs","cbs-mixed","mixed","mixed-joint","joint","chain-fast","single"),default="portfolio")
     ap.add_argument("--tree-root-weight",type=int,choices=(0,25,50,75,100))
     a=ap.parse_args()
     if a.check_only and a.reproduce:ap.error("choose --check-only or --reproduce")

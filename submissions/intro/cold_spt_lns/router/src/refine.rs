@@ -2613,6 +2613,21 @@ struct Best {
 }
 
 /// Refine only a cold solution constructed in this invocation by our controller.
+pub struct Options {
+    pub temperature: u64,
+    pub slack: u64,
+    pub group_max: usize,
+}
+impl Default for Options {
+    fn default() -> Self {
+        Self {
+            temperature: 32,
+            slack: 128,
+            group_max: 16,
+        }
+    }
+}
+
 pub fn refine_cold(
     instance_path: &str,
     cold_path: &str,
@@ -2620,14 +2635,16 @@ pub fn refine_cold(
     seed: u64,
     trials: u64,
     mode: &str,
-) {
+    options: &Options,
+) -> u64 {
     assert!(
         trials > 0
             && matches!(
                 mode,
-                "chain-fast" | "mixed" | "single" | "joint" | "mixed-joint"
+                "chain-fast" | "mixed" | "single" | "joint" | "mixed-joint" | "cbs" | "cbs-mixed"
             )
     );
+    assert!((2..=64).contains(&options.group_max));
     let start = Instant::now();
     let mut inst = load_inst(instance_path);
     inst.early_stop = true;
@@ -2672,10 +2689,10 @@ pub fn refine_cold(
         seed,
         mode.into(),
         2,
-        16,
+        options.group_max,
         8,
         2,
-        32.0,
+        options.temperature as f64,
         0.15,
         0.0,
         12,
@@ -2692,7 +2709,7 @@ pub fn refine_cold(
         3,
         true,
         true,
-        Some(128),
+        Some(options.slack),
         0.0,
     );
     let mut best = shared.lock().unwrap();
@@ -2705,6 +2722,9 @@ pub fn refine_cold(
             trials,
             start.elapsed().as_secs_f64()
         );
+        sol.total
+    } else {
+        panic!("refinement lost its legal incumbent")
     }
 }
 
@@ -2864,7 +2884,13 @@ fn worker(
             let r = 1 + ws.rng.below(rmax as u64) as u32;
             region_group(&inst, &sol, &owner, &mut ws, seed_net, r, k)
         } else if do_mode == 1 || do_mode == 4 {
-            let cap = if do_mode == 4 { 4 } else { k };
+            let cap = if do_mode == 4 {
+                4
+            } else if mode.starts_with("cbs") {
+                k.min(4)
+            } else {
+                k
+            };
             let mut g = blocker_group(&inst, &sol, &owner, &mut ws, seed_net, cap);
             if g.len() < 2 {
                 let r = 1 + ws.rng.below(rmax as u64) as u32;

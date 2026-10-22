@@ -1,0 +1,22 @@
+{
+  "author": "kesudh",
+  "url": "https://github.com/kesudh/eda-3d-routing-challenge/tree/codex/independent-cold-spt/submissions/intro/cold_spt_lns",
+  "date": "2026-10-22",
+  "method": "Independent cold-start driver-rooted shortest-path-tree portfolio: integer multi-goal A*, negotiated vertex-congestion construction, exact per-net delay descent, non-worsening local group rip-up/reroute; two cold starts per process, fixed seed and work counts.",
+  "hardware": "Intel Core i7-13700HX (16C/24T), 31.7 GiB RAM, Windows 11",
+  "threads": 1,
+  "independent": true,
+  "route_inputs": "Only the benchmark instance JSON. No published routes, reference solutions, previous entry routes, learned weights, or case-specific routing settings.",
+  "runtime_scope": "Wall-clock seconds of one complete solver process per case: launch, instance parse, both cold starts, construction, all polish/group moves, JSON serialization, file close, process exit. Excludes compilation, pre-run instance copying and post-run independent checking. No stages or seeds omitted.",
+  "reproduce": "python submissions/intro/cold_spt_lns/run.py --reproduce --tier hard",
+  "run_records": "runs.json",
+  "source": "submissions/intro/cold_spt_lns/router/src/main.rs",
+  "configuration": {
+    "seed": 20261022,
+    "starts": 2,
+    "rounds": 200,
+    "sweeps": 6,
+    "moves": 128
+  },
+  "algorithm_credit": "PathFinder-style history/present congestion negotiation and standard shortest-path/LNS techniques; challenge grid and objective from m3d/grid.py and m3d/checker.py. New Rust implementation; no route geometry reused."
+}

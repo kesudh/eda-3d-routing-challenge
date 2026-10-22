@@ -1,124 +1,118 @@
 #!/usr/bin/env python3
-"""Generate or reproduce cold_spt_lns from instance JSON only (Python stdlib)."""
-import argparse
-import hashlib
-import json
-import os
+"""Independent cold routing with immutable per-case producing source versions."""
+import argparse, hashlib, json, os, platform, shutil, subprocess, sys, tempfile, time
 from pathlib import Path
-import platform
-import shutil
-import subprocess
-import sys
-import tempfile
-import time
-
-HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[2]
-sys.path.insert(0, str(ROOT))
+HERE=Path(__file__).resolve().parent
+ROOT=HERE.parents[2]
+sys.path.insert(0,str(ROOT))
 from m3d.checker import check
-from m3d.model import Instance, Submission
+from m3d.model import Instance,Submission
+TIERS=("intro","hard","scale","stress","congested","designs")
 
-TIERS = ("intro", "hard", "scale", "congested", "designs")
-SETTINGS = ["--seed", "20261022", "--starts", "2", "--rounds", "200",
-            "--sweeps", "6", "--moves", "128"]
-
-
-def digest(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
-
-
-def instance_digest(path):
-    # A Git checkout can use CRLF on Windows and LF on Linux. Hash the same
-    # canonical instance text on both; preserve the actual input hash as well.
-    return hashlib.sha256(Path(path).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
-
-
-def write_json(path, obj):
-    Path(path).write_text(json.dumps(obj, indent=2) + "\n", encoding="utf-8")
-
+def digest(p):
+    return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def instance_digest(p):
+    return hashlib.sha256(Path(p).read_bytes().replace(b"\r\n",b"\n")).hexdigest()
+def write_json(p,data):
+    p=Path(p);tmp=p.with_suffix(p.suffix+".tmp")
+    tmp.write_text(json.dumps(data,indent=2)+"\n",encoding="utf-8");tmp.replace(p)
+def version_id(hashes):
+    return hashlib.sha256("".join(f"{k}:{hashes[k]}\n" for k in sorted(hashes)).encode()).hexdigest()
+def snapshot():
+    files=[HERE/"run.py",HERE/"router/Cargo.toml",HERE/"router/Cargo.lock"]+sorted((HERE/"router/src").rglob("*.rs"))
+    hashes={p.relative_to(HERE).as_posix():digest(p) for p in files}
+    version=version_id(hashes);base=HERE/"reproducers"/version
+    for p in files:
+        q=base/p.relative_to(HERE);q.parent.mkdir(parents=True,exist_ok=True)
+        if q.exists():assert digest(q)==digest(p),"immutable source changed"
+        else:shutil.copyfile(p,q)
+    if not (base/"source.json").exists():
+        write_json(base/"source.json",{"format":"cold-spt-source-v1","version":version,"files":hashes})
+    return version,hashes
+def validate_source(version,hashes):
+    assert version_id(hashes)==version
+    base=HERE/"reproducers"/version
+    assert json.loads((base/"source.json").read_text())["files"]==hashes
+    for name,value in hashes.items():assert digest(base/name)==value,(version,name)
+    return base
+def build(version,hashes,cargo,built):
+    base=validate_source(version,hashes);target=Path(tempfile.gettempdir())/"cold-spt-build"/version
+    if version not in built:
+        subprocess.run([cargo,"build","--release","--locked","--manifest-path",str(base/"router/Cargo.toml"),"--target-dir",str(target)],check=True)
+        built.add(version)
+    return target/"release"/("cold-spt-lns.exe" if os.name=="nt" else "cold-spt-lns")
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--tier", choices=TIERS, action="append")
-    ap.add_argument("--case", help="Optional case name within the selected tier")
-    ap.add_argument("--out-root", type=Path, help="Alternative submissions root")
-    ap.add_argument("--reproduce", action="store_true", help="Rerun and require byte-identical outputs")
-    ap.add_argument("--check-only", action="store_true")
-    ap.add_argument("--cargo", default="cargo")
-    ap.add_argument("--hardware", default=platform.processor() or platform.machine())
-    args = ap.parse_args()
-    if args.check_only and args.reproduce:
-        ap.error("choose --check-only or --reproduce")
-    crate = HERE / "router"
-    source_hashes = {str(p.relative_to(HERE)).replace(os.sep, "/"): digest(p)
-                     for p in (crate / "src/main.rs", crate / "Cargo.toml", crate / "Cargo.lock", HERE / "run.py")}
-    if not args.check_only:
-        subprocess.run([args.cargo, "build", "--release", "--locked", "--manifest-path", str(crate / "Cargo.toml")], check=True)
-    exe = crate / "target/release" / ("cold-spt-lns.exe" if os.name == "nt" else "cold-spt-lns")
-    for tier in args.tier or TIERS:
-        suite = ROOT / ("benchmarks" if tier == "intro" else "benchmarks_" + tier)
-        cases = json.loads((suite / "suite.json").read_text())["cases"]
-        dest = (args.out_root or ROOT / "submissions") / tier / "cold_spt_lns"
-        dest.mkdir(parents=True, exist_ok=True)
-        runtime_path = dest / "runtime.json"
-        records_path = dest / "runs.json"
-        # Keep other cases when explicitly resuming a single case.
-        runtimes = json.loads(runtime_path.read_text()) if args.case and runtime_path.exists() else {}
-        records = json.loads(records_path.read_text()) if args.case and records_path.exists() else {}
-        selected = [c for c in cases if not args.case or c["name"] == args.case]
-        if not selected:
-            raise ValueError("case not in suite: " + str(args.case))
+    ap=argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--tier",choices=TIERS,action="append");ap.add_argument("--case")
+    ap.add_argument("--out-root",type=Path);ap.add_argument("--reproduce",action="store_true")
+    ap.add_argument("--check-only",action="store_true");ap.add_argument("--only-improvements",action="store_true")
+    ap.add_argument("--cargo",default="cargo");ap.add_argument("--hardware",default=platform.processor() or platform.machine())
+    options={"seed":20261022,"starts":1,"rounds":300,"sweeps":0,"moves":0,"construction-weight":2,"refine-trials":4000}
+    for flag,value in options.items():ap.add_argument("--"+flag,type=int,default=value)
+    ap.add_argument("--refine-mode",choices=("portfolio","mixed","chain-fast","single"),default="portfolio")
+    a=ap.parse_args()
+    if a.check_only and a.reproduce:ap.error("choose --check-only or --reproduce")
+    generating=not(a.check_only or a.reproduce);current=snapshot() if generating else None;built=set()
+    settings=[]
+    for flag in list(options)+["refine-mode"]:settings+=["--"+flag,str(getattr(a,flag.replace("-","_")))]
+    for tier in a.tier or TIERS:
+        suite=ROOT/("benchmarks" if tier=="intro" else "benchmarks_"+tier)
+        cases=json.loads((suite/"suite.json").read_text())["cases"]
+        selected=[c for c in cases if not a.case or c["name"]==a.case]
+        if not selected:raise ValueError("case not in selected tier")
+        dest=(a.out_root or ROOT/"submissions")/tier/"cold_spt_lns"
+        if generating:dest.mkdir(parents=True,exist_ok=True)
+        rp,sp=dest/"runtime.json",dest/"runs.json"
+        times=json.loads(rp.read_text()) if rp.exists() else {}
+        records=json.loads(sp.read_text()) if sp.exists() else {}
         for c in selected:
-            name = c["name"]
-            original = suite / c["instance_file"]
-            committed = dest / (name + ".sol.json")
-            if args.check_only:
-                result = check(Instance.load(str(original)), Submission.load(str(committed)))
-                if not result.legal:
-                    raise RuntimeError(str(result.to_dict()))
-                recorded = json.loads(records_path.read_text())[name]
-                assert recorded["input_sha256"] == instance_digest(original)
-                assert recorded["output_sha256"] == digest(committed)
-                assert recorded["source_sha256"] == source_hashes
-                print(f"{tier}/{name}: legal, delay={result.total_delay}, hashes match", flush=True)
+            name=c["name"];original=suite/c["instance_file"];committed=dest/(name+".sol.json");record=records.get(name)
+            if not generating:
+                assert record is not None,"no producing record: "+tier+"/"+name
+                validate_source(record["source_version"],record["source_sha256"])
+                assert record["input_sha256"]==instance_digest(original)
+                assert record["output_sha256"]==digest(committed)
+                assert times[name]==record["wall_seconds"]
+            if a.check_only:
+                result=check(Instance.load(str(original)),Submission.load(str(committed)))
+                assert result.legal and result.total_delay==record["total_delay"]
+                print(f"CHECK {tier}/{name}: legal, delay={result.total_delay}, archived source and hashes match",flush=True)
                 continue
-            with tempfile.TemporaryDirectory(prefix="cold-spt-") as tmp:
-                tmp = Path(tmp)
-                # Solver working directory contains only this case's instance.
-                instance = tmp / "instance.json"
-                output = tmp / "output.sol.json"
-                shutil.copyfile(original, instance)
-                command = [str(exe), str(instance), str(output)] + SETTINGS
-                started = time.perf_counter()
-                run = subprocess.run(command, cwd=tmp, capture_output=True, text=True)
-                elapsed = time.perf_counter() - started
-                if run.returncode:
-                    raise RuntimeError(f"{tier}/{name} failed:\n{run.stderr}")
-                result = check(Instance.load(str(instance)), Submission.load(str(output)))
-                if not result.legal:
-                    raise RuntimeError(f"{tier}/{name}: {result.to_dict()}")
-                if args.reproduce:
-                    if output.read_bytes() != committed.read_bytes():
-                        raise RuntimeError(f"{tier}/{name}: reproduction differs")
-                    print(f"{tier}/{name}: byte-identical, legal, delay={result.total_delay}, replay={elapsed:.3f}s", flush=True)
+            version,hashes=current if generating else (record["source_version"],record["source_sha256"])
+            exe=build(version,hashes,a.cargo,built);argv=settings if generating else record["solver_args"]
+            logdir=ROOT/".local-validation/search-logs";logdir.mkdir(parents=True,exist_ok=True)
+            logpath=logdir/f"{tier}-{name}-{time.time_ns()}.log"
+            with tempfile.TemporaryDirectory(prefix="cold-spt-") as td:
+                td=Path(td);instance=td/"instance.json";out=td/"output.sol.json";shutil.copyfile(original,instance)
+                lines=[];started=time.perf_counter()
+                with logpath.open("w",encoding="utf-8") as log:
+                    process=subprocess.Popen([str(exe),str(instance),str(out)]+argv,cwd=td,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
+                    print(f"START {tier}/{name}: pid={process.pid}, source={version}, log={logpath}",flush=True)
+                    for line in process.stdout:
+                        lines.append(line.rstrip("\n"));log.write(line);log.flush()
+                        if any(t in line for t in ("cold start","construction","start ","t=","DONE","FINAL","POLISH")):
+                            print(f"{tier}/{name}: {line.rstrip()}",flush=True)
+                    code=process.wait()
+                elapsed=time.perf_counter()-started
+                if code:raise RuntimeError(f"{tier}/{name}: exit {code}, log={logpath}")
+                result=check(Instance.load(str(instance)),Submission.load(str(out)))
+                assert result.legal,result.to_dict()
+                if a.reproduce:
+                    assert out.read_bytes()==committed.read_bytes(),"reproduction differs"
+                    print(f"REPLAY {tier}/{name}: byte-identical, delay={result.total_delay}, seconds={elapsed:.3f}",flush=True)
                     continue
-                shutil.copyfile(output, committed)
-                runtimes[name] = elapsed
-                records[name] = {
-                    "input_sha256": instance_digest(instance),
-                    "input_file_sha256": digest(instance),
-                    "input_hash_scope": "UTF-8 instance text with CRLF normalized to LF",
-                    "output_sha256": digest(output),
-                    "source_sha256": source_hashes, "binary_sha256": digest(exe),
-                    "solver_args": SETTINGS, "total_delay": result.total_delay,
-                    "wall_seconds": elapsed, "hardware": args.hardware,
-                    "platform": platform.platform(), "threads": 1,
-                    "solver_log": run.stderr.splitlines(),
-                }
-                write_json(runtime_path, runtimes)
-                write_json(records_path, records)
-                print(f"{tier}/{name}: legal, delay={result.total_delay}, runtime={elapsed:.3f}s", flush=True)
-
-
-if __name__ == "__main__":
-    main()
+                if a.only_improvements and committed.exists():
+                    prev=check(Instance.load(str(original)),Submission.load(str(committed)))
+                    if prev.legal and result.total_delay>=prev.total_delay:
+                        print(f"KEEP {tier}/{name}: existing={prev.total_delay}, candidate={result.total_delay}, seconds={elapsed:.3f}",flush=True)
+                        continue
+                shutil.copyfile(out,committed);times[name]=elapsed
+                records[name]={"input_sha256":instance_digest(instance),"input_file_sha256":digest(instance),
+                    "input_hash_scope":"UTF-8 instance text with CRLF normalized to LF","output_sha256":digest(out),
+                    "source_version":version,"source_sha256":hashes,"binary_sha256":digest(exe),
+                    "solver_args":argv,"total_delay":result.total_delay,"wall_seconds":elapsed,
+                    "hardware":a.hardware,"platform":platform.platform(),"threads":1,"solver_log":lines}
+                write_json(rp,times);write_json(sp,records)
+                print(f"ADOPT {tier}/{name}: legal, delay={result.total_delay}, full_runtime={elapsed:.3f}",flush=True)
+if __name__=="__main__":main()

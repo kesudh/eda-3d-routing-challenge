@@ -51,7 +51,8 @@
       "polish 5: 67897 -> 67759",
       "polish 6: 67759 -> 67711",
       "start 2 delay 67297"
-    ]
+    ],
+    "source_version": "8a482057519a057395a09aafe2f8421696312f217b493db1ec412e212300ce91"
   },
   "case_02": {
     "input_sha256": "080b349aea6d22e149d25ca74603cec81331cace10e7731bc4d86a3a7f780740",
@@ -107,7 +108,8 @@
       "polish 5: 121214 -> 120964",
       "polish 6: 120964 -> 120776",
       "start 2 delay 120368"
-    ]
+    ],
+    "source_version": "8a482057519a057395a09aafe2f8421696312f217b493db1ec412e212300ce91"
   },
   "case_03": {
     "input_sha256": "e4ec45609bfbfb4c31b1b24d4d6ce5be4c4711210f39bb8e096331f66446546c",
@@ -165,7 +167,8 @@
       "polish 5: 210209 -> 209709",
       "polish 6: 209709 -> 209205",
       "start 2 delay 208433"
-    ]
+    ],
+    "source_version": "8a482057519a057395a09aafe2f8421696312f217b493db1ec412e212300ce91"
   },
   "case_04": {
     "input_sha256": "c591114d5439e4dca0c30b2db15c072e9837461f2469fabc7fea8c753729cf01",
@@ -224,6 +227,7 @@
       "construction round 160: 1 conflicts",
       "construction round 180: 2 conflicts",
       "construction round 200: 5 conflicts"
-    ]
+    ],
+    "source_version": "8a482057519a057395a09aafe2f8421696312f217b493db1ec412e212300ce91"
   }
 }

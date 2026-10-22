@@ -4,6 +4,8 @@ use serde_json::{json, Value};
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap};
 use std::fs;
+#[allow(dead_code)]
+mod refine;
 
 #[derive(Clone)]
 struct Net {
@@ -12,6 +14,7 @@ struct Net {
     sinks: Vec<usize>,
 }
 struct Instance {
+    construction_weight: u64,
     name: String,
     w: usize,
     h: usize,
@@ -112,6 +115,7 @@ impl Instance {
             }
         }
         Self {
+            construction_weight: 1,
             name: v["name"].as_str().unwrap().into(),
             w,
             h,
@@ -241,7 +245,11 @@ impl Search {
         self.prev[root] = root;
         self.stamp[root] = epoch;
         let mut goals = n.sinks.clone();
-        let scale = if strict { 1 } else { 1024 };
+        let scale = if strict {
+            1
+        } else {
+            1024 * inst.construction_weight
+        };
         let first = self.heuristic(inst, root, &goals) * scale;
         self.queue
             .push(Reverse((first, u64::MAX, mix(root as u64 ^ salt), root, 0)));
@@ -479,6 +487,8 @@ fn main() {
     }
     let (mut seed, mut starts, mut rounds, mut sweeps, mut moves) =
         (20261022u64, 2usize, 200usize, 6usize, 128usize);
+    let (mut refine_trials, mut refine_mode, mut construction_weight) =
+        (0u64, String::from("chain-fast"), 1u64);
     for a in args[3..].chunks(2) {
         assert_eq!(a.len(), 2);
         match a[0].as_str() {
@@ -487,18 +497,25 @@ fn main() {
             "--rounds" => rounds = a[1].parse().unwrap(),
             "--sweeps" => sweeps = a[1].parse().unwrap(),
             "--moves" => moves = a[1].parse().unwrap(),
+            "--refine-trials" => refine_trials = a[1].parse().unwrap(),
+            "--refine-mode" => refine_mode = a[1].clone(),
+            "--construction-weight" => construction_weight = a[1].parse().unwrap(),
             _ => panic!("unknown argument {}", a[0]),
         }
     }
     assert!(starts > 0 && rounds > 0);
-    let inst = Instance::load(&args[1]);
+    assert!(construction_weight >= 1);
+    let mut inst = Instance::load(&args[1]);
+    inst.construction_weight = construction_weight;
     let mut search = Search::new(inst.size);
     let mut rng = Rng(seed);
     let mut best: Option<Vec<Route>> = None;
     for start in 0..starts {
         eprintln!("cold start {} of {}", start + 1, starts);
         if let Some(mut routes) = build(&inst, &mut search, &mut rng, rounds) {
-            improve(&inst, &mut search, &mut routes, &mut rng, sweeps, moves);
+            if sweeps > 0 || moves > 0 {
+                improve(&inst, &mut search, &mut routes, &mut rng, sweeps, moves);
+            }
             let score: u64 = routes.iter().map(|r| r.delay).sum();
             eprintln!("start {} delay {}", start + 1, score);
             if best
@@ -518,6 +535,36 @@ fn main() {
     .unwrap();
     fs::write(&args[2], bytes).expect("write output");
     println!("total_delay={total}");
+    if refine_trials > 0 {
+        // The file has just been overwritten with this invocation's cold route.
+        // Refinement cannot read a previously published or user-supplied route.
+        drop(search);
+        drop(routes);
+        drop(inst);
+        if refine_mode == "portfolio" {
+            let first = refine_trials / 2;
+            if first > 0 {
+                refine::refine_cold(&args[1], &args[2], &args[2], seed, first, "mixed");
+            }
+            refine::refine_cold(
+                &args[1],
+                &args[2],
+                &args[2],
+                seed.wrapping_add(1),
+                refine_trials - first,
+                "chain-fast",
+            );
+        } else {
+            refine::refine_cold(
+                &args[1],
+                &args[2],
+                &args[2],
+                seed,
+                refine_trials,
+                &refine_mode,
+            );
+        }
+    }
 }
 
 #[cfg(test)]
@@ -528,6 +575,7 @@ mod tests {
         let mut rng = Rng(20261022);
         for _ in 0..120 {
             let mut inst = Instance {
+                construction_weight: 1,
                 name: "differential".into(),
                 w: 4,
                 h: 4,
@@ -641,6 +689,7 @@ mod tests {
     #[test]
     fn single_net_matches_exhaustive_tree_objective() {
         let mut inst = Instance {
+            construction_weight: 1,
             name: "tiny".into(),
             w: 3,
             h: 2,

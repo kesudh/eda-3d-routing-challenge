@@ -51,7 +51,8 @@
       "polish 5: 11144 -> 11118",
       "polish 6: 11118 -> 11108",
       "start 2 delay 11028"
-    ]
+    ],
+    "source_version": "8a482057519a057395a09aafe2f8421696312f217b493db1ec412e212300ce91"
   },
   "case_02": {
     "input_sha256": "1017b8aac77273a25186858bf39dd66293d56aecebfc7b0e1f5a19c66a2d6c2e",
@@ -110,7 +111,8 @@
       "polish 5: 17238 -> 17174",
       "polish 6: 17174 -> 17090",
       "start 2 delay 17066"
-    ]
+    ],
+    "source_version": "8a482057519a057395a09aafe2f8421696312f217b493db1ec412e212300ce91"
   },
   "case_03": {
     "input_sha256": "4783af0f84289f7d48d70b7428d2f7b8fbcdefaf2bdfca2bac237e874bd97858",
@@ -163,7 +165,8 @@
       "polish 5: 13160 -> 13152",
       "polish 6: 13152 -> 13150",
       "start 2 delay 13012"
-    ]
+    ],
+    "source_version": "8a482057519a057395a09aafe2f8421696312f217b493db1ec412e212300ce91"
   },
   "case_04": {
     "input_sha256": "06324939b75971e45caa9e7f19d824a254e0f61167dd6b279bbff612d77d96f1",
@@ -215,7 +218,8 @@
       "polish 5: 16853 -> 16825",
       "polish 6: 16825 -> 16789",
       "start 2 delay 16629"
-    ]
+    ],
+    "source_version": "8a482057519a057395a09aafe2f8421696312f217b493db1ec412e212300ce91"
   },
   "case_05": {
     "input_sha256": "51e44c96f14e5d3229047d6ee5ba2aa0faee94fb208f3f9e716310a0620306a1",
@@ -271,7 +275,8 @@
       "polish 5: 19649 -> 19619",
       "polish 6: 19619 -> 19589",
       "start 2 delay 19563"
-    ]
+    ],
+    "source_version": "8a482057519a057395a09aafe2f8421696312f217b493db1ec412e212300ce91"
   },
   "case_06": {
     "input_sha256": "612b2680497826836de4d9553d8dc95d53f1d46fe07858cfdb74e43ce5582cba",
@@ -325,7 +330,8 @@
       "polish 5: 25322 -> 25294",
       "polish 6: 25294 -> 25256",
       "start 2 delay 25132"
-    ]
+    ],
+    "source_version": "8a482057519a057395a09aafe2f8421696312f217b493db1ec412e212300ce91"
   },
   "case_07": {
     "input_sha256": "e3475bed19f53670482b4b864a276c475b47e1cac7237d8fa26eeb48714de8f0",
@@ -385,7 +391,8 @@
       "polish 5: 27915 -> 27835",
       "polish 6: 27835 -> 27791",
       "start 2 delay 27553"
-    ]
+    ],
+    "source_version": "8a482057519a057395a09aafe2f8421696312f217b493db1ec412e212300ce91"
   },
   "case_08": {
     "input_sha256": "b1dbc8ed8aab7cbb457987f4b8a877b9c2adda8575b326d9822523f090cec1f2",
@@ -441,7 +448,8 @@
       "polish 5: 27402 -> 27326",
       "polish 6: 27326 -> 27282",
       "start 2 delay 26998"
-    ]
+    ],
+    "source_version": "8a482057519a057395a09aafe2f8421696312f217b493db1ec412e212300ce91"
   },
   "case_09": {
     "input_sha256": "bcbd72a7bb47ec5c5f82428573ffabdb932594c4b574d552808851617b05f6c1",
@@ -492,6 +500,7 @@
       "polish 5: 25858 -> 25848",
       "polish 6: 25848 -> 25824",
       "start 2 delay 25610"
-    ]
+    ],
+    "source_version": "8a482057519a057395a09aafe2f8421696312f217b493db1ec412e212300ce91"
   }
 }

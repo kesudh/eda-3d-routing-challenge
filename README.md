@@ -51,7 +51,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.1514 | 20/20 | 341746 | 46476.76 | ✓ | — |
 | 5 | warm_lns_refinement † | kesudh | 1.1509 | 20/20 | 342006 | missing |  | — |
 | 6 | spt_lns | James (IrwinJam) | 1.1444 | 20/20 | 345066 | missing |  | — |
-| 7 | cold_spt_lns | kesudh | 1.1376 | 20/20 | 347864 | 4716.62 | ✓ | — |
+| 7 | cold_spt_lns | kesudh | 1.1385 | 20/20 | 347160 | 5684.50 | ✓ | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.1254 | 20/20 | 353836 | 2213.60 | ✓ | — |
 | 9 | anvesh | anvesh | 1.1069 | 20/20 | 360172 | missing |  | — |
 | 10 | synapse-surge | Sameer-Deepak | 1.1004 | 20/20 | 368374 | missing |  | — |
@@ -75,7 +75,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 6 | warm_lns_refinement † | kesudh | 1.3874 | 9/9 | 145095 | missing |  | — |
 | 7 | reubalink | reubalink | 1.3622 | 9/9 | 147825 | missing |  | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.3019 | 9/9 | 155125 | 7333.40 | ✓ | — |
-| 9 | cold_spt_lns | kesudh | 1.2945 | 9/9 | 156467 | 1791.89 | ✓ | — |
+| 9 | cold_spt_lns | kesudh | 1.2953 | 9/9 | 156387 | 2040.88 | ✓ | — |
 | 10 | erikqu_root_aware_portfolio | erikqu | 1.2745 | 9/9 | 158455 | missing |  | — |
 | 11 | synapse-surge | Sameer-Deepak | 1.2569 | 9/9 | 161183 | missing |  | — |
 | 12 | lns_negotiated | adityuhkapoor | 1.2267 | 9/9 | 165367 | missing |  | — |
@@ -100,8 +100,8 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 5 | warm_lns_refinement † | kesudh | 1.1274 | 8/8 | 537576 | 7543.00 | ✓ | — |
 | 6 | spt_lns | James (IrwinJam) | 1.1188 | 8/8 | 541966 | missing |  | — |
 | 7 | iamparv7043 | Parv (iamparv7043) | 1.1010 | 8/8 | 550828 | 3094.50 | ✓ | — |
-| 8 | anvesh | anvesh | 1.0821 | 8/8 | 559460 | missing |  | — |
-| 9 | cold_spt_lns | kesudh | 1.0767 | 8/8 | 568626 | 3825.67 |  | — |
+| 8 | cold_spt_lns | kesudh | 1.0976 | 8/8 | 556976 | 6541.06 |  | — |
+| 9 | anvesh | anvesh | 1.0821 | 8/8 | 559460 | missing |  | — |
 | 10 | lns_negotiated | adityuhkapoor | 1.0682 | 8/8 | 567094 | missing |  | — |
 | 11 | synapse-surge | Sameer-Deepak | 1.0496 | 8/8 | 579306 | missing |  | — |
 | 12 | shivaahir158 | Shiva Ahir (PhD Candidate, Stony Brook University) | 1.0108 | 8/8 | 598244 | 2196.48 | ✓ | — |
@@ -153,9 +153,9 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 5 | spt_lns | James (IrwinJam) | 1.4347 | 3/3 | 209415 | missing |  | — |
 | 6 | warm_lns_refinement † | kesudh | 1.4331 | 3/3 | 209509 | 3615.00 | ✓ | — |
 | 7 | iamparv7043 | Parv (iamparv7043) | 1.3276 | 3/3 | 226581 | 1309.30 | ✓ | — |
-| 8 | lns_negotiated | adityuhkapoor | 1.2533 | 3/3 | 240751 | missing |  | — |
-| 9 | anvesh | anvesh | 1.2520 | 3/3 | 240501 | missing |  | — |
-| 10 | cold_spt_lns | kesudh | 1.2376 | 3/3 | 246843 | 1015.51 | ✓ | — |
+| 8 | cold_spt_lns | kesudh | 1.2787 | 3/3 | 236275 | 1326.15 |  | — |
+| 9 | lns_negotiated | adityuhkapoor | 1.2533 | 3/3 | 240751 | missing |  | — |
+| 10 | anvesh | anvesh | 1.2520 | 3/3 | 240501 | missing |  | — |
 | 11 | negotiated_delay | Mantej Singh Gill | 1.1947 | 3/3 | 252901 | 636.11 | ✓ | — |
 | 12 | synapse-surge | Sameer-Deepak | 1.1456 | 3/3 | 264847 | missing |  | — |
 | 13 | shivaahir158 | Shiva Ahir (PhD Candidate, Stony Brook University) | 1.0593 | 3/3 | 288347 | 3728.39 |  | — |

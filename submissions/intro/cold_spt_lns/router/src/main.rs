@@ -736,7 +736,7 @@ fn refine_output(
     options: &refine::Options,
 ) -> u64 {
     assert!(trials > 0);
-    if mode == "portfolio" || mode == "portfolio-joint" || mode == "portfolio-cbs" {
+    let before = if mode == "portfolio" || mode == "portfolio-joint" || mode == "portfolio-cbs" {
         let first = trials / 2;
         if first > 0 {
             let stage = if mode == "portfolio-cbs" {
@@ -759,6 +759,24 @@ fn refine_output(
         )
     } else {
         refine::refine_cold(instance, output, output, seed, trials, mode, options)
+    };
+    if options.post_cbs_trials > 0 {
+        let after = refine::refine_cold(
+            instance,
+            output,
+            output,
+            seed.wrapping_add(2),
+            options.post_cbs_trials,
+            "cbs-mixed",
+            options,
+        );
+        assert!(
+            after <= before,
+            "post-conflict search must retain its own incumbent"
+        );
+        after
+    } else {
+        before
     }
 }
 
@@ -782,6 +800,7 @@ fn main() {
     let mut cost_distance_rooted = false;
     let mut cost_distance_discount = false;
     let mut refine_options = refine::Options::default();
+    let mut emit_global_pool = false;
     for a in args[3..].chunks(2) {
         assert_eq!(a.len(), 2);
         match a[0].as_str() {
@@ -795,6 +814,16 @@ fn main() {
             "--refine-temperature" => refine_options.temperature = a[1].parse().unwrap(),
             "--refine-slack" => refine_options.slack = a[1].parse().unwrap(),
             "--refine-group-max" => refine_options.group_max = a[1].parse().unwrap(),
+            "--post-cbs-trials" => refine_options.post_cbs_trials = a[1].parse().unwrap(),
+            "--cbs-nodes" => refine_options.cbs_nodes = a[1].parse().unwrap(),
+            "--joint-neutral" => refine_options.joint_neutral = a[1].parse().unwrap(),
+            "--penalized-astar" => {
+                refine_options.penalized_astar = a[1].parse::<u64>().unwrap() != 0
+            }
+            "--emit-global-pool" => emit_global_pool = a[1].parse::<u64>().unwrap() != 0,
+            "--compact-shortest-tree" => {
+                refine_options.compact_shortest_tree = a[1].parse::<u64>().unwrap() != 0
+            }
             "--construction-weight" => construction_weight = a[1].parse().unwrap(),
             "--tree-root-weight" => tree_root_weight = Some(a[1].parse::<u64>().unwrap()),
             "--negotiation-rounds" => negotiation_rounds = a[1].parse::<usize>().unwrap(),
@@ -902,6 +931,9 @@ fn main() {
     if let Some(bytes) = best_final {
         fs::write(&args[2], bytes).expect("write best internally generated final output");
         println!("total_delay={best_final_score}");
+        if emit_global_pool {
+            refine::write_pool(&args[1], &args[2], &format!("{}.pool.json", args[2]), seed);
+        }
         return;
     }
     let routes = best.expect("no legal cold construction; no output written");
@@ -920,6 +952,9 @@ fn main() {
             &refine_mode,
             &refine_options,
         );
+    }
+    if emit_global_pool {
+        refine::write_pool(&args[1], &args[2], &format!("{}.pool.json", args[2]), seed);
     }
 }
 

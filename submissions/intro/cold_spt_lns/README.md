@@ -84,7 +84,7 @@ input. Source/output hashes use exact bytes preserved by .gitattributes.
 
 ## Validation
 
-Ten Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
+Thirteen Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
 checks, shared-trunk objective accounting, entry pricing, direct-chain pricing
 bounded conflict splitting, exhaustive compatible-candidate selection, and strict
 repair success/rollback on crossing nets. Every adopted output also passes the official
@@ -124,3 +124,37 @@ includes every start and every refinement stage. `--refine-temperature`,
 settings. `--refine-mode portfolio-cbs` uses bounded conflict-based search
 followed by displacement chains; the conflict search has a fixed node budget
 and makes no global optimality claim when that budget is exhausted.
+
+`--compact-shortest-tree 1` adds greedy shared-branch candidates to the joint
+pool. It chooses paths inside the exact physical shortest-path predecessor DAG,
+so each sink keeps its shortest distance while the candidate tries to use fewer
+vertices. It does not claim a minimum-size Steiner arborescence. A tiny-grid test
+checks connectivity, sink distances, compactness and foreign-resource avoidance.
+
+`--post-cbs-trials N` adds a conflict-search phase after the normal refinement,
+using only this invocation's own best route. `--cbs-nodes` sets the fixed node
+budget per conflict search (default 256). Every phase is included in producing
+runtime, and the final phase retains a non-worsening incumbent.
+
+`--joint-neutral 1` samples equal-delay, equal-footprint combinations in joint
+search instead of always preserving the current geometry. Mode 2 also permits
+larger footprints at equal delay; mode 0 preserves the original behavior.
+Physical delay never increases in this joint move. A selection test checks
+delay/footprint policy, tie diversity and outside-resource restoration.
+
+`--penalized-astar 1` uses a physical-distance lower bound for congestion-priced
+searches with up to eight sinks. Queue entries preserve the original floating
+distance separately from priority, and the final equal-priority plateau is
+completed before extraction. Differential tests include history, soft occupancy,
+foreign pins and hard blockers. The default is 0 for compatibility.
+
+In one matched 12,000-trial hard/case_01 pilot, this option preserved the exact
+9,060 route bytes while observed full time fell from 50.886s to 32.995s. Search
+expansions fell from 79,693,415 to 28,946,893 across the two phases. These are
+single-case observations under concurrent workloads, not a general speed claim
+or replacement timings for retained routes.
+
+`--emit-global-pool 1` requires a separate `--out-root` and exports research
+alternatives generated from the current invocation's own incumbent. The output
+route is still independently checked. No external pool selector is part of this
+producer, and offline research selection results are not eligible submissions.

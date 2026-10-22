@@ -14,6 +14,11 @@ use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
+#[path = "compact.rs"]
+mod compact_tree;
+#[path = "route_pool.rs"]
+mod route_pool;
+pub use route_pool::write_pool;
 #[path = "joint.rs"]
 mod joint;
 mod cbs {
@@ -970,7 +975,9 @@ struct Scratch {
     pcur: u32,
     pdist: Vec<f64>,
     pstamp: Vec<u32>,
-    pheap: BinaryHeap<Reverse<(u64, u32)>>,
+    pheap: BinaryHeap<Reverse<(u64, u64, u32)>>,
+    penalized_astar: bool,
+    pen_expanded: u64,
     ncur: u32,
     pcv: Vec<u32>,
     pvst: Vec<u32>,
@@ -1004,6 +1011,8 @@ impl Scratch {
             pdist: vec![0.0; n as usize],
             pstamp: vec![0; n as usize],
             pheap: BinaryHeap::new(),
+            penalized_astar: false,
+            pen_expanded: 0,
             ncur: 0,
             pcv: vec![0; n as usize],
             pvst: vec![0; n as usize],
@@ -1391,22 +1400,56 @@ impl Scratch {
         self.pheap.clear();
         self.pdist[src as usize] = 0.0;
         self.pstamp[src as usize] = st;
-        self.pheap.push(Reverse((0u64, src)));
+        // Physical distance is a consistent lower bound because all congestion
+        // charges are nonnegative. Store g separately: subtracting h from f
+        // would lose floating-point bits needed by exact tight-edge extraction.
+        let astar =
+            self.penalized_astar && inst.early_stop && inst.nets[me as usize].sinks.len() <= 8;
+        let goals: Vec<_> = if astar {
+            inst.nets[me as usize]
+                .sinks
+                .iter()
+                .map(|&s| inst.xyz(s))
+                .collect()
+        } else {
+            Vec::new()
+        };
+        let planar = *inst.ld.iter().min().unwrap();
+        let potential = |v| {
+            if astar {
+                goal_bound(inst, &goals, v, planar) as f64
+            } else {
+                0.0
+            }
+        };
+        self.pheap
+            .push(Reverse((potential(src).to_bits(), 0u64, src)));
         let mut remaining = inst.nets[me as usize].sinks.len();
+        let mut finish_at = f64::INFINITY;
         let mut nb = [0u32; 6];
         let mut wb = [0u32; 6];
-        while let Some(Reverse((kb, v))) = self.pheap.pop() {
+        while let Some(Reverse((priority, kb, v))) = self.pheap.pop() {
+            if f64::from_bits(priority) > finish_at {
+                break;
+            }
             let d = f64::from_bits(kb);
             if self.pstamp[v as usize] != st || self.pdist[v as usize] != d {
                 continue;
             }
+            self.pen_expanded += 1;
             if inst.early_stop
                 && inst.pin_owner[v as usize] == me
                 && inst.nets[me as usize].sinks.contains(&v)
             {
                 remaining -= 1;
                 if remaining == 0 {
-                    break;
+                    if !astar {
+                        break;
+                    }
+                    // Preserve every equal-cost predecessor choice, including
+                    // vertices on the last sink's equal-f plateau.
+                    finish_at = d;
+                    continue;
                 }
             }
             let k = inst.neigh(v, &mut nb, &mut wb);
@@ -1455,7 +1498,8 @@ impl Scratch {
                 if self.pstamp[ui] != st || nd < self.pdist[ui] {
                     self.pstamp[ui] = st;
                     self.pdist[ui] = nd;
-                    self.pheap.push(Reverse((nd.to_bits(), u)));
+                    self.pheap
+                        .push(Reverse(((nd + potential(u)).to_bits(), nd.to_bits(), u)));
                 }
             }
         }
@@ -2617,6 +2661,11 @@ pub struct Options {
     pub temperature: u64,
     pub slack: u64,
     pub group_max: usize,
+    pub compact_shortest_tree: bool,
+    pub post_cbs_trials: u64,
+    pub cbs_nodes: usize,
+    pub joint_neutral: u64,
+    pub penalized_astar: bool,
 }
 impl Default for Options {
     fn default() -> Self {
@@ -2624,6 +2673,11 @@ impl Default for Options {
             temperature: 32,
             slack: 128,
             group_max: 16,
+            compact_shortest_tree: false,
+            post_cbs_trials: 0,
+            cbs_nodes: 256,
+            joint_neutral: 0,
+            penalized_astar: false,
         }
     }
 }
@@ -2645,6 +2699,8 @@ pub fn refine_cold(
             )
     );
     assert!((2..=64).contains(&options.group_max));
+    assert!(options.cbs_nodes > 0);
+    assert!(options.joint_neutral <= 2);
     let start = Instant::now();
     let mut inst = load_inst(instance_path);
     inst.early_stop = true;
@@ -2711,6 +2767,10 @@ pub fn refine_cold(
         true,
         Some(options.slack),
         0.0,
+        options.compact_shortest_tree,
+        options.cbs_nodes,
+        options.joint_neutral,
+        options.penalized_astar,
     );
     let mut best = shared.lock().unwrap();
     if let Some(ref mut sol) = best.sol {
@@ -2762,6 +2822,10 @@ fn worker(
     rescue: bool,
     walk_slack: Option<u64>,
     detour_frac: f64,
+    compact_shortest_tree: bool,
+    cbs_nodes: usize,
+    joint_neutral: u64,
+    penalized_astar: bool,
 ) {
     let thr0 = t0;
     let mut sol = init.clone();
@@ -2786,6 +2850,7 @@ fn worker(
         nn,
         seed.wrapping_add((widx as u64).wrapping_mul(0x9E3779B97F4A7C15)),
     );
+    ws.penalized_astar = penalized_astar;
     let mut trials: u64 = 0;
     let mut eq: u64 = 0;
     let mut rejected: u64 = 0;
@@ -2937,16 +3002,18 @@ fn worker(
             let use_neg =
                 neg_frac > 0.0 && ((ws.rng.next() >> 11) as f64 / ((1u64 << 53) as f64)) < neg_frac;
             let res = if do_mode == 4 {
-                joint::group_move(&inst, &mut sol, &mut owner, &mut ws, &group)
-            } else if mode.starts_with("cbs") && (mode != "cbs-mixed" || ws.rng.below(4) != 0) {
-                cbs::group_move(
+                joint::group_move(
                     &inst,
                     &mut sol,
                     &mut owner,
                     &mut ws,
                     &group,
-                    (passes as usize).max(1) * 128,
-                    deadline,
+                    compact_shortest_tree,
+                    joint_neutral,
+                )
+            } else if mode.starts_with("cbs") && (mode != "cbs-mixed" || ws.rng.below(4) != 0) {
+                cbs::group_move(
+                    &inst, &mut sol, &mut owner, &mut ws, &group, cbs_nodes, deadline,
                 )
             } else if use_neg {
                 neg_trials += 1;
@@ -3024,7 +3091,7 @@ fn worker(
         if last_report.elapsed().as_secs_f64() >= 5.0 {
             last_report = Instant::now();
             println!(
-                "[{}#{}] t={:.0}s trials={} rate={:.0}/s eq={} rej={} imp={} up={} neg={} inapp={} best={} (delta {})",
+                "[{}#{}] t={:.0}s trials={} rate={:.0}/s eq={} rej={} imp={} up={} neg={} inapp={} best={} (delta {}) pexp={}",
                 tag,
                 widx,
                 t0.elapsed().as_secs_f64(),
@@ -3037,7 +3104,8 @@ fn worker(
                 neg_trials,
                 inapp,
                 local_best_total,
-                local_best_total as i64 - init.total as i64
+                local_best_total as i64 - init.total as i64,
+                ws.pen_expanded
             );
         }
     }
@@ -3070,7 +3138,7 @@ fn worker(
         let _ = write_sol(&inst, &sol, &out_path);
     }
     println!(
-        "[{}#{}] DONE trials={} eq={} rej={} imp={} up={} neg={} inapp={} best={} (delta {})",
+        "[{}#{}] DONE trials={} eq={} rej={} imp={} up={} neg={} inapp={} best={} (delta {}) pexp={}",
         tag,
         widx,
         trials,
@@ -3081,7 +3149,8 @@ fn worker(
         neg_trials,
         inapp,
         local_best_total,
-        local_best_total as i64 - init.total as i64
+        local_best_total as i64 - init.total as i64,
+        ws.pen_expanded
     );
 }
 
@@ -3319,6 +3388,97 @@ mod tests {
             assert!(ws.extract_pen(&inst, &inst.nets[0], 2.0, 1.0).is_some());
         }
     }
+
+    #[test]
+    fn penalized_astar_matches_full_search_with_history_and_foreign_pins() {
+        for seed in 1..=80 {
+            let mut rng = Rng::new(seed);
+            let n = 60;
+            let mut inst = Inst {
+                early_stop: false,
+                retain_negotiated: false,
+                use_radix: true,
+                use_dial: false,
+                use_astar: true,
+                budget_bound: false,
+                free_dist: Vec::new(),
+                check_state: false,
+                name: "pen-astar".into(),
+                w: 5,
+                h: 4,
+                l: 3,
+                wh: 20,
+                n: n as u32,
+                ld: vec![1, 3, 2],
+                vd: 2,
+                nets: vec![Net {
+                    driver: 0,
+                    sinks: vec![19, 39, 59],
+                }],
+                pin_owner: vec![-1; n],
+            };
+            for p in [0, 19, 39, 59] {
+                inst.pin_owner[p] = 0;
+            }
+            inst.pin_owner[4] = 2;
+            let mut owner = vec![-1; n];
+            for v in 1..n {
+                if inst.pin_owner[v] < 0 {
+                    owner[v] = match rng.below(8) {
+                        0 => 2,
+                        1..=4 => 1,
+                        _ => -1,
+                    };
+                }
+            }
+            let mut full = Scratch::new(n as u32, 3, seed);
+            let mut fast = Scratch::new(n as u32, 3, seed);
+            let mut nb = [0; 6];
+            let mut wb = [0; 6];
+            for ws in [&mut full, &mut fast] {
+                ws.ncur = 1;
+                if seed % 2 == 0 {
+                    ws.entry_owner = owner.clone();
+                }
+                for v in 0..n {
+                    ws.pvst[v] = 1;
+                    ws.pcv[v] = (v % 3) as u32;
+                    ws.phv[v] = (v % 5) as f64 * 0.1;
+                    let k = inst.neigh(v as u32, &mut nb, &mut wb);
+                    for &u in &nb[..k] {
+                        if v as u32 >= u {
+                            continue;
+                        }
+                        let key = ekey(v as u32, u);
+                        ws.pce.insert(key, (key % 3) as u32);
+                        ws.phe.insert(key, (key % 7) as f64 * 0.1);
+                    }
+                }
+            }
+            let price = if seed % 2 == 0 { 0.3 } else { 1.7 };
+            full.pdijkstra(&inst, &owner, &[true, true, false], 0, 0, price, 0.7);
+            inst.early_stop = true;
+            fast.penalized_astar = true;
+            fast.pdijkstra(&inst, &owner, &[true, true, false], 0, 0, price, 0.7);
+            for &sink in &inst.nets[0].sinks {
+                assert_eq!(
+                    full.pstamp[sink as usize] == full.pcur,
+                    fast.pstamp[sink as usize] == fast.pcur
+                );
+                if full.pstamp[sink as usize] == full.pcur {
+                    assert!((full.pdist[sink as usize] - fast.pdist[sink as usize]).abs() < 1e-9);
+                }
+            }
+            let a = full.extract_pen_with_owner(&inst, &inst.nets[0], price, 0.7, Some(&owner));
+            let b = fast.extract_pen_with_owner(&inst, &inst.nets[0], price, 0.7, Some(&owner));
+            assert_eq!(a.is_some(), b.is_some(), "seed {seed}");
+            if let Some((verts, edges)) = b {
+                assert_eq!(verts.len(), edges.len() + 1);
+                assert!(!verts.contains(&4));
+                assert!(verts.iter().all(|&v| owner[v as usize] != 2));
+            }
+        }
+    }
     #[test]
     fn tree_objective_charges_shared_trunk_for_each_sink() {
         let inst = Inst {
@@ -3409,6 +3569,45 @@ mod tests {
                     legacy.extract_pen(&inst, &inst.nets[0], price, 1.0),
                     direct.extract_pen_with_owner(&inst, &inst.nets[0], price, 1.0, Some(&owner))
                 );
+                let mut astar = Scratch::new(n as u32, 3, seed);
+                astar.direct_chain_prices = Some(entry);
+                astar.penalized_astar = true;
+                astar.pdijkstra(&inst, &owner, &[true, true, true], 0, 0, price, 1.0);
+                for &sink in &inst.nets[0].sinks {
+                    assert!(
+                        (astar.pdist[sink as usize] - legacy.pdist[sink as usize]).abs() < 1e-9
+                    );
+                }
+                let (_, edges) = astar
+                    .extract_pen_with_owner(&inst, &inst.nets[0], price, 1.0, Some(&owner))
+                    .unwrap();
+                let mut adj = vec![Vec::new(); n];
+                for (u, v) in edges {
+                    adj[u as usize].push(v);
+                    adj[v as usize].push(u);
+                }
+                let mut distances = vec![f64::INFINITY; n];
+                distances[0] = 0.0;
+                let mut pending = vec![0usize];
+                while let Some(u) = pending.pop() {
+                    for &v in &adj[u] {
+                        let vi = v as usize;
+                        if distances[vi].is_finite() {
+                            continue;
+                        }
+                        let extra = if owner[vi] >= 0 && (!entry || owner[vi] != owner[u]) {
+                            price
+                        } else {
+                            0.0
+                        };
+                        distances[vi] =
+                            distances[u] + edge_w(&inst, u as u32, v).unwrap() as f64 + extra;
+                        pending.push(vi);
+                    }
+                }
+                for &sink in &inst.nets[0].sinks {
+                    assert!((distances[sink as usize] - legacy.pdist[sink as usize]).abs() < 1e-9);
+                }
             }
         }
     }

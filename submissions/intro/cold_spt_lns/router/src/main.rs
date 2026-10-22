@@ -865,7 +865,9 @@ fn main() {
             tree_root_weight,
             negotiation_rounds,
         );
-        let candidate = if candidate.is_none() && (inst.slow_congestion || inst.cost_distance) {
+        let candidate = if candidate.is_none()
+            && (inst.slow_congestion || inst.cost_distance || inst.fanout_priority != 0)
+        {
             eprintln!("construction experimental attempt exhausted; fresh uniform SPT fallback");
             let settings = (
                 inst.slow_congestion,

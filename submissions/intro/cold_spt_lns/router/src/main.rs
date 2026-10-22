@@ -916,6 +916,9 @@ fn main() {
             }
             "--cbs-nodes" => refine_options.cbs_nodes = a[1].parse().unwrap(),
             "--cbs-group-max" => refine_options.cbs_group_max = a[1].parse().unwrap(),
+            "--cbs-conflict-priority" => {
+                refine_options.cbs_conflict_priority = a[1].parse::<u64>().unwrap() != 0
+            }
             "--joint-neutral" => refine_options.joint_neutral = a[1].parse().unwrap(),
             "--joint-group-max" => refine_options.joint_group_max = a[1].parse().unwrap(),
             "--retain-compact-best" => {

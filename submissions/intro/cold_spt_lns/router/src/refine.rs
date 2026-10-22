@@ -117,6 +117,66 @@ mod cbs {
         (count, selected)
     }
 
+    // Probe at most four shared vertices in the most-overlapping route pair.
+    // Prefer an exclusion that raises both exact per-net bounds, then either
+    // bound. These static multi-sink SPT probes adapt ICBS conflict priority;
+    // they do not enumerate every conflict or change the two exclusion branches.
+    fn choose_conflict(
+        inst: &Inst,
+        owner: &mut [i32],
+        ws: &mut Scratch,
+        group: &[usize],
+        node: &Node,
+        cap: u64,
+        deadline: Instant,
+    ) -> Option<(usize, usize, u32)> {
+        let (a, b, original) = conflicts(&node.routes).1?;
+        let other: std::collections::HashSet<u32> = node.routes[b].verts.iter().copied().collect();
+        let common: Vec<u32> = node.routes[a]
+            .verts
+            .iter()
+            .copied()
+            .filter(|v| other.contains(v))
+            .collect();
+        let mut candidates = vec![original];
+        for i in [0, common.len() / 4, common.len() - 1] {
+            if !candidates.contains(&common[i]) {
+                candidates.push(common[i]);
+            }
+        }
+        let (mut best, mut best_rank) = (original, 0);
+        for v in candidates {
+            if Instant::now() >= deadline {
+                break;
+            }
+            let mut rank = 0;
+            for gi in [a, b] {
+                let mut bans = node.bans[gi].clone();
+                match bans.binary_search(&v) {
+                    Ok(_) => unreachable!("constrained vertex in route"),
+                    Err(i) => bans.insert(i, v),
+                }
+                let others = node.cost - node.routes[gi].delay;
+                ws.cbs_priority_probes += 1;
+                let constrained = low_level(inst, owner, ws, group[gi], &bans, cap - others);
+                if constrained
+                    .as_ref()
+                    .map_or(true, |r| r.delay > node.routes[gi].delay)
+                {
+                    rank += 1;
+                }
+            }
+            if rank > best_rank {
+                best_rank = rank;
+                best = v;
+            }
+            if rank == 2 {
+                break;
+            }
+        }
+        Some((a, b, best))
+    }
+
     // cap is inclusive. None includes both exhausted/infeasible and budget-limited
     // search; callers deliberately make no infeasibility claim from that value.
     fn search(
@@ -157,7 +217,12 @@ mod cbs {
             }
             expanded += 1;
             let node = nodes[id].take().unwrap();
-            let Some((a, b, v)) = conflicts(&node.routes).1 else {
+            let conflict = if ws.cbs_conflict_priority {
+                choose_conflict(inst, owner, ws, group, &node, cap, deadline)
+            } else {
+                conflicts(&node.routes).1
+            };
+            let Some((a, b, v)) = conflict else {
                 return Some(node.routes);
             };
             for gi in [a, b] {
@@ -234,7 +299,12 @@ mod cbs {
             }
             expanded += 1;
             let node = nodes[id].take().unwrap();
-            let (parent_conflicts, conflict) = conflicts(&node.routes);
+            let (parent_conflicts, ordinary_conflict) = conflicts(&node.routes);
+            let conflict = if ws.cbs_conflict_priority {
+                choose_conflict(inst, owner, ws, group, &node, cap, deadline)
+            } else {
+                ordinary_conflict
+            };
             let Some((a, b, v)) = conflict else {
                 return Some(node.routes);
             };
@@ -416,13 +486,18 @@ mod cbs {
         }
         #[test]
         fn cbs_larger_groups_match_independent_path_oracle() {
-            compare_larger_groups_with_path_oracle(false);
+            compare_larger_groups_with_path_oracle(false, false);
         }
         #[test]
         fn cbs_bypass_matches_independent_path_oracle() {
-            assert!(compare_larger_groups_with_path_oracle(true) > 0);
+            assert!(compare_larger_groups_with_path_oracle(true, false) > 0);
         }
-        fn compare_larger_groups_with_path_oracle(bypass: bool) -> usize {
+        #[test]
+        fn cbs_conflict_priority_matches_independent_path_oracle() {
+            compare_larger_groups_with_path_oracle(false, true);
+            compare_larger_groups_with_path_oracle(true, true);
+        }
+        fn compare_larger_groups_with_path_oracle(bypass: bool, priority: bool) -> usize {
             // On this positive-cost single-sink grid an optimum tree is a path.
             // Enumerate every simple path independently of Scratch/Dijkstra,
             // then enumerate disjoint path combinations for two through eight nets.
@@ -489,6 +564,7 @@ mod cbs {
             }
             let (mut feasible, mut infeasible) = (0, 0);
             let mut bypasses = 0;
+            let mut probes = 0;
             for count in 2..=8 {
                 for seed in 0..=8u64 {
                     let mut p: Vec<u32> = (0..16).collect();
@@ -549,6 +625,7 @@ mod cbs {
                     };
                     let group: Vec<_> = (0..count).collect();
                     let mut ws = Scratch::new(16, count, seed);
+                    ws.cbs_conflict_priority = priority;
                     let found = if bypass {
                         search_bypass(
                             &inst,
@@ -611,9 +688,13 @@ mod cbs {
                         assert!(below.is_none());
                         assert_eq!(owner, expected_owner);
                     }
+                    probes += ws.cbs_priority_probes;
                 }
             }
             assert!(feasible > 0 && infeasible > 0);
+            if priority {
+                assert!(probes > 0, "oracle must exercise conflict-priority probes");
+            }
             bypasses
         }
         #[test]
@@ -687,62 +768,65 @@ mod cbs {
                 } else {
                     infeasible += 1
                 }
-                let mut owner = vec![-1; 9];
-                let mut ws = Scratch::new(9, 2, seed);
-                let found = search(
-                    &inst,
-                    &mut owner,
-                    &mut ws,
-                    &[0, 1],
-                    1000,
-                    100_000,
-                    Instant::now() + Duration::from_secs(5),
-                );
-                assert_eq!(
-                    found.map(|rs| rs.iter().map(|r| r.delay).sum::<u64>()),
-                    best,
-                    "seed {seed}"
-                );
-                let mut bypasses = 0;
-                let bypassed = search_bypass(
-                    &inst,
-                    &mut owner,
-                    &mut ws,
-                    &[0, 1],
-                    1000,
-                    100_000,
-                    Instant::now() + Duration::from_secs(5),
-                    &mut bypasses,
-                );
-                assert_eq!(
-                    bypassed.map(|rs| rs.iter().map(|r| r.delay).sum::<u64>()),
-                    best,
-                    "branched bypass seed {seed}"
-                );
-                assert!(owner.iter().all(|&o| o == -1));
-                if let Some(best) = best {
-                    assert!(search(
+                for priority in [false, true] {
+                    let mut owner = vec![-1; 9];
+                    let mut ws = Scratch::new(9, 2, seed);
+                    ws.cbs_conflict_priority = priority;
+                    let found = search(
                         &inst,
                         &mut owner,
                         &mut ws,
                         &[0, 1],
-                        best - 1,
+                        1000,
                         100_000,
-                        Instant::now() + Duration::from_secs(5)
-                    )
-                    .is_none());
-                    assert!(search_bypass(
+                        Instant::now() + Duration::from_secs(5),
+                    );
+                    assert_eq!(
+                        found.map(|rs| rs.iter().map(|r| r.delay).sum::<u64>()),
+                        best,
+                        "seed {seed}"
+                    );
+                    let mut bypasses = 0;
+                    let bypassed = search_bypass(
                         &inst,
                         &mut owner,
                         &mut ws,
                         &[0, 1],
-                        best - 1,
+                        1000,
                         100_000,
                         Instant::now() + Duration::from_secs(5),
                         &mut bypasses,
-                    )
-                    .is_none());
+                    );
+                    assert_eq!(
+                        bypassed.map(|rs| rs.iter().map(|r| r.delay).sum::<u64>()),
+                        best,
+                        "branched bypass seed {seed}"
+                    );
                     assert!(owner.iter().all(|&o| o == -1));
+                    if let Some(best) = best {
+                        assert!(search(
+                            &inst,
+                            &mut owner,
+                            &mut ws,
+                            &[0, 1],
+                            best - 1,
+                            100_000,
+                            Instant::now() + Duration::from_secs(5)
+                        )
+                        .is_none());
+                        assert!(search_bypass(
+                            &inst,
+                            &mut owner,
+                            &mut ws,
+                            &[0, 1],
+                            best - 1,
+                            100_000,
+                            Instant::now() + Duration::from_secs(5),
+                            &mut bypasses,
+                        )
+                        .is_none());
+                        assert!(owner.iter().all(|&o| o == -1));
+                    }
                 }
             }
             assert!(feasible > 0 && infeasible > 0);
@@ -1337,6 +1421,8 @@ struct Scratch {
     penalized_heuristic_cache: bool,
     pen_h_evaluations: u64,
     cbs_bypasses: u64,
+    cbs_conflict_priority: bool,
+    cbs_priority_probes: u64,
     penalized_astar: bool,
     penalized_integer_queue: bool,
     pen_integer_calls: u64,
@@ -1378,6 +1464,8 @@ impl Scratch {
             penalized_heuristic_cache: false,
             pen_h_evaluations: 0,
             cbs_bypasses: 0,
+            cbs_conflict_priority: false,
+            cbs_priority_probes: 0,
             penalized_astar: false,
             penalized_integer_queue: false,
             pen_integer_calls: 0,
@@ -3166,6 +3254,7 @@ pub struct Options {
     pub post_cbs_trials: u64,
     pub post_cbs_bypass_trials: u64,
     pub cbs_bypass: bool,
+    pub cbs_conflict_priority: bool,
     pub cbs_nodes: usize,
     pub cbs_group_max: usize,
     pub joint_neutral: u64,
@@ -3186,6 +3275,7 @@ impl Default for Options {
             post_cbs_trials: 0,
             post_cbs_bypass_trials: 0,
             cbs_bypass: false,
+            cbs_conflict_priority: false,
             cbs_nodes: 256,
             cbs_group_max: 4,
             joint_neutral: 0,
@@ -3306,6 +3396,7 @@ pub fn refine_cold(
         options.cbs_nodes,
         options.cbs_group_max,
         options.cbs_bypass,
+        options.cbs_conflict_priority,
         options.joint_neutral,
         options.joint_group_max,
         options.penalized_astar,
@@ -3370,6 +3461,7 @@ fn worker(
     cbs_nodes: usize,
     cbs_group_max: usize,
     cbs_bypass: bool,
+    cbs_conflict_priority: bool,
     joint_neutral: u64,
     joint_group_max: usize,
     penalized_astar: bool,
@@ -3403,6 +3495,7 @@ fn worker(
     ws.penalized_astar = penalized_astar;
     ws.penalized_integer_queue = penalized_integer_queue;
     ws.penalized_heuristic_cache = penalized_heuristic_cache;
+    ws.cbs_conflict_priority = cbs_conflict_priority;
     let mut trials: u64 = 0;
     let mut eq: u64 = 0;
     let mut rejected: u64 = 0;
@@ -3713,7 +3806,7 @@ fn worker(
         let _ = write_sol(&inst, &sol, &out_path);
     }
     println!(
-        "[{}#{}] DONE trials={} eq={} rej={} imp={} up={} neg={} inapp={} best={} (delta {}) pexp={} pint={} hcalc={} cbp={}",
+        "[{}#{}] DONE trials={} eq={} rej={} imp={} up={} neg={} inapp={} best={} (delta {}) pexp={} pint={} hcalc={} cbp={} ccp={}",
         tag,
         widx,
         trials,
@@ -3728,7 +3821,8 @@ fn worker(
         ws.pen_expanded,
         ws.pen_integer_calls,
         ws.pen_h_evaluations,
-        ws.cbs_bypasses
+        ws.cbs_bypasses,
+        ws.cbs_priority_probes
     );
 }
 

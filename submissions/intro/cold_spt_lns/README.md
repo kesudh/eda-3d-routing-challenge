@@ -90,7 +90,7 @@ input. Source/output hashes use exact bytes preserved by .gitattributes.
 
 ## Validation
 
-Seventeen Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
+Eighteen Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
 checks, shared-trunk objective accounting, entry pricing, direct-chain pricing
 bounded conflict splitting, exhaustive compatible-candidate selection, and strict
 repair success/rollback on crossing nets. Every adopted output also passes the official
@@ -100,6 +100,8 @@ An independent simple-path oracle checks conflict search for groups of two
 through eight nets, including fixed obstacles, infeasible cases and cost caps.
 Both stock and bypass search are checked, including exhaustive branching trees
 on tiny grids; the bypass oracle requires that helpful bypasses actually occur.
+Conflict-priority probes are also checked with both search variants against
+the path and branching-tree oracles, including infeasible cases and cost caps.
 
 copy_audit.json describes the published revision's post-generation comparison
 with pinned published Git blobs. It is refreshed when publishing improvements;
@@ -107,6 +109,28 @@ it does not automatically describe later uncommitted experiments. Other entries
 are read by this audit after generation, never by the solver.
 
 Maintainers control verification.json, reproduction status and final winners.
+
+`--cbs-conflict-priority 1` optionally probes up to four shared vertices in the
+most-overlapping route pair before a conflict split. Each probe computes the
+exact single-net SPT after excluding that vertex. Conflicts that raise both
+net bounds are preferred, followed by those raising either bound. This adapts
+the conflict-priority idea in [ICBS](https://www.ijcai.org/Proceedings/15/Papers/110.pdf)
+to static multi-sink routing. It samples conflicts rather than classifying all
+of them. Both exclusion branches remain; it applies to stock and bypass search.
+The default is0. `ccp=` reports the additional low-level probes, whose work is
+included in the producing runtime. Node caps still count high-level expansions;
+the option can spend more work per expansion and makes no general speed claim.
+
+Two raw-instance pilots with60k main trials and1k six-net stock CBS trials gave
+8846 versus8864 on hard01 and13473 versus13493 on hard04. Both remain worse than
+the retained8828/13379 routes from different configurations. These observations
+motivate further search, not a claim that this option wins a case or tier.
+The bounded search can regress: a12k main/1k four-net stock pilot reached9054
+with priority versus9046 without it. Adding1k bypass trials reached8998 with
+priority versus9018 without it, with additional probe work. The default main
+and stock-CBS outputs matched the previous source byte-for-byte; the enabled
+stock-plus-bypass pilot also replayed byte-for-byte. Each configuration retains
+its own producing time, rather than substituting the replay measurement.
 This submission does not edit that file or infer a win from green CI.
 
 ## Research and algorithm credit

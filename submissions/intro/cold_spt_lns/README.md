@@ -111,6 +111,18 @@ leaves are removed only after finding a complete compatible plan. The entire
 cold construction, original search and added finishing phase share one producing
 invocation and timer; saved routes are not producer inputs.
 
+Archived revision `465aa7d78f90f105ec3a6f4aae8a2500942c03de99f5c7dd14ecf31a96c185d0`
+adds `--post-macro-trials`, defaulting to zero. It preserves the preceding
+weighted-disjoint phase and can run one further finishing phase with the main
+seed plus one. At a conflict, additional successors make either conflicting
+member avoid the other member's whole current tree. The ordinary disjoint
+membership successors remain available. Each added successor obeys the same
+strict physical-delay cap. Proposals still use at most eight nets and 256
+high-level nodes, ordered by physical cost plus 16 times shared vertices.
+These extra heuristic successors do not provide an optimality or suboptimality
+guarantee. Every route comes from the current invocation's raw construction;
+all preceding work and the added phase share its complete producing timer.
+
 The current generator captures each source file's bytes once and installs
 completed immutable files atomically with separate temporary files per writer.
 Eight concurrent capture/validation processes passed without manifest races.
@@ -151,6 +163,10 @@ oracles cover positive membership constraints, multiple sinks, layered grids,
 groups of two through eight nets, ownership restoration and weighted queues
 at known tiny-instance optima. Raw controller checks verify default-zero byte
 parity and a non-worsening single finishing call in normal and racing paths.
+The macro backend also passes those 25 Rust tests; its macro-enabled search
+core was separately checked with the same oracle suite. Raw controller checks
+verify byte parity against its parent when the new budget is zero, preservation
+of delay when enabled, and exactly one added call in normal and racing paths.
 
 copy_audit.json describes the published revision's post-generation comparison
 with pinned published Git blobs. It is refreshed when publishing improvements;

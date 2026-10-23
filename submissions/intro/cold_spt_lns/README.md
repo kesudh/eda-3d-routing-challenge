@@ -92,6 +92,25 @@ The bounded priority search is incomplete and makes no optimality claim. Its
 node costs order sibling exploration; they do not prune descendant states.
 The entire added phase is included in the producing time.
 
+Archived revision `13a645cca0c82dd4635900567546142ad611448cacb2d3dc70577a0c5fc2bbb7`
+adds `--post-disjoint-trials` in that backend, defaulting to zero. After global
+selection and stable polish, one additional conflict-search phase uses groups
+of up to eight nets and at most 256 high-level nodes per proposal. Its queue
+orders states by physical group delay plus 16 times the shared-vertex count;
+a separate strict physical-delay cap controls acceptance. This heuristic queue
+makes no optimality or bounded-suboptimality claim.
+
+The search independently adapts [Li et al. (2019), disjoint splitting](https://ojs.aaai.org/index.php/ICAPS/article/download/3487/3355)
+to static multi-sink tree membership. One branch prohibits a selected net from
+using a contested vertex; the other requires its presence and prohibits every
+other group member from using it. Required vertices become additional tree
+terminals with zero objective demand. Delay still counts only the actual sinks,
+so an actual-delay cap must not truncate the search to a distant required vertex.
+Both positive and negative constraints enter the state key. Artificial non-pin
+leaves are removed only after finding a complete compatible plan. The entire
+cold construction, original search and added finishing phase share one producing
+invocation and timer; saved routes are not producer inputs.
+
 The current generator captures each source file's bytes once and installs
 completed immutable files atomically with separate temporary files per writer.
 Eight concurrent capture/validation processes passed without manifest races.
@@ -127,6 +146,11 @@ the path and branching-tree oracles, including infeasible cases and cost caps.
 The archived priority backend has 23 Rust tests. Raw-case controller checks also
 verify zero-budget output parity, a non-worsening enabled finish and exactly one
 global finishing call after both normal and racing searches.
+The archived weighted-disjoint backend has 25 Rust tests. Its independent
+oracles cover positive membership constraints, multiple sinks, layered grids,
+groups of two through eight nets, ownership restoration and weighted queues
+at known tiny-instance optima. Raw controller checks verify default-zero byte
+parity and a non-worsening single finishing call in normal and racing paths.
 
 copy_audit.json describes the published revision's post-generation comparison
 with pinned published Git blobs. It is refreshed when publishing improvements;

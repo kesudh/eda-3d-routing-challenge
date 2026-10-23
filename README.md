@@ -51,7 +51,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.1514 | 20/20 | 341746 | 46476.76 | ✓ | — |
 | 5 | warm_lns_refinement † | kesudh | 1.1509 | 20/20 | 342006 | missing |  | — |
 | 6 | spt_lns | James (IrwinJam) | 1.1444 | 20/20 | 345066 | missing |  | — |
-| 7 | cold_spt_lns | kesudh | 1.1443 | 20/20 | 345174 | 38515.38 | ✓ | — |
+| 7 | cold_spt_lns | kesudh | 1.1443 | 20/20 | 345158 | 38930.44 | ✓ | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.1254 | 20/20 | 353836 | 2213.60 | ✓ | — |
 | 9 | anvesh | anvesh | 1.1069 | 20/20 | 360172 | missing |  | — |
 | 10 | synapse-surge | Sameer-Deepak | 1.1004 | 20/20 | 368374 | missing |  | — |
@@ -134,7 +134,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 4 | spt_lns | James (IrwinJam) | 1.3156 | 4/4 | 489177 | missing |  | — |
 | 5 | pathfinder_lns | Tazeem Mahashin | 1.3111 | 4/4 | 490499 | 61369.30 | ✓ | — |
 | 6 | warm_lns_refinement † | kesudh | 1.3085 | 4/4 | 491467 | 3621.00 | ✓ | — |
-| 7 | cold_spt_lns | kesudh | 1.2715 | 4/4 | 508545 | 33212.17 |  | — |
+| 7 | cold_spt_lns | kesudh | 1.2809 | 4/4 | 503087 | 39589.34 |  | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.1252 | 4/4 | 591707 | 4593.60 |  | — |
 | 9 | lns_negotiated | adityuhkapoor | 1.0981 | 4/4 | 590513 | missing |  | — |
 | 10 | shivaahir158 | Shiva Ahir (PhD Candidate, Stony Brook University) | 1.0549 | 4/4 | 608243 | 8756.73 |  | — |

@@ -1,9 +1,10 @@
 # cold_spt_lns
 
 Independent cold-start routing by [kesudh](https://github.com/kesudh). The entry covers
-all 45 cases across intro, hard, scale, stress, congested and designs. Green
-CI establishes submission compliance; winning requires leading the independent
-field under the maintainers' judging rules.
+all 45 cases across intro, hard, scale, stress, congested and designs. CI checks
+submission structure, scoring files and legality. Acceptance and reproduction
+remain maintainer decisions; winning requires leading the independent field
+under the maintainers' judging rules.
 The field comparison also checks the strongest complete timed public entry,
 including derivatives, so raw scoreboard leadership is assessed separately.
 
@@ -71,6 +72,26 @@ the actual producing source and runner. Its source.json hashes every file. The
 version identifier is SHA-256 of sorted relative-path:file-sha256 lines, each
 terminated by LF. Per-case solver_args provide the complete command.
 
+Archived revision `6ead40b0555c2ab96303a1aa2145097d2118058b02e100a552e23d5d4fdc4f56`
+adds group candidates that avoid one neighboring net's individually preferred
+tree at a time, before the existing all-neighbor and priced alternatives.
+The same finite-pool selector then chooses mutually vertex-disjoint trees.
+This broadens the candidate pool; it does not optimize over every legal tree.
+Additional seeded extractions can change later proposals, so the producing
+record pins the complete revision. Every candidate comes from the raw instance
+and that invocation's own geometry. No saved route enters the producer.
+
+Archived revision `78e62589eeac552696775443920d7679db5411d8990c36a9d4e241efec88bb70`
+adds `--post-priority-trials` in that backend, defaulting to zero. After selecting
+the invocation's best cold result and applying stable polish, it runs an additional
+mixed refinement phase and retains a non-worsening final incumbent. Priority
+proposals use up to eight nets and 32 priority-tree nodes; smaller groups retain
+the existing finite-pool search. This independently adapts
+[Ma et al. (2019)](https://arxiv.org/pdf/1812.06356) to static multi-sink trees.
+The bounded priority search is incomplete and makes no optimality claim. Its
+node costs order sibling exploration; they do not prune descendant states.
+The entire added phase is included in the producing time.
+
 The current generator captures each source file's bytes once and installs
 completed immutable files atomically with separate temporary files per writer.
 Eight concurrent capture/validation processes passed without manifest races.
@@ -82,7 +103,8 @@ checking are excluded. No producer times from another entry are substituted.
 
 Hardware: Intel Core i7-13700HX (16 cores / 24 logical threads), 31.7 GiB RAM,
 Windows 11, one solver thread per case. Other local workloads may be active;
-these are observed wall times on that hardware.
+these are observed wall times on that hardware. Some records also disclose
+BelowNormal scheduling in their per-case hardware string.
 
 input_sha256 normalizes CRLF to LF for portable input comparison. The actual
 producing bytes have a separate input_file_sha256. The solver reads the original
@@ -90,7 +112,7 @@ input. Source/output hashes use exact bytes preserved by .gitattributes.
 
 ## Validation
 
-Twenty Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
+The primary router's twenty Rust tests cover exhaustive tiny-grid optima, full-Dijkstra differential
 checks, shared-trunk objective accounting, entry pricing, direct-chain pricing
 bounded conflict splitting, exhaustive compatible-candidate selection, and strict
 repair success/rollback on crossing nets. Every adopted output also passes the official
@@ -102,6 +124,9 @@ Both stock and bypass search are checked, including exhaustive branching trees
 on tiny grids; the bypass oracle requires that helpful bypasses actually occur.
 Conflict-priority probes are also checked with both search variants against
 the path and branching-tree oracles, including infeasible cases and cost caps.
+The archived priority backend has 23 Rust tests. Raw-case controller checks also
+verify zero-budget output parity, a non-worsening enabled finish and exactly one
+global finishing call after both normal and racing searches.
 
 copy_audit.json describes the published revision's post-generation comparison
 with pinned published Git blobs. It is refreshed when publishing improvements;

@@ -72,6 +72,14 @@ the actual producing source and runner. Its source.json hashes every file. The
 version identifier is SHA-256 of sorted relative-path:file-sha256 lines, each
 terminated by LF. Per-case solver_args provide the complete command.
 
+Archived revision `3f6f1614ded82a0ab8b416b4a1157bb27293c6ea2773eafca59901aefa015d3c`
+adds optional exact whole-tree construction for small-fanout nets. Subset dynamic
+programming minimizes the sum of root-to-sink physical delays plus nonnegative
+congestion prices on the tree. Fanout and memory guards retain the existing
+shortest-tree fallback. The producing arguments record when this option was
+used; refinement and all cold starts remain inside the same timed invocation.
+Its 31 Rust tests include independent exhaustive whole-tree objective checks.
+
 Archived revision `6ead40b0555c2ab96303a1aa2145097d2118058b02e100a552e23d5d4fdc4f56`
 adds group candidates that avoid one neighboring net's individually preferred
 tree at a time, before the existing all-neighbor and priced alternatives.
@@ -121,8 +129,8 @@ and process exit. Compilation, pre-run instance copying and post-run official
 checking are excluded. No producer times from another entry are substituted.
 
 Most cases were produced on an Intel Core i7-13700HX (16 cores / 24 logical
-threads), 31.7 GiB RAM, Windows 11. The retained hard/case_02 and hard/case_08
-runs used an existing GCE VM with an Intel Xeon CPU at 2.20 GHz, four vCPUs,
+threads), 31.7 GiB RAM, Windows 11. The retained hard/case_08 run used an
+existing GCE VM with an Intel Xeon CPU at 2.20 GHz, four vCPUs,
 15.6 GiB RAM, Linux, and Rust 1.90.0. Every solver used one thread per case.
 Other searches could be active concurrently. These are observed wall times
 on the recorded hardware; per-case runs.json records identify the actual

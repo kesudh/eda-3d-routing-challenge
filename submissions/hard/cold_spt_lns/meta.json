@@ -3,7 +3,7 @@
   "url": "https://github.com/kesudh/eda-3d-routing-challenge/tree/codex/independent-cold-spt/submissions/intro/cold_spt_lns",
   "date": "2026-10-22",
   "method": "Independent cold construction from benchmark pins; versioned root-distance trees, fanout-aware congestion negotiation, exact per-net descent, fixed-work LNS, joint candidate selection and displacement chains. Every intermediate route is generated inside the same invocation. Each case records its actual producing source, seed and work counts.",
-  "hardware": "Mixed producing systems: Intel Core i7-13700HX (16C/24T), 31.7 GiB RAM, Windows 11; hard/case_02 and hard/case_08 on GCE Intel Xeon 2.20GHz, 4 vCPU, 15.6 GiB RAM, Linux, Rust1.90.0. Per-case runs.json records the actual system and timing.",
+  "hardware": "Intel Core i7-13700HX (16C/24T), 31.7 GiB RAM, Windows 11. Per-case runs.json records the actual system, scheduling and timing.",
   "threads": 1,
   "independent": true,
   "route_inputs": "Benchmark instance JSON only. All intermediate geometry is constructed in this invocation; no published routes, reference solutions, prior-entry routes or trained geometry artifacts.",

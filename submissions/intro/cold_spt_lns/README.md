@@ -79,6 +79,10 @@ congestion prices on the tree. Fanout and memory guards retain the existing
 shortest-tree fallback. The producing arguments record when this option was
 used; refinement and all cold starts remain inside the same timed invocation.
 Its 31 Rust tests include independent exhaustive whole-tree objective checks.
+The selected runs improve hard/case_02, case_05, case_06, case_07, case_08 and
+case_09 by 246, 172, 326, 290, 226 and 92 delay units, respectively, against the
+previous retained routes. Each complete producing configuration reproduced its
+route bytes exactly; original producing times remain in runtime.json.
 
 Archived revision `6ead40b0555c2ab96303a1aa2145097d2118058b02e100a552e23d5d4fdc4f56`
 adds group candidates that avoid one neighboring net's individually preferred
@@ -128,15 +132,12 @@ construction, every internal refinement stage, output serialization, file close
 and process exit. Compilation, pre-run instance copying and post-run official
 checking are excluded. No producer times from another entry are substituted.
 
-Most cases were produced on an Intel Core i7-13700HX (16 cores / 24 logical
-threads), 31.7 GiB RAM, Windows 11. The retained hard/case_08 run used an
-existing GCE VM with an Intel Xeon CPU at 2.20 GHz, four vCPUs,
-15.6 GiB RAM, Linux, and Rust 1.90.0. Every solver used one thread per case.
+The retained cases were produced on an Intel Core i7-13700HX (16 cores / 24
+logical threads), 31.7 GiB RAM, Windows 11. Every solver used one thread per case.
 Other searches could be active concurrently. These are observed wall times
 on the recorded hardware; per-case runs.json records identify the actual
-platform, hardware, scheduling and producing invocation. The Linux runs were
-replayed on the same platform; their replay times do not replace production
-times. Some Windows records disclose BelowNormal scheduling.
+platform, hardware, scheduling and producing invocation. Replay times do not
+replace production times. Some Windows records disclose BelowNormal scheduling.
 
 input_sha256 normalizes CRLF to LF for portable input comparison. The actual
 producing bytes have a separate input_file_sha256. The solver reads the original

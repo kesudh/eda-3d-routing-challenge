@@ -414,3 +414,28 @@ restart-racing check confirms that finishing runs once after all finalists.
 These are integration checks, not wins over the retained submission cases.
 Separate experiments polishing saved own routes are research only: any
 submitted replacement must come from a fresh, fully timed raw-input run.
+
+The retained archived backend
+`68b06974417ea78dd709578c7e06de87c4ea3e9204a24bb8bf92521705661c18`
+adds `chain-polish-fast`. After a displacement chain is completely legal, it
+exactly reroutes its affected nets against the other proposed and outside
+routes for up to two sweeps. Each replacement must not increase that net's
+physical sink-delay sum. The operator then accepts or rolls back the entire
+chain using its aggregate physical delay. Original routes remain available
+for rollback throughout. This adapts the exact reoptimization after
+displacement described in the original
+[Pathfinder LNS submission](https://github.com/partcleda/eda-3d-routing-challenge/pull/3)
+to our own transactional chain implementation; no route geometry is imported.
+
+`portfolio-joint-polish` divides each refinement allocation equally between
+`mixed-joint` and `chain-polish-fast`. The retained hard/case_03 invocation uses
+eight cold starts, an 8,000-trial pilot, two finalists and a 120,000-trial
+allocation. Its 144,000 total mixed-joint trials match the previous producing
+recipe's mixed-joint work, with another 144,000 chain trials added. Configured
+post-CBS search and final stable polishing remain inside the same invocation.
+The complete raw-input run produced delay 11,298 in 411.146 seconds, versus
+the previous retained 11,394. Exact-source replay reproduced its bytes. This
+supports the combined configuration; it is not an isolated operator or speed
+claim. The producing record and original measured runtime are retained, and
+the normal `--reproduce --tier hard --case case_03` command builds its pinned
+backend from the immutable archive.

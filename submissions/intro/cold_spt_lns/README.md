@@ -439,3 +439,28 @@ supports the combined configuration; it is not an isolated operator or speed
 claim. The producing record and original measured runtime are retained, and
 the normal `--reproduce --tier hard --case case_03` command builds its pinned
 backend from the immutable archive.
+
+
+The archived backend
+`f6532d33dcd611182daf06c34f888c341b38713fc0a007ff956a00d1f2d452be`
+combines the same chain-polish implementation with a raw construction planner.
+For cross-die single-sink nets, `--cross-profile-plan 2` jointly chooses among
+four pin-derived profiles: either cheap middle plane and either X/Y elbow.
+Profiles include their via columns. The planner estimates contention against
+other profiles and independently generated pin-only trees, then performs at
+most twelve deterministic coordinate passes. It reads no saved route geometry.
+
+The selected profile supplies a soft off-profile cost of 256 in the relaxed
+search's 1024-unit scale. Detailed routing can depart from it; strict repair,
+refinement and the physical score do not include this guidance cost. Mode zero
+skips the planner and preserves the previous constructor's random stream.
+This is a construction heuristic, with no global-optimality guarantee.
+
+The hard/case_03 producing configuration adds only profile mode two to the
+previous 68b recipe: eight starts, 120,000-trial allocations, an 8,000-trial
+pilot, two finalists, post-CBS and final stable polishing. The complete raw
+run produced delay 11,242 in 353.200 seconds, versus the prior retained 11,298.
+Its source archive, arguments, actual producing time and output hash are
+pinned in the case record. This is evidence for the combined configuration;
+the separate profile-only full run did not beat the retained chain-only route.
+Exact-source standard replay reproduced the 11,242 route byte-for-byte.

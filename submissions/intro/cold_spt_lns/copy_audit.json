@@ -6,7 +6,7 @@
     "main": "1e6282865cbfc9f0ad6d5c82f5ed131bd80d2f3a",
     "pr67": "a4b486ec9a902078d2706e8a4ec2a8d526003c1a",
     "pr66": "8036968204edaf72d57e8391689d263521a4776f",
-    "pr65": "799780e20fbcda2c3c9a2b4b922b1623438f2e35",
+    "pr65": "9ab34ac56a073294d103d8a39bd3717aad051723",
     "pr64": "5b7ed0529380af0340e2b8993ca9d35459a809a8",
     "pr63": "6d350cb8431c438efa6fd0d2336e59250e528988",
     "pr62": "43f7fff3393d5d8e79a9a0984e4f645fb2c99d1b",
@@ -34,7 +34,7 @@
   "small_case_exemptions": [
     "intro/case_01"
   ],
-  "distinct_published_route_blobs": 1316,
+  "distinct_published_route_blobs": 1339,
   "matches": [],
   "own_canonical_route_hashes": {
     "intro/case_02": "ce5436455ab20b337e287c5b77795edf98bef6d33b36a635c90035106e312454",
@@ -80,6 +80,6 @@
     "congested/case_04": "7bdd1bb716c1287e0ac4fc0d6e657a923433db6fad6ccbfa7c1fbfb9de30dee8",
     "designs/ctrl": "c917a6f9a11e85f0be37cf334b8c98eb87a9b9bcf6b3ca9018dbb8648ae84311",
     "designs/int2float": "0a0d0b02da87766e40c5b7d5d17eaf4a24527e5662001d6c0f2b0cfa8b0e0962",
-    "designs/router": "bbebb341f9e1044d780262a777e038b940dc4a226259188aad8c37b40e9a1410"
+    "designs/router": "759cc1021f31c87dd1aeabcb587e006328b9bdd12fd04da35df802ff0d48fdb1"
   }
 }

@@ -123,7 +123,7 @@ do not edit it by hand.
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.4354 | 3/3 | 209175 | 47267.61 | ✓ | — |
 | 5 | spt_lns | James (IrwinJam) | 1.4347 | 3/3 | 209415 | missing |  | — |
 | 6 | warm_lns_refinement † | kesudh | 1.4331 | 3/3 | 209509 | 3615.00 | ✓ | — |
-| 7 | cold_spt_lns | kesudh | 1.3675 | 3/3 | 220383 | 38818.09 |  | — |
+| 7 | cold_spt_lns | kesudh | 1.3720 | 3/3 | 219695 | 77267.12 |  | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.3276 | 3/3 | 226581 | 1309.30 | ✓ | — |
 | 9 | lns_negotiated | adityuhkapoor | 1.2533 | 3/3 | 240751 | missing |  | — |
 | 10 | anvesh | anvesh | 1.2520 | 3/3 | 240501 | missing |  | — |

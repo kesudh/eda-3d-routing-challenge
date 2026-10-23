@@ -21,8 +21,8 @@ do not edit it by hand.
 | 3 | cuda-have-been-shorter | YJ Kim | 1.1562 | 20/20 | 339546 | missing |  | — |
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.1514 | 20/20 | 341746 | 46476.76 | ✓ | — |
 | 5 | warm_lns_refinement † | kesudh | 1.1509 | 20/20 | 342006 | missing |  | — |
-| 6 | spt_lns | James (IrwinJam) | 1.1444 | 20/20 | 345066 | missing |  | — |
-| 7 | cold_spt_lns | kesudh | 1.1443 | 20/20 | 345158 | 38930.44 | ✓ | — |
+| 6 | cold_spt_lns | kesudh | 1.1447 | 20/20 | 344902 | 46393.55 | ✓ | — |
+| 7 | spt_lns | James (IrwinJam) | 1.1444 | 20/20 | 345066 | missing |  | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.1254 | 20/20 | 353836 | 2213.60 | ✓ | — |
 | 9 | anvesh | anvesh | 1.1069 | 20/20 | 360172 | missing |  | — |
 | 10 | synapse-surge | Sameer-Deepak | 1.1004 | 20/20 | 368374 | missing |  | — |
@@ -69,7 +69,7 @@ do not edit it by hand.
 | 3 | cuda-have-been-shorter | YJ Kim | 1.1391 | 8/8 | 532016 | missing |  | — |
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.1277 | 8/8 | 537468 | 62411.00 | ✓ | — |
 | 5 | warm_lns_refinement † | kesudh | 1.1274 | 8/8 | 537576 | 7543.00 | ✓ | — |
-| 6 | cold_spt_lns | kesudh | 1.1219 | 8/8 | 540340 | 31215.12 |  | — |
+| 6 | cold_spt_lns | kesudh | 1.1219 | 8/8 | 540310 | 32786.29 |  | — |
 | 7 | spt_lns | James (IrwinJam) | 1.1188 | 8/8 | 541966 | missing |  | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.1010 | 8/8 | 550828 | 3094.50 | ✓ | — |
 | 9 | anvesh | anvesh | 1.0821 | 8/8 | 559460 | missing |  | — |

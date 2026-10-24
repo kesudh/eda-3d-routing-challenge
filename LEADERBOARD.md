@@ -88,9 +88,9 @@ do not edit it by hand.
 | 3 | cuda-have-been-shorter | YJ Kim | 1.0978 | 1/1 | 1042926 | missing |  | — |
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.0914 | 1/1 | 1048990 | 43262.89 | ✓ | — |
 | 5 | warm_lns_refinement † | kesudh | 1.0911 | 1/1 | 1049332 | 2070.00 | ✓ | — |
-| 6 | spt_lns | James (IrwinJam) | 1.0779 | 1/1 | 1062208 | missing |  | — |
-| 7 | lns_negotiated | adityuhkapoor | 1.0669 | 1/1 | 1073124 | missing |  | — |
-| 8 | cold_spt_lns | kesudh | 1.0604 | 1/1 | 1079702 | 14103.66 |  | — |
+| 6 | cold_spt_lns | kesudh | 1.0802 | 1/1 | 1059868 | 91.39 | ✓ | — |
+| 7 | spt_lns | James (IrwinJam) | 1.0779 | 1/1 | 1062208 | missing |  | — |
+| 8 | lns_negotiated | adityuhkapoor | 1.0669 | 1/1 | 1073124 | missing |  | — |
 | 9 | synapse-surge | Sameer-Deepak | 1.0008 | 1/1 | 1143964 | missing |  | — |
 
 † derivative entry (refines another entry's routes): coordinated_refinement builds on leonid-popryho (Leonid Popryho); warm_lns_refinement builds on pathfinder_lns (Taz33m).

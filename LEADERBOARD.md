@@ -105,7 +105,7 @@ do not edit it by hand.
 | 4 | spt_lns | James (IrwinJam) | 1.3156 | 4/4 | 489177 | missing |  | — |
 | 5 | pathfinder_lns | Tazeem Mahashin | 1.3111 | 4/4 | 490499 | 61369.30 | ✓ | — |
 | 6 | warm_lns_refinement † | kesudh | 1.3085 | 4/4 | 491467 | 3621.00 | ✓ | — |
-| 7 | cold_spt_lns | kesudh | 1.2832 | 4/4 | 501757 | 44210.97 |  | — |
+| 7 | cold_spt_lns | kesudh | 1.2833 | 4/4 | 501731 | 38462.99 |  | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.1252 | 4/4 | 591707 | 4593.60 |  | — |
 | 9 | lns_negotiated | adityuhkapoor | 1.0981 | 4/4 | 590513 | missing |  | — |
 | 10 | shivaahir158 | Shiva Ahir (PhD Candidate, Stony Brook University) | 1.0549 | 4/4 | 608243 | 8756.73 |  | — |

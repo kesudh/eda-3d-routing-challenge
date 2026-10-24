@@ -10,3 +10,4 @@ are in [the shared intro entry](../../intro/cold_spt_lns/README.md).
 
 Each case retains its actual producing run, full runtime, source version
 and solver arguments in runs.json.
+Full same-platform exact replay certificate for congested/case_03 (+26) is in [yielding_replay_proofs.json](yielding_replay_proofs.json). The original producer time remains in runtime.json; replay time is separate in the certificate.

@@ -95,12 +95,14 @@ and that invocation's own geometry. No saved route enters the producer.
 
 Archived revision `44df9af614ff09212931d4168a42a64e0bf49657fe7b87155c6fb6dc0e71f696`
 combines those yielding group candidates with the newer constructor archive.
-The retained intro/case_06, case_07, case_08, case_10 and case_11 recipes leave
-its optional mode-two constructor off. Their full raw runs improve delay by
-2, 4, 12, 18 and 18, respectively. Full same-platform replays reproduce all
-five routes exactly; [yielding_replay_proofs.json](yielding_replay_proofs.json)
-records their sources, arguments, hashes and separate replay times. Original
-producing times remain in runtime.json.
+The retained intro/case_06, case_07, case_08, case_10, case_11, case_12 and
+case_14 recipes leave its optional mode-two constructor off. Their full raw
+runs improve delay by 2, 4, 12, 18, 18, 10 and 40, respectively, for 104
+total. Full same-platform replays reproduce all seven routes exactly;
+[yielding_replay_proofs.json](yielding_replay_proofs.json) records their
+sources, arguments, hashes and separate replay times. Original producing
+times remain in runtime.json. The hard/case_01 route also improves by 26; its
+separate certificate is [yielding_replay_proofs.json](../../hard/cold_spt_lns/yielding_replay_proofs.json).
 
 Archived revision `78e62589eeac552696775443920d7679db5411d8990c36a9d4e241efec88bb70`
 adds `--post-priority-trials` in that backend, defaulting to zero. After selecting

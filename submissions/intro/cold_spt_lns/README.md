@@ -132,8 +132,11 @@ construction, every internal refinement stage, output serialization, file close
 and process exit. Compilation, pre-run instance copying and post-run official
 checking are excluded. No producer times from another entry are substituted.
 
-The retained cases were produced on an Intel Core i7-13700HX (16 cores / 24
-logical threads), 31.7 GiB RAM, Windows 11. Every solver used one thread per case.
+Most retained cases were produced on an Intel Core i7-13700HX (16 cores / 24
+logical threads), 31.7 GiB RAM, Windows 11. The retained designs/int2float
+case used an existing GCE Intel Xeon 2.20 GHz VM with four vCPUs, 15.6 GiB RAM,
+Linux and Rust 1.90.0; exact-byte replay used that same platform and toolchain.
+Every solver used one thread per case.
 Other searches could be active concurrently. These are observed wall times
 on the recorded hardware; per-case runs.json records identify the actual
 platform, hardware, scheduling and producing invocation. Replay times do not

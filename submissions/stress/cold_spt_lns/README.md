@@ -11,7 +11,5 @@ are in [the shared intro entry](../../intro/cold_spt_lns/README.md).
 Each case retains its actual producing run, full runtime, source version
 and solver arguments in runs.json.
 
-The stress entry now retains source029 at checked delay 1,047,864, improving the prior own published delay 1,049,200 by 1,336. Its original complete producing time is 11,709.608999999939 seconds; exact replay time is kept separate. Exact Rust toolchain is unknown in the frozen metadata. Confirmed tier wins: 0/6; this change does not claim a tier lead.
-
-
-The source029 update preserves the other 44 case records, replay certificates, and source archives. This update establishes the checked legal strict-gain result for case_01 and reports confirmed tier wins as 0/6; it makes no six-tier lead claim.
+Source485 is ROOT-checked legal at delay 1,047,854, 10 below the published 1,047,864; its original producing runtime is 8,854.390000000014 seconds and exact replay runtime is 6,661.140000000014 seconds, with source version 485b695fb57482656fe0ad99fb7d03201979236b38d1ae735290b13225267eea and binary SHA-256 ab03e16154b0b8877be7ce8ad9fc8b7ec9a29dc3c50f3321416f7aaff92e07a3.
+The exact historical Rust compiler/toolchain is unknown; confirmed tier wins remain 0/6 and no tier lead is claimed.

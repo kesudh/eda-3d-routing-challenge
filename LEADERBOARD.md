@@ -86,7 +86,7 @@ do not edit it by hand.
 | 1 | coordinated_refinement † | jay-tau | 1.0984 | 1/1 | 1042314 | missing |  | — |
 | 2 | leonid-popryho | Leonid Popryho | 1.0984 | 1/1 | 1042322 | missing |  | — |
 | 3 | cuda-have-been-shorter | YJ Kim | 1.0978 | 1/1 | 1042926 | missing |  | — |
-| 4 | cold_spt_lns | kesudh | 1.0926 | 1/1 | 1047864 | 11709.61 | ✓ | — |
+| 4 | cold_spt_lns | kesudh | 1.0926 | 1/1 | 1047854 | 8854.39 | ✓ | — |
 | 5 | pathfinder_lns | Tazeem Mahashin | 1.0914 | 1/1 | 1048990 | 43262.89 |  | — |
 | 6 | warm_lns_refinement † | kesudh | 1.0911 | 1/1 | 1049332 | 2070.00 | ✓ | — |
 | 7 | spt_lns | James (IrwinJam) | 1.0779 | 1/1 | 1062208 | missing |  | — |

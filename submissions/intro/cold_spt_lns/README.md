@@ -93,6 +93,15 @@ Additional seeded extractions can change later proposals, so the producing
 record pins the complete revision. Every candidate comes from the raw instance
 and that invocation's own geometry. No saved route enters the producer.
 
+Archived revision `44df9af614ff09212931d4168a42a64e0bf49657fe7b87155c6fb6dc0e71f696`
+combines those yielding group candidates with the newer constructor archive.
+The retained intro/case_06, case_07 and case_08 recipes leave its optional
+mode-two constructor off. Their full raw runs improve delay by 2, 4 and 12,
+respectively. Full same-platform replays reproduce all three routes exactly;
+[yielding_replay_proofs.json](yielding_replay_proofs.json) records the source,
+arguments, hashes and separate replay times. Original producing times remain
+in runtime.json.
+
 Archived revision `78e62589eeac552696775443920d7679db5411d8990c36a9d4e241efec88bb70`
 adds `--post-priority-trials` in that backend, defaulting to zero. After selecting
 the invocation's best cold result and applying stable polish, it runs an additional

@@ -69,7 +69,7 @@ do not edit it by hand.
 | 3 | cuda-have-been-shorter | YJ Kim | 1.1391 | 8/8 | 532016 | missing |  | — |
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.1277 | 8/8 | 537468 | 62411.00 | ✓ | — |
 | 5 | warm_lns_refinement † | kesudh | 1.1274 | 8/8 | 537576 | 7543.00 | ✓ | — |
-| 6 | cold_spt_lns | kesudh | 1.1223 | 8/8 | 540084 | 39313.03 |  | — |
+| 6 | cold_spt_lns | kesudh | 1.1226 | 8/8 | 539958 | 36447.05 |  | — |
 | 7 | spt_lns | James (IrwinJam) | 1.1188 | 8/8 | 541966 | missing |  | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.1010 | 8/8 | 550828 | 3094.50 | ✓ | — |
 | 9 | anvesh | anvesh | 1.0821 | 8/8 | 559460 | missing |  | — |

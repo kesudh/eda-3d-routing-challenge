@@ -11,6 +11,8 @@ are in [the shared intro entry](../../intro/cold_spt_lns/README.md).
 Each case retains its actual producing run, full runtime, source version
 and solver arguments in runs.json.
 
+The retained designs/ctrl route has delay **51,158** and is byte-identical to a fresh exact replay of archived genericRust source44 `44df9af614ff`. Its original producer runtime remains **15,379.797 seconds** in runs.json/runtime.json; replay time is recorded separately in the ROOT proof and is never substituted. This is 674 below the predecessor record. See [ctrl_exact_replay_proof.json](ctrl_exact_replay_proof.json).
+
 The retained int2float route has delay **94,524**, produced from raw input by
 archived source `6ead40b` in **58,925.310 seconds** on the Linux/Rust 1.90.0
 GCE system recorded in runs.json. Its joint search adds internally generated

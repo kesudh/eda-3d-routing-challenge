@@ -116,8 +116,8 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 2 | leonid-popryho | Leonid Popryho | 1.0984 | 1/1 | 1042322 | missing |  | — |
 | 3 | cuda-have-been-shorter | YJ Kim | 1.0978 | 1/1 | 1042926 | missing |  | — |
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.0914 | 1/1 | 1048990 | 43262.89 | ✓ | — |
-| 5 | warm_lns_refinement † | kesudh | 1.0911 | 1/1 | 1049332 | 2070.00 | ✓ | — |
-| 6 | cold_spt_lns | kesudh | 1.0802 | 1/1 | 1059868 | 91.39 | ✓ | — |
+| 5 | cold_spt_lns | kesudh | 1.0912 | 1/1 | 1049200 | 1994.12 | ✓ | — |
+| 6 | warm_lns_refinement † | kesudh | 1.0911 | 1/1 | 1049332 | 2070.00 |  | — |
 | 7 | spt_lns | James (IrwinJam) | 1.0779 | 1/1 | 1062208 | missing |  | — |
 | 8 | lns_negotiated | adityuhkapoor | 1.0669 | 1/1 | 1073124 | missing |  | — |
 | 9 | synapse-surge | Sameer-Deepak | 1.0008 | 1/1 | 1143964 | missing |  | — |

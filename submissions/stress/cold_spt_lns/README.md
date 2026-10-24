@@ -11,4 +11,7 @@ are in [the shared intro entry](../../intro/cold_spt_lns/README.md).
 Each case retains its actual producing run, full runtime, source version
 and solver arguments in runs.json.
 
-The retained stress route has checked delay 1,049,200 and original complete producing time 1,994.125 seconds. It uses one raw start with soft alternating X/Y preferences during cold construction, followed by 1,600 fixed portfolio refinement trials and eight final stable-polish passes across four deterministic schedules. All directions remain available and the physical score is unchanged. An independent rebuild of its archived source reproduced the exact route bytes and passed the official legality check. This lowers the prior own delay of 1,059,868 by 10,668; it remains 7,120 above the captured full-field leader at 1,042,080. Replay time is recorded separately and does not replace producing time.
+The stress entry now retains source029 at checked delay 1,047,864, improving the prior own published delay 1,049,200 by 1,336. Its original complete producing time is 11,709.608999999939 seconds; exact replay time is kept separate. Exact Rust toolchain is unknown in the frozen metadata. Confirmed tier wins: 0/6; this change does not claim a tier lead.
+
+
+The source029 update preserves the other 44 case records, replay certificates, and source archives. This update establishes the checked legal strict-gain result for case_01 and reports confirmed tier wins as 0/6; it makes no six-tier lead claim.

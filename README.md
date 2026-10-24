@@ -50,7 +50,7 @@ Submit by pull request; see [CONTRIBUTING.md](CONTRIBUTING.md). Also in [LEADERB
 | 3 | cuda-have-been-shorter | YJ Kim | 1.1562 | 20/20 | 339546 | missing |  | — |
 | 4 | pathfinder_lns | Tazeem Mahashin | 1.1514 | 20/20 | 341746 | 46476.76 | ✓ | — |
 | 5 | warm_lns_refinement † | kesudh | 1.1509 | 20/20 | 342006 | missing |  | — |
-| 6 | cold_spt_lns | kesudh | 1.1461 | 20/20 | 343962 | 123478.15 |  | — |
+| 6 | cold_spt_lns | kesudh | 1.1463 | 20/20 | 343926 | 121649.45 |  | — |
 | 7 | spt_lns | James (IrwinJam) | 1.1444 | 20/20 | 345066 | missing |  | — |
 | 8 | iamparv7043 | Parv (iamparv7043) | 1.1254 | 20/20 | 353836 | 2213.60 | ✓ | — |
 | 9 | anvesh | anvesh | 1.1069 | 20/20 | 360172 | missing |  | — |

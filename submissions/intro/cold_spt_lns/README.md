@@ -96,9 +96,10 @@ and that invocation's own geometry. No saved route enters the producer.
 Archived revision `44df9af614ff09212931d4168a42a64e0bf49657fe7b87155c6fb6dc0e71f696`
 combines those yielding group candidates with the newer constructor archive.
 The retained intro/case_06, case_07, case_08, case_10, case_11, case_12, case_14,
-case_16 and case_20 recipes leave its optional mode-two constructor off.
-Their full raw runs improve delay by 2, 4, 12, 18, 18, 10, 40, 88 and 28, respectively, for 220 total. Full same-platform
-replays reproduce all nine routes exactly;
+case_16, case_19 and case_20 recipes leave its optional mode-two constructor off.
+Their full raw runs improve delay by 2, 4, 12, 18, 18, 10, 40, 88,
+22 and 28, respectively, for 242 total. Full same-platform
+replays reproduce all ten routes exactly;
 [yielding_replay_proofs.json](yielding_replay_proofs.json)
 records their sources, arguments, hashes and separate replay times. Original
 producing times remain in runtime.json. The hard/case_01, case_04, case_06 and case_07 routes improve delay by 26, 14, 60 and 84; the hard

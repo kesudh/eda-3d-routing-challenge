@@ -45,7 +45,7 @@ do not edit it by hand.
 | 5 | pathfinder_lns | Tazeem Mahashin | 1.3884 | 9/9 | 144991 | missing |  | — |
 | 6 | warm_lns_refinement † | kesudh | 1.3874 | 9/9 | 145095 | missing |  | — |
 | 7 | reubalink | reubalink | 1.3622 | 9/9 | 147825 | missing |  | — |
-| 8 | cold_spt_lns | kesudh | 1.3613 | 9/9 | 147979 | 16410.48 | ✓ | — |
+| 8 | cold_spt_lns | kesudh | 1.3614 | 9/9 | 147975 | 15972.48 | ✓ | — |
 | 9 | iamparv7043 | Parv (iamparv7043) | 1.3019 | 9/9 | 155125 | 7333.40 | ✓ | — |
 | 10 | erikqu_root_aware_portfolio | erikqu | 1.2745 | 9/9 | 158455 | missing |  | — |
 | 11 | synapse-surge | Sameer-Deepak | 1.2569 | 9/9 | 161183 | missing |  | — |

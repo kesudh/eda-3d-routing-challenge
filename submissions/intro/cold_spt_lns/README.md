@@ -95,15 +95,22 @@ and that invocation's own geometry. No saved route enters the producer.
 
 Archived revision `44df9af614ff09212931d4168a42a64e0bf49657fe7b87155c6fb6dc0e71f696`
 combines those yielding group candidates with the newer constructor archive.
-The retained intro/case_06, case_07, case_08, case_10, case_11, case_12, case_14,
+The retained intro/case_06, case_07, case_10, case_11, case_12, case_14,
 case_16, case_19 and case_20 recipes leave its optional mode-two constructor off.
-Their full raw runs improve delay by 2, 4, 12, 18, 18, 10, 40, 88,
-22 and 28, respectively, for 242 total. Full same-platform
-replays reproduce all ten routes exactly;
-[yielding_replay_proofs.json](yielding_replay_proofs.json)
+Their full raw runs improve delay by 2, 4, 18, 18, 10, 40, 88, 22 and 28,
+respectively, for 230 total. Full same-platform replays reproduce all nine
+routes exactly; [yielding_replay_proofs.json](yielding_replay_proofs.json)
 records their sources, arguments, hashes and separate replay times. Original
-producing times remain in runtime.json. The hard/case_01, case_04, case_06 and case_07 routes improve delay by 26, 14, 60 and 84; the hard
+producing times remain in runtime.json. Intro/case_08 is refreshed separately
+from the R10-safe source archive below: its delay is 7,519, 14 below the
+previous retained route, with the original producing time preserved. The
+hard/case_01, case_04, case_06 and case_07 routes improve delay by 26, 14, 60 and 84; the hard
 certificate [yielding_replay_proofs.json](../../hard/cold_spt_lns/yielding_replay_proofs.json) records them.
+
+Archived revision `350a84be0277f2acfbbce9d743fcecac23612c8cba87cc4dc5b2e302eb610842`
+is the R10-safe intro/case_08 source archive ([manifest](reproducers/350a84be0277f2acfbbce9d743fcecac23612c8cba87cc4dc5b2e302eb610842/source.json)). Its full exact replay
+reproduces the legal 7,519-delay route; the original producing runtime remains
+authoritative, and the separate replay time is recorded in the [case certificate](yielding_replay_proofs.json).
 
 Archived revision `78e62589eeac552696775443920d7679db5411d8990c36a9d4e241efec88bb70`
 adds `--post-priority-trials` in that backend, defaulting to zero. After selecting

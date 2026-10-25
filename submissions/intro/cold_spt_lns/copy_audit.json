@@ -1,6 +1,6 @@
 {
-  "audit_receipt_sha256": "ecdf6199b6d22841b48388a6f1c44cc9ede0c7407cdf74f3fdd4c682d191591b",
-  "audited_utc": "2026-10-25T10:51:59.375898+00:00",
+  "audit_receipt_sha256": "a94e8ade756a5e24e0c4c98360ca7efdee46c7eebaa9f29bca1b10a8c575b817",
+  "audited_utc": "2026-10-25T14:18:13.101270+00:00",
   "cases_checked": 44,
   "comparison": "Unmodified PR66 route_hash semantics, applied to actual Git blobs from main and every other upstream PR head open at submission time",
   "distinct_published_route_blobs": 1339,
@@ -49,7 +49,7 @@
     "scale/case_06": "be936ddb2c666e1e5abcd9edbec64735da92d5ca8bcacdc85e1e0c7aaaf020c9",
     "scale/case_07": "39dd51cafc8cdb903cf2ca7b3405f7694e2b94ce65e0f09c239bd23c79c5a349",
     "scale/case_08": "ed1aa33fb93fe4c432ec1a17f7c5968f0ef259280708b2d1ece13c97c507f726",
-    "stress/case_01": "2ab7b251740a9158feab72575bd2f6effbbf1701fadd6c09347400d0219f8bab"
+    "stress/case_01": "6964573dce0ddaa8404e8808cf5d078279d3844b34b2cad8bcb23db6043441b1"
   },
   "policy_commit": "8036968204edaf72d57e8391689d263521a4776f",
   "policy_pr": 66,

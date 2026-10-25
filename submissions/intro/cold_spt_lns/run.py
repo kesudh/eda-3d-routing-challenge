@@ -53,10 +53,14 @@ def snapshot():
     return version,hashes
 def validate_source(version,hashes):
     assert version_id(hashes)==version
-    base=HERE/"reproducers"/version
-    assert json.loads((base/"source.json").read_text())["files"]==hashes
-    for name,value in hashes.items():assert digest(base/name)==value,(version,name)
-    return base
+    archives=[ROOT/"submissions"/tier/"cold_spt_lns/reproducers"/version for tier in TIERS]
+    present=[base for base in archives if base.exists()]
+    assert present,"missing producing source archive: "+version
+    for base in present:
+        manifest=json.loads((base/"source.json").read_text())
+        assert manifest["version"]==version and manifest["files"]==hashes
+        for name,value in hashes.items():assert digest(base/name)==value,(version,name)
+    return present[0]
 def build(version,hashes,cargo,built):
     base=validate_source(version,hashes);target=Path(tempfile.gettempdir())/"cold-spt-build"/version
     if version not in built:
